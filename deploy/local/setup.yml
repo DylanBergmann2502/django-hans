@@ -1,0 +1,37 @@
+# deploy/local/setup.yml
+networks:
+  django_hans_local_setup:
+    name: django_hans_local_setup
+
+volumes:
+  django_hans_local_minio_data: {}
+
+services:
+  create-minio-buckets:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/minio/mc/Dockerfile
+    image: django_hans_local_create_minio_buckets
+    container_name: django_hans_local_create_minio_buckets
+    networks:
+      - django_hans_local_setup
+    depends_on:
+      - minio
+    env_file:
+      - ./.envs/.minio
+
+  minio:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/minio/Dockerfile
+    image: django_hans_local_minio
+    container_name: django_hans_local_minio
+    networks:
+      - django_hans_local_setup
+    volumes:
+      - django_hans_local_minio_data:/data
+    env_file:
+      - ./.envs/.minio
+    ports:
+    - "9000:9000"  # API
+    - "9001:9001"  # Console

@@ -150,16 +150,3 @@ services:
     ports:
       - '5555:5555'
     command: /start-flower
-
-  create-minio-buckets:
-    build:
-      context: ../..
-      dockerfile: ./deploy/local/compose/minio/mc/Dockerfile
-    image: django_hans_local_create_minio_buckets
-    container_name: django_hans_local_create_minio_buckets
-    networks:
-      - django_hans_local_web
-    depends_on:
-      - minio
-    env_file:
-      - ./.envs/.minio
