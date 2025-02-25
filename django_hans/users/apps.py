@@ -1,3 +1,4 @@
+# django_hans/users/apps.py
 import contextlib
 
 from django.apps import AppConfig

@@ -1,3 +1,4 @@
+# django_hans/conftest.py
 import pytest
 
 from django_hans.users.models import User

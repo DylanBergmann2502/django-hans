@@ -1,3 +1,4 @@
+# django_hans/users/tests/test_models.py
 from django_hans.users.models import User
 
 

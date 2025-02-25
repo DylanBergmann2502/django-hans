@@ -1,3 +1,4 @@
+# django_hans/users/managers.py
 from typing import TYPE_CHECKING
 
 from django.contrib.auth.hashers import make_password

@@ -1,3 +1,4 @@
+# django_hans/core/models.py
 from model_utils.models import TimeStampedModel
 
 

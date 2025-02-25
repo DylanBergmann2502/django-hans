@@ -1,3 +1,4 @@
+# django_hans/users/tests/test_tasks.py
 import pytest
 from celery.result import EagerResult
 

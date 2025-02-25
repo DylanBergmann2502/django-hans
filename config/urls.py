@@ -1,3 +1,4 @@
+# config/urls.py
 # ruff: noqa
 from django.conf import settings
 from django.contrib import admin

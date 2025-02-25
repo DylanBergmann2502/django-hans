@@ -1,3 +1,4 @@
+# django_hans/users/tasks.py
 from celery import shared_task
 
 from .models import User

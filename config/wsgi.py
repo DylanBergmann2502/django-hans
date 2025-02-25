@@ -1,3 +1,4 @@
+# config/wsgi.py
 # ruff: noqa
 """
 WSGI config for Django Hans project.

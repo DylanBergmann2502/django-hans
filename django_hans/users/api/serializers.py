@@ -1,3 +1,4 @@
+# django_hans/users/api/serializers.py
 from rest_framework import serializers
 
 from django_hans.users.models import User

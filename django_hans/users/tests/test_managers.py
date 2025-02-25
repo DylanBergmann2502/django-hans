@@ -1,3 +1,4 @@
+# django_hans/users/tests/test_managers.py
 from io import StringIO
 
 import pytest
