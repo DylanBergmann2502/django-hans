@@ -14,10 +14,11 @@ urlpatterns = [
     path("", include("django_hans.core.urls")),
 
     # API base URL
-    path("api/", include("config.api_router")),
+    # Hard code the v1, which can simplify the current code organization and can be refactored in the future
+    path("api/v1/", include("config.api_router")),
 
     # Authentication
-    path("api/auth/token/", obtain_auth_token),
+    path("api/v1/auth/token/", obtain_auth_token),
 
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
