@@ -6,43 +6,75 @@ updates:
   # Update GitHub actions in workflows
   - package-ecosystem: 'github-actions'
     directory: '/'
-    # Every weekday
     schedule:
       interval: 'daily'
 
-  # Enable version updates for Docker
+  # Enable version updates for Docker - Django containers
   - package-ecosystem: 'docker'
-    # Look for a `Dockerfile` in the `compose/local/django` directory
-    directories:
-      - 'compose/local/django/'
-      - 'compose/production/django/'
-    # Every weekday
+    directory: '/deploy/local/compose/django/'
     schedule:
       interval: 'daily'
-    # Ignore minor version updates (3.10 -> 3.11) but update patch versions
     ignore:
       - dependency-name: '*'
         update-types:
           - 'version-update:semver-major'
           - 'version-update:semver-minor'
 
-
   - package-ecosystem: 'docker'
-    # Look for a `Dockerfile` in the `compose/local/node` directory
-    directories:
-      - 'compose/local/node/'
-      - 'compose/production/aws/'
-      - 'compose/production/postgres/'
-      - 'compose/production/traefik/'
-    # Every weekday
+    directory: '/deploy/production/compose/django/'
+    schedule:
+      interval: 'daily'
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
+          - 'version-update:semver-minor'
+
+  # Enable version updates for Docker - Vue containers
+  - package-ecosystem: 'docker'
+    directory: '/deploy/local/compose/vue/'
     schedule:
       interval: 'daily'
 
-  # Enable version updates for Python/Pip - Production
+  # Enable version updates for Docker - Other containers
+  - package-ecosystem: 'docker'
+    directory: '/deploy/local/compose/postgres/'
+    schedule:
+      interval: 'daily'
+
+  - package-ecosystem: 'docker'
+    directory: '/deploy/local/compose/minio/'
+    schedule:
+      interval: 'daily'
+
+  - package-ecosystem: 'docker'
+    directory: '/deploy/local/compose/minio/mc/'
+    schedule:
+      interval: 'daily'
+
+  - package-ecosystem: 'docker'
+    directory: '/deploy/production/compose/postgres/'
+    schedule:
+      interval: 'daily'
+
+  - package-ecosystem: 'docker'
+    directory: '/deploy/production/compose/nginx/'
+    schedule:
+      interval: 'daily'
+
+  - package-ecosystem: 'docker'
+    directory: '/deploy/production/compose/aws/'
+    schedule:
+      interval: 'daily'
+
+  # Enable version updates for Python/Pip
   - package-ecosystem: 'pip'
-    # Look for a `requirements.txt` in the `root` directory
-    # also 'setup.cfg', '.python-version' and 'requirements/*.txt'
     directory: '/'
-    # Every weekday
+    schedule:
+      interval: 'daily'
+
+  # Enable version updates for npm packages in Vue app
+  - package-ecosystem: 'npm'
+    directory: '/web'
     schedule:
       interval: 'daily'
