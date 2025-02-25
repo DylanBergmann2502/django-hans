@@ -115,7 +115,6 @@ STORAGES = {
     },
 }
 MEDIA_URL = f"https://{aws_s3_domain}/media/"
-COLLECTFASTA_STRATEGY = "collectfasta.strategies.boto3.Boto3Strategy"
 STATIC_URL = f"https://{aws_s3_domain}/static/"
 
 # EMAIL
@@ -148,11 +147,6 @@ INSTALLED_APPS += ["anymail"]
 # https://anymail.readthedocs.io/en/stable/esps
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 ANYMAIL = {}
-
-# Collectfasta
-# ------------------------------------------------------------------------------
-# https://github.com/jasongi/collectfasta#installation
-INSTALLED_APPS = ["collectfasta", *INSTALLED_APPS]
 
 # LOGGING
 # ------------------------------------------------------------------------------
