@@ -65,10 +65,6 @@ if env("USE_DOCKER") == "yes":
     # If you have CPU and IO load issues, you can increase this poller interval e.g) 5
     RUNSERVERPLUS_POLLER_RELOADER_INTERVAL = 1
 
-# django-extensions
-# ------------------------------------------------------------------------------
-# https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
-INSTALLED_APPS += ["django_extensions"]
 # Celery
 # ------------------------------------------------------------------------------
 
