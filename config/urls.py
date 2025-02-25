@@ -4,7 +4,11 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 
 urlpatterns = [
     # Django Admin
@@ -18,7 +22,9 @@ urlpatterns = [
     path("api/v1/", include("config.api_router")),
 
     # Authentication
-    path("api/v1/auth/token/", obtain_auth_token),
+    path("api/v1/auth/jwt/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/auth/jwt/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/v1/auth/jwt/verify/", TokenVerifyView.as_view(), name="token_verify"),
 
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
