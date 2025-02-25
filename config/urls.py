@@ -10,6 +10,9 @@ urlpatterns = [
     # Django Admin
     path(settings.ADMIN_URL, admin.site.urls),
 
+    # System urls
+    path("", include("django_hans.core.urls")),
+
     # API base URL
     path("api/", include("config.api_router")),
 
