@@ -1,0 +1,16 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=django_hans
+POSTGRES_USER=fqrpqffwdjqsjhGgYdCShzeWJwGxDCyu
+POSTGRES_PASSWORD=AuLjZ5WZzj4F5V7FAv6aRmkvuc3W8jhSq1ek7RWOfvWIgWtJ8tHVALmo9tVibJzJ

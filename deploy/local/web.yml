@@ -1,0 +1,133 @@
+# deploy/local/web.yml
+networks:
+  django_hans_local_web:
+    name: django_hans_local_web
+
+volumes:
+  django_hans_local_node_modules: {}
+  django_hans_local_postgres_data: {}
+  django_hans_local_postgres_data_backups: {}
+  django_hans_local_redis_data: {}
+
+services:
+  # Web
+  django:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/django/Dockerfile
+    image: django_hans_local_django
+    container_name: django_hans_local_django
+    networks:
+      - django_hans_local_web
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ../..:/app:z
+    env_file:
+      - ./.envs/.django
+    ports:
+      - "8000:8000"
+    command: /start
+
+  vue:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/vue/Dockerfile
+    image: django_hans_local_vue
+    container_name: django_hans_local_vue
+    networks:
+      - django_hans_local_web
+    volumes:
+      - type: bind
+        source: ../../web
+        target: /app
+      - type: volume
+        source: django_hans_local_node_modules
+        target: /app/node_modules
+      - type: bind
+        source: ./.envs/.vue
+        target: /tmp/.env.development
+        read_only: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "5173:5173"
+    depends_on:
+      - django
+
+  postgres:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/postgres/Dockerfile
+    image: django_hans_local_postgres
+    container_name: django_hans_local_postgres
+    networks:
+      - django_hans_local_web
+    volumes:
+      - django_hans_local_postgres_data:/var/lib/postgresql/data
+      - django_hans_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.postgres
+
+  # Worker
+  redis:
+    image: docker.io/redis:6
+    container_name: django_hans_local_redis
+    networks:
+      - django_hans_local_web
+    volumes:
+      - django_hans_local_redis_data:/data
+
+  celery_worker:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/django/Dockerfile
+    image: django_hans_local_celery_worker
+    container_name: django_hans_local_celery_worker
+    networks:
+      - django_hans_local_web
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ../..:/app:z
+    env_file:
+      - ./.envs/.django
+    command: /start-celery-worker
+
+  celery_beat:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/django/Dockerfile
+    image: django_hans_local_celery_beat
+    container_name: django_hans_local_celery_beat
+    networks:
+      - django_hans_local_web
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ../..:/app:z
+    env_file:
+      - ./.envs/.django
+    command: /start-celery-beat
+
+  flower:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/django/Dockerfile
+    image: django_hans_local_flower
+    container_name: django_hans_local_flower
+    networks:
+      - django_hans_local_web
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ../..:/app:z
+    env_file:
+      - ./.envs/.django
+    ports:
+      - '5555:5555'
+    command: /start-flower
