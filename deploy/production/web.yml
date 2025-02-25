@@ -1,0 +1,143 @@
+# deploy/production/web.yml
+networks:
+  django_hans_production_web:
+    name: django_hans_production_web
+
+volumes:
+  django_hans_production_staticfiles: {}
+  django_hans_production_postgres_data: {}
+  django_hans_production_postgres_data_backups: {}
+  django_hans_production_redis_data: {}
+
+services:
+  # Web
+  django:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/django/Dockerfile
+    image: django_hans_production_django
+    container_name: django_hans_production_django
+    networks:
+      - django_hans_production_web
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ../..
+        target: /app
+      - type: volume
+        source: django_hans_production_staticfiles
+        target: /app/staticfiles
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.django
+    ports:
+      - "8000:8000"
+    command: /start
+
+  nginx:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/nginx/Dockerfile
+    image: django_hans_production_nginx
+    container_name: django_hans_production_nginx
+    networks:
+      - django_hans_production_web
+    restart: unless-stopped
+    volumes:
+      - django_hans_production_staticfiles:/usr/share/nginx/html/django-static:ro
+    depends_on:
+      - django
+      - flower
+    ports:
+      - "80:80"
+      - "443:443"
+
+  postgres:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/postgres/Dockerfile
+    image: django_hans_production_postgres
+    container_name: django_hans_production_postgres
+    networks:
+      - django_hans_production_web
+    restart: unless-stopped
+    volumes:
+      - django_hans_production_postgres_data:/var/lib/postgresql/data
+      - django_hans_production_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.postgres
+
+  # Postgres
+  aws_cli:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/aws/Dockerfile
+    container_name: django_hans_production_aws_cli
+    networks:
+      - django_hans_production_web
+    env_file:
+      - ./.envs/.django
+    volumes:
+      - django_hans_production_postgres_data_backups:/backups:z
+
+  # Worker
+  redis:
+    image: docker.io/redis:6
+    container_name: django_hans_production_redis
+    networks:
+      - django_hans_production_web
+    restart: unless-stopped
+    volumes:
+      - django_hans_production_redis_data:/data
+
+  celery_worker:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/django/Dockerfile
+    image: django_hans_production_celery_worker
+    container_name: django_hans_production_celery_worker
+    networks:
+      - django_hans_production_web
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.django
+    command: /start-celery-worker
+
+  celery_beat:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/django/Dockerfile
+    image: django_hans_production_celery_beat
+    container_name: django_hans_production_celery_beat
+    networks:
+      - django_hans_production_web
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.django
+    command: /start-celery-beat
+
+  flower:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/django/Dockerfile
+    image: django_hans_production_flower
+    container_name: django_hans_production_flower
+    networks:
+      - django_hans_production_web
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.django
+    ports:
+      - "5555:5555"
+    command: /start-flower

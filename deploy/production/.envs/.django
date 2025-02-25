@@ -1,0 +1,44 @@
+# General
+# ------------------------------------------------------------------------------
+# DJANGO_READ_DOT_ENV_FILE=True
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=Inadfenq5EpXHcWcJcK47snapUC1uuE4iSu52uVBzamexZ5uTiFvDBukjyHYBUcK
+DJANGO_ADMIN_URL=admin/
+DJANGO_ALLOWED_HOSTS=.django-hans.com
+
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=django_hans
+POSTGRES_USER=fqrpqffwdjqsjhGgYdCShzeWJwGxDCyu
+POSTGRES_PASSWORD=bp8RBCtN99P62As7u4zgCdu7xc7bd9uCdT88KKWWmcTiDo0e9pd31JM6f51ntJrG
+
+# Security
+# ------------------------------------------------------------------------------
+# TIP: better off using DNS, however, redirect is OK too
+DJANGO_SECURE_SSL_REDIRECT=False
+
+# Email
+# ------------------------------------------------------------------------------
+DJANGO_SERVER_EMAIL=
+
+# django-allauth
+# ------------------------------------------------------------------------------
+DJANGO_ACCOUNT_ALLOW_REGISTRATION=True
+
+# Gunicorn
+# ------------------------------------------------------------------------------
+WEB_CONCURRENCY=4
+
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+CELERY_FLOWER_USER=RfDTgbAInufbwblGyqHqyoVPjAQlKVnK
+CELERY_FLOWER_PASSWORD=iu90D1uXz6eYhWZsitPj8unkLXMTI2xiXQj6ukE1lYWAJyCbKG87i6rD8cSQhZqb
+
