@@ -336,5 +336,47 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SCHEMA_PATH_PREFIX": "/api/",
 }
-# Your stuff...
+
+# S3/MinIO Storage Settings
 # ------------------------------------------------------------------------------
+if env.bool("USE_S3_STORAGE", default=False):
+    AWS_ACCESS_KEY_ID = env("DJANGO_AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("DJANGO_AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("DJANGO_AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_ENDPOINT_URL = env("DJANGO_AWS_S3_ENDPOINT_URL")
+    AWS_S3_USE_SSL = env.bool("DJANGO_AWS_S3_USE_SSL", default=False)
+    AWS_QUERYSTRING_AUTH = False
+
+    # Cache settings
+    _AWS_EXPIRY = 60 * 60 * 24 * 7  # 7 days
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": f"max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate",
+    }
+
+    # Other S3 settings
+    AWS_S3_MAX_MEMORY_SIZE = env.int("DJANGO_AWS_S3_MAX_MEMORY_SIZE", default=100_000_000)
+    AWS_S3_REGION_NAME = env("DJANGO_AWS_S3_REGION_NAME", default=None)
+    AWS_S3_CUSTOM_DOMAIN = env("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
+
+    # Storage configuration
+    aws_s3_domain = env("DJANGO_AWS_S3_ENDPOINT_URL").replace('http://', '').replace('https://', '')
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "media",
+                "file_overwrite": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        }
+    }
+
+    # If using custom domain, use that instead of the endpoint URL
+    if AWS_S3_CUSTOM_DOMAIN:
+        aws_s3_domain = AWS_S3_CUSTOM_DOMAIN
+
+    # Use HTTPS if SSL is enabled
+    protocol = "https" if AWS_S3_USE_SSL else "http"
+    MEDIA_URL = f"{protocol}://{aws_s3_domain}/media/"

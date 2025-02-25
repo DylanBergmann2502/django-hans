@@ -14,3 +14,12 @@ POSTGRES_PORT=5432
 POSTGRES_DB=django_hans
 POSTGRES_USER=fqrpqffwdjqsjhGgYdCShzeWJwGxDCyu
 POSTGRES_PASSWORD=AuLjZ5WZzj4F5V7FAv6aRmkvuc3W8jhSq1ek7RWOfvWIgWtJ8tHVALmo9tVibJzJ
+
+# AWS/MinIO
+# ------------------------------------------------------------------------------
+USE_S3_STORAGE=True
+DJANGO_AWS_ACCESS_KEY_ID=LQwunDef2pGQ9pPXourD
+DJANGO_AWS_SECRET_ACCESS_KEY=sVVsPxUfXcyVFKeR1XQSwTLVMBnGgY2mXPasWfSn
+DJANGO_AWS_STORAGE_BUCKET_NAME=local-django-hans
+DJANGO_AWS_S3_ENDPOINT_URL=http://localhost:9000
+DJANGO_AWS_S3_USE_SSL=False
