@@ -1,1 +1,13 @@
+# Default behavior: automatically handle line endings
 * text=auto
+
+# Shell scripts should use LF and be executable
+*.sh text eol=lf
+bin/run.sh text eol=lf executable
+bin/setup.sh text eol=lf executable
+
+# Batch files should use CRLF
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+bin/run.bat text eol=crlf
+bin/setup.bat text eol=crlf
