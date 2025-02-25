@@ -71,7 +71,9 @@ matplotlib-inline==0.1.7
 mypy==1.15.0
 mypy-extensions==1.0.0
 nodeenv==1.9.1
+numpy==2.2.3
 packaging==24.2
+pandas==2.2.3
 parso==0.8.4
 pathspec==0.12.1
 pexpect==4.9.0
