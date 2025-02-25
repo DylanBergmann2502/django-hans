@@ -63,7 +63,7 @@ if env("USE_DOCKER") == "yes":
     # Werkzeug reloader type [auto, watchdog, or stat]
     RUNSERVERPLUS_POLLER_RELOADER_TYPE = 'stat'
     # If you have CPU and IO load issues, you can increase this poller interval e.g) 5
-    RUNSERVERPLUS_POLLER_RELOADER_INTERVAL = 1
+    RUNSERVERPLUS_POLLER_RELOADER_INTERVAL = 3
 
 # Celery
 # ------------------------------------------------------------------------------
