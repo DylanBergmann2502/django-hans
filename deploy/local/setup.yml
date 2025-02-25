@@ -1,0 +1,37 @@
+# deploy/local/setup.yml
+networks:
+  digital_signage_local_setup:
+    name: digital_signage_local_setup
+
+volumes:
+  digital_signage_local_minio_data: {}
+
+services:
+  create-minio-buckets:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/minio/mc/Dockerfile
+    image: digital_signage_local_create_minio_buckets
+    container_name: digital_signage_local_create_minio_buckets
+    networks:
+      - digital_signage_local_setup
+    depends_on:
+      - minio
+    env_file:
+      - ./.envs/.minio
+
+  minio:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/minio/Dockerfile
+    image: digital_signage_local_minio
+    container_name: digital_signage_local_minio
+    networks:
+      - digital_signage_local_setup
+    volumes:
+      - digital_signage_local_minio_data:/data
+    env_file:
+      - ./.envs/.minio
+    ports:
+    - "9000:9000"  # API
+    - "9001:9001"  # Console
