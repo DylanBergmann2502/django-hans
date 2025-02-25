@@ -15,7 +15,6 @@ updates:
     # Look for a `Dockerfile` in the `compose/local/django` directory
     directories:
       - 'compose/local/django/'
-      - 'compose/local/docs/'
       - 'compose/production/django/'
     # Every weekday
     schedule:
