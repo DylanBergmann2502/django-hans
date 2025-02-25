@@ -33,7 +33,6 @@ jobs:
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
 
-  # With no caching at all the entire ci process takes 3m to complete!
   pytest:
     runs-on: ubuntu-latest
 
@@ -41,17 +40,42 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
 
-      - name: Build the Stack
-        run: docker compose -f docker-compose.local.yml build django
+      - name: Build the Django container
+        run: docker compose -f deploy/local/web.yml build django
+
+      - name: Start PostgreSQL
+        run: docker compose -f deploy/local/web.yml up -d postgres
+
+      - name: Wait for PostgreSQL to be ready
+        run: sleep 10
 
       - name: Check DB Migrations
-        run: docker compose -f docker-compose.local.yml run --rm django python manage.py makemigrations --check
+        run: docker compose -f deploy/local/web.yml run --rm django python manage.py makemigrations --check
 
       - name: Run DB Migrations
-        run: docker compose -f docker-compose.local.yml run --rm django python manage.py migrate
+        run: docker compose -f deploy/local/web.yml run --rm django python manage.py migrate
 
       - name: Run Django Tests
-        run: docker compose -f docker-compose.local.yml run django pytest
+        run: docker compose -f deploy/local/web.yml run --rm django pytest
 
       - name: Tear down the Stack
-        run: docker compose -f docker-compose.local.yml down
+        run: docker compose -f deploy/local/web.yml down -v
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Build the Vue container
+        run: docker compose -f deploy/local/web.yml build vue
+
+      - name: Lint frontend
+        run: docker compose -f deploy/local/web.yml run --rm vue npm run lint
+
+      - name: Build frontend
+        run: docker compose -f deploy/local/web.yml run --rm vue npm run build
+
+      - name: Tear down Vue container
+        run: docker compose -f deploy/local/web.yml rm -f vue
