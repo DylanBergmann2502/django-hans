@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "django_filters",
     "django_extensions",
+    "djoser",
 ]
 
 LOCAL_APPS = [
@@ -408,4 +409,16 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=60),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=7),
+}
+
+# Djoser
+# ------------------------------------------------------------------------------
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": False,
+    "SERIALIZERS": {},
+    "USER_ID_FIELD": "id",
+    "LOGIN_FIELD": "email",
 }
