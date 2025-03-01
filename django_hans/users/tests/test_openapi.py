@@ -1,4 +1,4 @@
-# django_hans/users/tests/api/test_openapi.py
+# django_hans/users/tests/test_openapi.py
 from http import HTTPStatus
 
 import pytest
