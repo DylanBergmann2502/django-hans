@@ -354,12 +354,16 @@ if env.bool("USE_S3_STORAGE", default=False):
     }
 
     # Other S3 settings
-    AWS_S3_MAX_MEMORY_SIZE = env.int("DJANGO_AWS_S3_MAX_MEMORY_SIZE", default=100_000_000)
+    AWS_S3_MAX_MEMORY_SIZE = env.int(
+        "DJANGO_AWS_S3_MAX_MEMORY_SIZE", default=100_000_000
+    )
     AWS_S3_REGION_NAME = env("DJANGO_AWS_S3_REGION_NAME", default=None)
     AWS_S3_CUSTOM_DOMAIN = env("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
 
     # Storage configuration
-    aws_s3_domain = env("DJANGO_AWS_S3_ENDPOINT_URL").replace('http://', '').replace('https://', '')
+    aws_s3_domain = (
+        env("DJANGO_AWS_S3_ENDPOINT_URL").replace("http://", "").replace("https://", "")
+    )
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
@@ -370,7 +374,7 @@ if env.bool("USE_S3_STORAGE", default=False):
         },
         "staticfiles": {
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        }
+        },
     }
 
     # If using custom domain, use that instead of the endpoint URL
@@ -389,23 +393,18 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": True,
-
     "ALGORITHM": "HS256",
     "SIGNING_KEY": env("JWT_SECRET_KEY"),
     "VERIFYING_KEY": None,
     "AUDIENCE": None,
     "ISSUER": None,
-
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
-
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
-
     "JTI_CLAIM": "jti",
-
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=60),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=7),
