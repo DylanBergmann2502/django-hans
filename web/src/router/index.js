@@ -37,6 +37,12 @@ const router = createRouter({
         // Add more routes as needed
       ],
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/pages/NotFoundPage.vue'),
+      meta: { authRequired: undefined },
+    },
   ],
 })
 
