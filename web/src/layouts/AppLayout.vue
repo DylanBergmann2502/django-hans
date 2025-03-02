@@ -1,30 +1,30 @@
 <!-- src/layouts/AppLayout.vue -->
 <script setup>
-import { ref, computed } from 'vue';
-import { useToast } from 'primevue/usetoast';
-import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router';
+import { ref, computed } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
-const toast = useToast();
-const authStore = useAuthStore();
-const router = useRouter();
+const toast = useToast()
+const authStore = useAuthStore()
+const router = useRouter()
 
-const isAuthenticated = computed(() => authStore.isAuthenticated);
-const user = computed(() => authStore.user);
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+const user = computed(() => authStore.user)
 
 // Menu items with 'to' property for router links
 const menuItems = ref([
   {
     label: 'Home',
     icon: 'pi pi-fw pi-home',
-    to: '/'
+    to: '/',
   },
   {
     label: 'Dashboard',
     icon: 'pi pi-fw pi-chart-bar',
     to: '/dashboard',
-  }
-]);
+  },
+])
 
 // User menu items with special flag for logout
 const userMenuItems = ref([
@@ -39,43 +39,56 @@ const userMenuItems = ref([
     to: '/settings',
   },
   {
-    separator: true
+    separator: true,
   },
   {
     label: 'Logout',
     icon: 'pi pi-fw pi-sign-out',
     command: () => handleLogout(),
-    isLogout: true // Special flag to identify logout action
-  }
-]);
+    isLogout: true, // Special flag to identify logout action
+  },
+])
 
 const handleLogout = async () => {
-  await authStore.logout();
-  toast.add({ severity: 'warn', summary: 'Logged Out', detail: 'You have been successfully logged out', life: 3000 });
+  await authStore.logout()
+  toast.add({
+    severity: 'warn',
+    summary: 'Logged Out',
+    detail: 'You have been successfully logged out',
+    life: 3000,
+  })
 
   if (router.currentRoute.value.meta.authRequired === true) {
-    router.push('/');
+    router.push('/')
   }
-};
+}
 
 const navigateHome = () => {
-  router.push('/');
-};
+  router.push('/')
+}
 </script>
 
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Custom implementation of menubar with real links -->
-    <div class="p-menubar mb-4 p-component flex justify-between items-center px-4 py-2 bg-white shadow-sm">
+    <div
+      class="p-menubar mb-4 p-component flex justify-between items-center px-4 py-2 bg-white shadow-sm"
+    >
       <div class="flex items-center">
         <div class="cursor-pointer flex items-center" @click="navigateHome">
-          <h1 class="text-xl font-semibold ml-2 hover:text-green-600 transition-colors">Django Hans</h1>
+          <h1 class="text-xl font-semibold ml-2 hover:text-green-600 transition-colors">
+            Django Hans
+          </h1>
         </div>
 
         <!-- Menu items with real links -->
         <div class="ml-6 flex space-x-4">
-          <router-link v-for="item in menuItems" :key="item.label" :to="item.to"
-            class="p-menuitem-link flex items-center px-3 py-2 rounded-md hover:bg-gray-100">
+          <router-link
+            v-for="item in menuItems"
+            :key="item.label"
+            :to="item.to"
+            class="p-menuitem-link flex items-center px-3 py-2 rounded-md hover:bg-gray-100"
+          >
             <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
             <span class="p-menuitem-text">{{ item.label }}</span>
           </router-link>
@@ -90,25 +103,37 @@ const navigateHome = () => {
           <Menu :model="userMenuItems" :popup="true" ref="userMenu" class="user-menu">
             <template #item="{ item }">
               <!-- Regular menu items with router links -->
-              <router-link v-if="item.to" :to="item.to"
-                class="p-menuitem-link flex align-items-center p-3 text-color hover:surface-200 border-noround">
+              <router-link
+                v-if="item.to"
+                :to="item.to"
+                class="p-menuitem-link flex align-items-center p-3 text-color hover:surface-200 border-noround"
+              >
                 <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
                 <span>{{ item.label }}</span>
               </router-link>
 
               <!-- Special handling for logout - no href, just click handler -->
-              <div v-else-if="item.isLogout" @click="item.command"
-                class="p-menuitem-link flex align-items-center p-3 text-color hover:surface-200 border-noround cursor-pointer">
+              <div
+                v-else-if="item.isLogout"
+                @click="item.command"
+                class="p-menuitem-link flex align-items-center p-3 text-color hover:surface-200 border-noround cursor-pointer"
+              >
                 <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
                 <span>{{ item.label }}</span>
               </div>
 
               <!-- Other menu item types -->
-              <hr v-else-if="item.separator" class="my-2 border-t border-gray-200">
+              <hr v-else-if="item.separator" class="my-2 border-t border-gray-200" />
             </template>
           </Menu>
 
-          <Button icon="pi pi-user" rounded text aria-label="User Menu" @click="$refs.userMenu.toggle($event)" />
+          <Button
+            icon="pi pi-user"
+            rounded
+            text
+            aria-label="User Menu"
+            @click="$refs.userMenu.toggle($event)"
+          />
         </div>
         <div v-else class="flex gap-2">
           <router-link to="/login" custom v-slot="{ navigate, href }">
@@ -118,7 +143,11 @@ const navigateHome = () => {
           </router-link>
           <router-link to="/register" custom v-slot="{ navigate, href }">
             <a :href="href" @click="navigate" class="no-underline">
-              <Button label="Register" icon="pi pi-user-plus" class="p-button-outlined p-button-success" />
+              <Button
+                label="Register"
+                icon="pi pi-user-plus"
+                class="p-button-outlined p-button-success"
+              />
             </a>
           </router-link>
         </div>
@@ -159,7 +188,9 @@ a.no-underline {
   align-items: center;
   padding: 0.75rem 1rem;
   color: #495057;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
   border-radius: 0;
 }
 

@@ -1,33 +1,33 @@
 <!-- src/pages/auth/LoginPage.vue -->
 <script setup>
-import { ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
-import { useToast } from 'primevue/usetoast';
+import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useToast } from 'primevue/usetoast'
 
-const email = ref('');
-const password = ref('');
-const authStore = useAuthStore();
-const router = useRouter();
-const route = useRoute();
-const toast = useToast();
-const loading = ref(false);
+const email = ref('')
+const password = ref('')
+const authStore = useAuthStore()
+const router = useRouter()
+const route = useRoute()
+const toast = useToast()
+const loading = ref(false)
 
-const redirectPath = route.query.redirect || '/';
+const redirectPath = route.query.redirect || '/'
 
 const handleLogin = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    await authStore.login(email.value, password.value);
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000 });
-    router.push(redirectPath);
+    await authStore.login(email.value, password.value)
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000 })
+    router.push(redirectPath)
   } catch (error) {
-    const errorMessage = error.response?.data?.detail || 'Login failed';
-    toast.add({ severity: 'error', summary: 'Error', detail: errorMessage, life: 3000 });
+    const errorMessage = error.response?.data?.detail || 'Login failed'
+    toast.add({ severity: 'error', summary: 'Error', detail: errorMessage, life: 3000 })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
 
 <template>
