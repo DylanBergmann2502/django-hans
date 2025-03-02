@@ -52,3 +52,8 @@ DJANGO_AWS_SECRET_ACCESS_KEY=33YmxVcQOh9NTpeToJM6lLdadFxgd1jje09ouUeq
 DJANGO_AWS_STORAGE_BUCKET_NAME=production-django-hans
 DJANGO_AWS_S3_ENDPOINT_URL=http://localhost:9000
 DJANGO_AWS_S3_USE_SSL=False
+
+# SENTRY
+# ------------------------------------------------------------------------------
+USE_SENTRY=False
+SENTRY_DSN=
