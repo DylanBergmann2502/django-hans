@@ -1,6 +1,11 @@
 <!-- src/pages/HomePage.vue -->
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const user = computed(() => authStore.user);
 
 const features = ref([
   {
@@ -35,9 +40,12 @@ const resources = ref([
 
 <template>
   <div>
-    <!-- Hero Section - Changed to green gradient -->
+    <!-- Hero Section -->
     <div class="bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg shadow-lg mb-6 p-8 text-white">
-      <h1 class="text-3xl font-bold mb-4">Welcome to Django Hans</h1>
+      <h1 class="text-3xl font-bold mb-4">
+        Welcome to Django Hans
+        <span v-if="isAuthenticated && user"> - {{ user.email }}</span>
+      </h1>
       <p class="text-lg mb-6 max-w-3xl">
         A modern full-stack template combining the power of Django with the reactivity of Vue 3.
         Get started quickly with this production-ready development environment.
