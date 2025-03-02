@@ -1,3 +1,4 @@
+// src/main.js
 import '@/assets/styles.css';
 
 import { createApp } from 'vue';
@@ -11,11 +12,13 @@ import ToastService from 'primevue/toastservice';
 import App from './App.vue';
 import router from './router';
 import axios from '@/services/axios.js';
+import { useAuthStore } from '@/stores/auth';
 
-const app = createApp(App)
+const app = createApp(App);
+const pinia = createPinia();
 
-app.use(createPinia())
-app.use(router)
+app.use(pinia);
+app.use(router);
 
 app.use(PrimeVue, {
   theme: {
@@ -27,4 +30,13 @@ app.use(ConfirmationService);
 
 app.config.globalProperties.$axios = axios;
 
-app.mount('#app')
+app.mount('#app');
+
+// Initialize auth store after mounting
+const authStore = useAuthStore();
+authStore.initialize();
+
+// Clean up event listeners when app is unmounted
+app.unmount = () => {
+  authStore.clearListeners();
+};
