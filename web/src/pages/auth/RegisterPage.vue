@@ -1,62 +1,62 @@
 <!-- src/pages/auth/RegisterPage.vue -->
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
-import { useToast } from 'primevue/usetoast';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useToast } from 'primevue/usetoast'
 
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
-const authStore = useAuthStore();
-const router = useRouter();
-const toast = useToast();
-const loading = ref(false);
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const authStore = useAuthStore()
+const router = useRouter()
+const toast = useToast()
+const loading = ref(false)
 
 const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Passwords do not match', life: 3000 });
-    return;
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Passwords do not match', life: 3000 })
+    return
   }
 
-  loading.value = true;
+  loading.value = true
   try {
     await authStore.register({
       email: email.value,
       password: password.value,
-    });
+    })
 
     toast.add({
       severity: 'success',
       summary: 'Success',
       detail: 'Registration successful! You can now log in.',
-      life: 5000
-    });
+      life: 5000,
+    })
 
-    router.push('/login');
+    router.push('/login')
   } catch (error) {
-    const errors = error.response?.data || {};
-    const errorMessages = [];
+    const errors = error.response?.data || {}
+    const errorMessages = []
 
     // Format error messages
-    Object.keys(errors).forEach(key => {
+    Object.keys(errors).forEach((key) => {
       if (Array.isArray(errors[key])) {
-        errorMessages.push(`${key}: ${errors[key].join(', ')}`);
+        errorMessages.push(`${key}: ${errors[key].join(', ')}`)
       } else {
-        errorMessages.push(`${key}: ${errors[key]}`);
+        errorMessages.push(`${key}: ${errors[key]}`)
       }
-    });
+    })
 
     toast.add({
       severity: 'error',
       summary: 'Registration Failed',
       detail: errorMessages.join('\n') || 'Registration failed',
-      life: 5000
-    });
+      life: 5000,
+    })
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>
 
 <template>

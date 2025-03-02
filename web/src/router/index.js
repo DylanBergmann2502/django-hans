@@ -47,8 +47,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
-  const isAuthenticated = authStore.isAuthenticated;
+  const authStore = useAuthStore()
+  const isAuthenticated = authStore.isAuthenticated
 
   // authRequired: true = requires authentication
   // authRequired: false = only for non-authenticated users
@@ -56,19 +56,19 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.authRequired === true && !isAuthenticated) {
     // Redirect to login if trying to access auth-required page while not logged in
-    next({ name: 'login', query: { redirect: to.fullPath } });
+    next({ name: 'login', query: { redirect: to.fullPath } })
   } else if (to.meta.authRequired === false && isAuthenticated) {
     // If the user came from a previous route within the app, go back there
     if (from.name) {
-      next(false); // Go back to where they came from
+      next(false) // Go back to where they came from
     } else {
       // If there's no previous route, go to home
-      next({ name: 'home' });
+      next({ name: 'home' })
     }
   } else {
     // Otherwise proceed normally
-    next();
+    next()
   }
-});
+})
 
 export default router

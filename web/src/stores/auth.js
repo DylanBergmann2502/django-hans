@@ -91,6 +91,6 @@ export const useAuthStore = defineStore('auth', {
     // Method to clean up event listeners
     clearListeners() {
       window.removeEventListener('storage', this.handleStorageChange)
-    }
+    },
   },
 })

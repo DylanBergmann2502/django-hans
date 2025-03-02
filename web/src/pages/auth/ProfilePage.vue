@@ -1,9 +1,9 @@
 <!-- src/pages/ProfilePage.vue -->
 <script setup>
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/auth'
 
-const authStore = useAuthStore();
-const user = authStore.user;
+const authStore = useAuthStore()
+const user = authStore.user
 </script>
 
 <template>
