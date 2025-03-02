@@ -24,21 +24,15 @@ def health_check_view(request):
     2. Database connections are working
     3. Redis connection is working (if used)
     """
-    health_status = {
-        'status': 'ok',
-        'services': {
-            'database': 'ok',
-            'redis': 'ok'
-        }
-    }
+    health_status = {"status": "ok", "services": {"database": "ok", "redis": "ok"}}
 
     # Check database connection
     try:
         for name in connections:
             connections[name].cursor()
     except OperationalError:
-        health_status['status'] = 'error'
-        health_status['services']['database'] = 'error'
+        health_status["status"] = "error"
+        health_status["services"]["database"] = "error"
         logger.error("Database health check failed")
 
     # Check Redis connection if REDIS_URL is configured
@@ -46,9 +40,9 @@ def health_check_view(request):
         redis_client = Redis.from_url(settings.REDIS_URL)
         redis_client.ping()
     except Exception as e:
-        health_status['status'] = 'error'
-        health_status['services']['redis'] = 'error'
+        health_status["status"] = "error"
+        health_status["services"]["redis"] = "error"
         logger.error(f"Redis health check failed: {str(e)}")
 
-    status_code = 200 if health_status['status'] == 'ok' else 503
+    status_code = 200 if health_status["status"] == "ok" else 503
     return Response(health_status, status=status_code)
