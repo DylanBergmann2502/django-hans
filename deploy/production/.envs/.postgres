@@ -1,3 +1,4 @@
+# deploy/production/.envs/.postgres
 # PostgreSQL
 # ------------------------------------------------------------------------------
 POSTGRES_HOST=postgres
