@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -o errexit
-set -o pipefail
-set -o nounset
-
-ln -sf /tmp/.env.development .env.development
-
-exec "$@"

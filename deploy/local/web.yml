@@ -47,12 +47,8 @@ services:
       - type: volume
         source: django_hans_local_node_modules
         target: /app/node_modules
-      - type: bind
-        source: ./.envs/.vue
-        target: /tmp/.env.development
-        read_only: true
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - ./.envs/.vue
     ports:
       - "5173:5173"
     depends_on:
