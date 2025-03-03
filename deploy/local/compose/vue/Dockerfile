@@ -11,11 +11,6 @@ WORKDIR /app
 COPY web/package*.json ./
 RUN npm ci
 
-COPY ./deploy/local/compose/vue/entrypoint /entrypoint
-RUN sed -i 's/\r$//g' /entrypoint
-RUN chmod +x /entrypoint
-
 EXPOSE 5173
 
-ENTRYPOINT ["/entrypoint"]
 CMD ["npm", "run", "dev"]
