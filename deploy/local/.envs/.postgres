@@ -1,3 +1,4 @@
+# deploy/local/.envs/.postgres
 # PostgreSQL
 # ------------------------------------------------------------------------------
 POSTGRES_HOST=postgres
