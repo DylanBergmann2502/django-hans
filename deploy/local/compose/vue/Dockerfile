@@ -1,5 +1,5 @@
 # deploy/local/compose/vue/Dockerfile
-FROM node:22.14-bookworm
+FROM node:23.9-bookworm
 
 # Install bash if not already present and npm-check-updates globally
 RUN apt-get update && apt-get install -y bash && \
