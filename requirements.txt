@@ -66,5 +66,5 @@ django-anymail==12.0  # https://github.com/anymail/django-anymail
 ## Other Libraries
 pandas==2.2.3  # https://github.com/pandas-dev/pandas
 django-filter==25.1  # https://github.com/carltongibson/django-filter
-djangorestframework-simplejwt==5.4.0  # https://github.com/jazzband/djangorestframework-simplejwt
+djangorestframework-simplejwt==5.5.0  # https://github.com/jazzband/djangorestframework-simplejwt
 djoser==2.3.1  # https://github.com/sunscrapers/djoser
