@@ -1,5 +1,5 @@
 # deploy/production/compose/aws/Dockerfile
-FROM docker.io/amazon/aws-cli:2.24.0
+FROM docker.io/amazon/aws-cli:2.24.19
 
 # Clear entrypoint from the base image, otherwise it's always calling the aws CLI
 ENTRYPOINT []
