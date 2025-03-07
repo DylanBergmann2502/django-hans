@@ -1,3 +1,4 @@
+# .github/dependabot.yml
 # Config for Dependabot updates. See Documentation here:
 # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
@@ -7,13 +8,13 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   # Enable version updates for Docker - Django containers
   - package-ecosystem: 'docker'
     directory: '/deploy/local/compose/django/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
     ignore:
       - dependency-name: '*'
         update-types:
@@ -23,7 +24,7 @@ updates:
   - package-ecosystem: 'docker'
     directory: '/deploy/production/compose/django/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
     ignore:
       - dependency-name: '*'
         update-types:
@@ -34,47 +35,47 @@ updates:
   - package-ecosystem: 'docker'
     directory: '/deploy/local/compose/vue/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   # Enable version updates for Docker - Other containers
   - package-ecosystem: 'docker'
     directory: '/deploy/local/compose/postgres/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/deploy/local/compose/minio/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/deploy/local/compose/minio/mc/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/deploy/production/compose/postgres/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/deploy/production/compose/nginx/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/deploy/production/compose/aws/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   # Enable version updates for Python/Pip
   - package-ecosystem: 'pip'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
 
   # Enable version updates for npm packages in Vue app
   - package-ecosystem: 'npm'
     directory: '/web'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
