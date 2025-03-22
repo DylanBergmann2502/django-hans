@@ -95,7 +95,7 @@ case "$1" in
         # Usage: ./bin/run.sh vue <command>
         check_docker
         shift # Remove 'vue' from arguments
-        docker compose -f $COMPOSE_FILE exec vue "$@"
+        docker compose -f $COMPOSE_FILE run --rm vue "$@"
         ;;
 
     "django")

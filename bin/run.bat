@@ -81,7 +81,7 @@ docker compose -f %COMPOSE_FILE% restart
 goto :eof
 
 :vue
-docker compose -f %COMPOSE_FILE% exec vue %2 %3 %4 %5 %6 %7 %8 %9
+docker compose -f %COMPOSE_FILE% run --rm vue %2 %3 %4 %5 %6 %7 %8 %9
 goto :eof
 
 :django
