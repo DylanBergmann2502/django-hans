@@ -128,6 +128,12 @@ case "$1" in
         docker compose -f $COMPOSE_FILE run --rm django pip list --format=freeze > requirements.lock
         ;;
 
+    "test")
+        check_docker
+        shift  # Remove 'test' from arguments
+        docker compose -f $COMPOSE_FILE run --rm django pytest "$@"
+        ;;
+
     *)
         echo "Django Hans Management Commands"
         echo "=================================="
@@ -156,5 +162,6 @@ case "$1" in
         echo "  script <name>      - Run a Django script"
         echo "  format             - Format Python code with ruff"
         echo "  freeze             - Update requirements.lock"
+        echo "  test [options]     - Run Django tests"
         ;;
 esac

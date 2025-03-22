@@ -104,6 +104,10 @@ goto :eof
 docker compose -f %COMPOSE_FILE% run --rm django pip list --format=freeze > requirements.lock
 goto :eof
 
+:test
+docker compose -f %COMPOSE_FILE% run --rm django pytest %2 %3 %4 %5 %6 %7 %8 %9
+goto :eof
+
 :help
 echo Django Hans Management Commands
 echo ==================================
@@ -132,4 +136,5 @@ echo   shell                - Open Django shell_plus
 echo   script ^<name^>      - Run a Django script
 echo   format               - Format Python code with ruff
 echo   freeze               - Update requirements.lock
+echo   test ^<options^>     - Run Django tests
 goto :eof
