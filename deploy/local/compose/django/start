@@ -4,6 +4,9 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+# Running migration before starting up the server
+# is only added as a utility for development.
+python /app/manage.py migrate
 
-python manage.py migrate
-exec python manage.py runserver_plus 0.0.0.0:8000
+# Start the server
+exec python /app/manage.py runserver_plus 0.0.0.0:8000

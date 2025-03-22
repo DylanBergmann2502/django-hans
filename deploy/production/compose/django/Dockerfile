@@ -64,6 +64,11 @@ COPY --chown=django:django ./deploy/production/compose/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
+COPY --chown=django:django ./deploy/production/compose/django/migrate /migrate
+RUN sed -i 's/\r$//g' /migrate
+RUN chmod +x /migrate
+
+
 COPY --chown=django:django ./deploy/production/compose/django/celery/worker/start /start-celery-worker
 RUN sed -i 's/\r$//g' /start-celery-worker
 RUN chmod +x /start-celery-worker

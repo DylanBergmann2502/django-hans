@@ -69,59 +69,62 @@ if ! docker compose -f $WEB_FILE down -v; then
     exit 1
 fi
 
-# Run setup services first
-print_status $YELLOW "Running setup services..."
-if ! docker compose -f $SETUP_FILE up --build -d --remove-orphans; then
+# Run setup services in detached mode
+print_status $YELLOW "Starting setup services..."
+if ! docker compose -f $SETUP_FILE up --build -d; then
     print_status $RED "Failed to start setup services"
     exit 1
 fi
 
-# Wait for setup services to complete their tasks
+# Wait for the setup-complete service to finish
 print_status $YELLOW "Waiting for setup services to complete..."
+max_attempts=30
+attempt=0
 
-# Function to check if a container exists and is running
-container_running() {
-    docker ps --format '{{.Names}}' | grep -q "^$1$"
-}
+while [ $attempt -lt $max_attempts ]; do
+    # Check if setup-complete service has finished successfully
+    if docker inspect --format='{{.State.Status}}' django_hans_local_setup_complete 2>/dev/null | grep -q "exited"; then
+        # Check exit code
+        exit_code=$(docker inspect --format='{{.State.ExitCode}}' django_hans_local_setup_complete)
+        if [ "$exit_code" = "0" ]; then
+            print_status $GREEN "Setup completed successfully!"
+            break
+        else
+            print_status $RED "Setup failed with exit code $exit_code"
+            docker compose -f $SETUP_FILE logs
+            exit 1
+        fi
+    fi
 
-# Wait for containers to finish their tasks
-while container_running "django_hans_local_create_minio_buckets"; do
-    sleep 2
+    # Check if any services failed
+    if docker compose -f $SETUP_FILE ps | grep -qE "Exit ([1-9]|[1-9][0-9]+)"; then
+        print_status $RED "One or more setup services failed:"
+        docker compose -f $SETUP_FILE ps
+        docker compose -f $SETUP_FILE logs
+        exit 1
+    fi
+
+    print_status $YELLOW "Waiting for setup to complete (attempt $((attempt+1))/$max_attempts)..."
+    attempt=$((attempt+1))
+    sleep 5
 done
 
-# Stop setup services
-print_status $YELLOW "Setup services complete. Clean them up..."
+if [ $attempt -eq $max_attempts ]; then
+    print_status $RED "Setup timed out after $max_attempts attempts."
+    print_status $RED "Current status of services:"
+    docker compose -f $SETUP_FILE ps
+    print_status $RED "Logs:"
+    docker compose -f $SETUP_FILE logs
+    exit 1
+fi
+
+# Clean up setup services but keep volumes
+print_status $YELLOW "Cleaning up setup services..."
 docker compose -f $SETUP_FILE down --remove-orphans
 
 # Start main application services
-print_status $YELLOW "Building project containers..."
-if ! docker compose -f $WEB_FILE build; then
-    print_status $RED "Failed to build containers"
-    exit 1
-fi
-
-print_status $YELLOW "Starting PostgreSQL container..."
-if ! docker compose -f $WEB_FILE up -d postgres; then
-    print_status $RED "Failed to start PostgreSQL"
-    exit 1
-fi
-
-# Wait for PostgreSQL to be ready
-print_status $YELLOW "Waiting for PostgreSQL to be ready..."
-sleep 10
-
-print_status $YELLOW "Running migrations..."
-if ! docker compose -f $WEB_FILE run --rm django python manage.py migrate; then
-    print_status $RED "Failed to run migrations"
-    docker compose -f $WEB_FILE down
-    exit 1
-fi
-
-print_status $YELLOW "Stopping PostgreSQL service..."
-docker compose -f $WEB_FILE stop postgres
-
-print_status $YELLOW "Starting all main application services..."
-if ! docker compose -f $WEB_FILE up -d --remove-orphans; then
+print_status $YELLOW "Building and starting all main application services..."
+if ! docker compose -f $WEB_FILE up -d --build --remove-orphans; then
     print_status $RED "Failed to start services"
     exit 1
 fi

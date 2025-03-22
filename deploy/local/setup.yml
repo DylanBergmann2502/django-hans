@@ -5,21 +5,9 @@ networks:
 
 volumes:
   django_hans_local_minio_data: {}
+  django_hans_local_postgres_data: {}
 
 services:
-  create-minio-buckets:
-    build:
-      context: ../..
-      dockerfile: ./deploy/local/compose/minio/mc/Dockerfile
-    image: django_hans_local_create_minio_buckets
-    container_name: django_hans_local_create_minio_buckets
-    networks:
-      - django_hans_local_setup
-    depends_on:
-      - minio
-    env_file:
-      - ./.envs/.minio
-
   minio:
     build:
       context: ../..
@@ -33,5 +21,74 @@ services:
     env_file:
       - ./.envs/.minio
     ports:
-    - "9000:9000"  # API
-    - "9001:9001"  # Console
+      - "9000:9000"  # API
+      - "9001:9001"  # Console
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 2s
+
+  create-minio-buckets:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/minio/mc/Dockerfile
+    image: django_hans_local_create_minio_buckets
+    container_name: django_hans_local_create_minio_buckets
+    networks:
+      - django_hans_local_setup
+    depends_on:
+      minio:
+        condition: service_healthy
+    env_file:
+      - ./.envs/.minio
+
+  postgres:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/postgres/Dockerfile
+    image: django_hans_local_postgres
+    container_name: django_hans_local_postgres
+    networks:
+      - django_hans_local_setup
+    volumes:
+      - django_hans_local_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  django-migrations:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/django/Dockerfile
+    image: django_hans_local_django
+    container_name: django_hans_local_django_migrations
+    networks:
+      - django_hans_local_setup
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../../:/app:z
+    env_file:
+      - ./.envs/.django
+    command: /migrate
+
+  # This is our completion indicator service
+  setup-complete:
+    image: alpine:3.19
+    container_name: django_hans_local_setup_complete
+    networks:
+      - django_hans_local_setup
+    depends_on:
+      create-minio-buckets:
+        condition: service_completed_successfully
+      django-migrations:
+        condition: service_completed_successfully
+    # Simple command that exits quickly with success
+    command: sh -c "echo 'Setup completed successfully' && exit 0"

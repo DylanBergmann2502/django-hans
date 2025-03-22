@@ -44,65 +44,74 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
-:: Run setup services first
-echo [INFO] Running setup services...
-docker compose -f %SETUP_FILE% up --build -d --remove-orphans
+:: Run setup services in detached mode
+echo [INFO] Starting setup services...
+docker compose -f %SETUP_FILE% up --build -d
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Failed to start setup services
     exit /b 1
 )
 
-:: Wait for setup services to complete their tasks
+:: Wait for the setup-complete service to finish
 echo [INFO] Waiting for setup services to complete...
+set max_attempts=30
+set attempt=0
 
-:CHECK_CONTAINERS
-docker ps --format "{{.Names}}" > temp_containers.txt
-findstr /B /L /C:"django_hans_local_create_minio_buckets" temp_containers.txt > nul
-set MINIO_BUCKETS_RUNNING=%ERRORLEVEL%
-del temp_containers.txt
-
-if %MINIO_BUCKETS_RUNNING% neq 0 (
-    goto SETUP_COMPLETE
+:WAIT_LOOP
+if %attempt% geq %max_attempts% (
+    echo [ERROR] Setup timed out after %max_attempts% attempts.
+    echo [ERROR] Current status of services:
+    docker compose -f %SETUP_FILE% ps
+    echo [ERROR] Logs:
+    docker compose -f %SETUP_FILE% logs
+    exit /b 1
 )
-timeout /t 2 /nobreak > nul
-goto CHECK_CONTAINERS
+
+:: Check if setup-complete service has finished successfully
+docker inspect --format="{{.State.Status}}" django_hans_local_setup_complete > temp_status.txt 2>nul
+set /p container_status=<temp_status.txt
+del temp_status.txt
+
+if "%container_status%"=="exited" (
+    docker inspect --format="{{.State.ExitCode}}" django_hans_local_setup_complete > temp_exit.txt 2>nul
+    set /p exit_code=<temp_exit.txt
+    del temp_exit.txt
+
+    if "%exit_code%"=="0" (
+        echo [INFO] Setup completed successfully!
+        goto SETUP_COMPLETE
+    ) else (
+        echo [ERROR] Setup failed with exit code %exit_code%
+        docker compose -f %SETUP_FILE% logs
+        exit /b 1
+    )
+)
+
+:: Check if any services failed
+docker compose -f %SETUP_FILE% ps > temp_ps.txt
+findstr /R "Exit [1-9]" temp_ps.txt > nul
+if %ERRORLEVEL% equ 0 (
+    echo [ERROR] One or more setup services failed:
+    type temp_ps.txt
+    del temp_ps.txt
+    docker compose -f %SETUP_FILE% logs
+    exit /b 1
+)
+del temp_ps.txt
+
+set /a attempt+=1
+echo [INFO] Waiting for setup to complete (attempt %attempt%/%max_attempts%)...
+timeout /t 5 /nobreak > nul
+goto WAIT_LOOP
 
 :SETUP_COMPLETE
-:: Stop setup services
-echo [INFO] Setup services complete. Clean them up...
+:: Clean up setup services but keep volumes
+echo [INFO] Cleaning up setup services...
 docker compose -f %SETUP_FILE% down --remove-orphans
 
-echo [INFO] Building project containers...
-docker compose -f %WEB_FILE% build
-if %ERRORLEVEL% neq 0 (
-    echo [ERROR] Failed to build containers
-    exit /b 1
-)
-
-echo [INFO] Starting PostgreSQL container...
-docker compose -f %WEB_FILE% up -d postgres
-if %ERRORLEVEL% neq 0 (
-    echo [ERROR] Failed to start PostgreSQL
-    exit /b 1
-)
-
-:: Wait for PostgreSQL to be ready
-echo [INFO] Waiting for PostgreSQL to be ready...
-timeout /t 10 /nobreak > nul
-
-echo [INFO] Running migrations...
-docker compose -f %WEB_FILE% run --rm django python manage.py migrate
-if %ERRORLEVEL% neq 0 (
-    echo [ERROR] Failed to run migrations
-    docker compose -f %WEB_FILE% down
-    exit /b 1
-)
-
-echo [INFO] Stopping PostgreSQL service...
-docker compose -f %WEB_FILE% stop postgres
-
-echo [INFO] Starting all main application services...
-docker compose -f %WEB_FILE% up -d --remove-orphans
+:: Start main application services
+echo [INFO] Building and starting all main application services...
+docker compose -f %WEB_FILE% up -d --build --remove-orphans
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Failed to start services
     exit /b 1

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+# Run migrations only, without starting the server
+exec python /app/manage.py migrate
