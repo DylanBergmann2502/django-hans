@@ -39,10 +39,10 @@ RUN addgroup --system django \
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg dependencies
   libpq-dev \
+  wait-for-it \
+  postgresql-client \
   # Translations dependencies
   gettext \
-  # entrypoint
-  wait-for-it \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
