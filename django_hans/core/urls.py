@@ -1,7 +1,7 @@
 # django_hans/core/urls.py
 from django.urls import path
-from .views import health_check_view
 
+from .views import health_check_view
 
 app_name = "core"
 

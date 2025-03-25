@@ -1,15 +1,17 @@
 # django_hans/core/views.py
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+import logging
+
+from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
-from redis import Redis
-from django.conf import settings
-import logging
 from drf_spectacular.utils import extend_schema
-from .serializers import HealthCheckSerializer
+from redis import Redis
+from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
+from .serializers import HealthCheckSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -33,16 +35,16 @@ def health_check_view(request):
     except OperationalError:
         health_status["status"] = "error"
         health_status["services"]["database"] = "error"
-        logger.error("Database health check failed")
+        logger.exception("Database health check failed")
 
     # Check Redis connection if REDIS_URL is configured
     try:
         redis_client = Redis.from_url(settings.REDIS_URL)
         redis_client.ping()
-    except Exception as e:
+    except (ConnectionError, TimeoutError):
         health_status["status"] = "error"
         health_status["services"]["redis"] = "error"
-        logger.error(f"Redis health check failed: {str(e)}")
+        logger.exception("Redis health check failed")
 
     status_code = 200 if health_status["status"] == "ok" else 503
     return Response(health_status, status=status_code)

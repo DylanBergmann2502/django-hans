@@ -2,8 +2,8 @@
 # ruff: noqa: ERA001, E501
 """Base settings to build other settings files upon."""
 
-from datetime import timedelta
 import ssl
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -353,7 +353,8 @@ if env.bool("USE_S3_STORAGE", default=False):
 
     # Other S3 settings
     AWS_S3_MAX_MEMORY_SIZE = env.int(
-        "DJANGO_AWS_S3_MAX_MEMORY_SIZE", default=100_000_000
+        "DJANGO_AWS_S3_MAX_MEMORY_SIZE",
+        default=100_000_000,
     )
     AWS_S3_REGION_NAME = env("DJANGO_AWS_S3_REGION_NAME", default=None)
     AWS_S3_CUSTOM_DOMAIN = env("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)

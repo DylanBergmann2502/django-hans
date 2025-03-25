@@ -91,4 +91,3 @@ RUN chown -R django:django ${APP_HOME}
 USER django
 
 ENTRYPOINT ["/entrypoint"]
-
