@@ -72,6 +72,9 @@ jobs:
       - name: Build the Vue container
         run: docker compose -f deploy/local/web.yml build vue
 
+      - name: Format frontend
+        run: docker compose -f deploy/local/web.yml run --rm vue npm run format
+
       - name: Lint frontend
         run: docker compose -f deploy/local/web.yml run --rm vue npm run lint
 
