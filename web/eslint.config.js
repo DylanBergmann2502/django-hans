@@ -1,3 +1,4 @@
+// eslint.config.js
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
