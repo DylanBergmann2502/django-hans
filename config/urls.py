@@ -12,14 +12,20 @@ from drf_spectacular.views import (
 urlpatterns = [
     # Django Admin
     path(settings.ADMIN_URL, admin.site.urls),
+
     # System urls
     path("", include("django_hans.core.urls")),
+
     # API base URL
-    # Hard code the v1, which can simplify the current code organization and can be refactored in the future
+    # Hard code the v1 version, which can simplify
+    # the current code organization
+    # and can be refactored in the future
     path("api/v1/", include("config.api_router")),
+
     # Authentication
     path("api/v1/auth/", include("djoser.urls")),
     path("api/v1/auth/", include("djoser.urls.jwt")),
+
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(

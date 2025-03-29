@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# ruff: noqa
+# ruff: noqa: F401, B904, TRY003, EM101, EXE001
 import os
 import sys
 from pathlib import Path
@@ -19,7 +19,7 @@ if __name__ == "__main__":
             raise ImportError(
                 "Couldn't import Django. Are you sure it's installed and "
                 "available on your PYTHONPATH environment variable? Did you "
-                "forget to activate a virtual environment?"
+                "forget to activate a virtual environment?",
             )
 
         raise
