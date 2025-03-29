@@ -76,13 +76,13 @@ if ! docker compose -f $SETUP_FILE up --build -d; then
     exit 1
 fi
 
-# Wait for the setup-complete service to finish
+# Wait for the setup_complete service to finish
 print_status $YELLOW "Waiting for setup services to complete..."
 max_attempts=30
 attempt=0
 
 while [ $attempt -lt $max_attempts ]; do
-    # Check if setup-complete service has finished successfully
+    # Check if setup_complete service has finished successfully
     if docker inspect --format='{{.State.Status}}' django_hans_local_setup_complete 2>/dev/null | grep -q "exited"; then
         # Check exit code
         exit_code=$(docker inspect --format='{{.State.ExitCode}}' django_hans_local_setup_complete)

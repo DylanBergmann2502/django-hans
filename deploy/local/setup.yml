@@ -30,7 +30,7 @@ services:
       retries: 5
       start_period: 2s
 
-  create-minio-buckets:
+  create_minio_buckets:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/minio/mc/Dockerfile
@@ -62,7 +62,7 @@ services:
       timeout: 5s
       retries: 5
 
-  django-migrations:
+  django_migrations:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/django/Dockerfile
@@ -80,15 +80,15 @@ services:
     command: /migrate
 
   # This is our completion indicator service
-  setup-complete:
+  setup_complete:
     image: alpine:3.19
     container_name: django_hans_local_setup_complete
     networks:
       - django_hans_local_setup
     depends_on:
-      create-minio-buckets:
+      create_minio_buckets:
         condition: service_completed_successfully
-      django-migrations:
+      django_migrations:
         condition: service_completed_successfully
     # Simple command that exits quickly with success
     command: sh -c "echo 'Setup completed successfully' && exit 0"

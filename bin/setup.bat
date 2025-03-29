@@ -52,7 +52,7 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
-:: Wait for the setup-complete service to finish
+:: Wait for the setup_complete service to finish
 echo [INFO] Waiting for setup services to complete...
 set max_attempts=30
 set attempt=0
@@ -67,7 +67,7 @@ if %attempt% geq %max_attempts% (
     exit /b 1
 )
 
-:: Check if setup-complete service has finished successfully
+:: Check if setup_complete service has finished successfully
 docker inspect --format="{{.State.Status}}" django_hans_local_setup_complete > temp_status.txt 2>nul
 set /p container_status=<temp_status.txt
 del temp_status.txt
