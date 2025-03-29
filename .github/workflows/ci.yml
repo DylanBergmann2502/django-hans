@@ -19,7 +19,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  linter:
+  # Backend code quality checks
+  backend-code-quality:
+    name: Backend Code Quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
@@ -30,13 +32,13 @@ jobs:
         with:
           python-version-file: '.python-version'
 
-      # Consider using pre-commit.ci for open source project
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
 
-  pytest:
+  # Backend tests
+  backend-tests:
+    name: Backend Tests
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
@@ -62,9 +64,10 @@ jobs:
       - name: Tear down the Stack
         run: docker compose -f deploy/local/web.yml down -v
 
-  frontend:
+  # Frontend code quality checks
+  frontend-code-quality:
+    name: Frontend Code Quality
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
@@ -78,8 +81,46 @@ jobs:
       - name: Lint frontend
         run: docker compose -f deploy/local/web.yml run --rm vue npm run lint
 
-      - name: Build frontend
-        run: docker compose -f deploy/local/web.yml run --rm vue npm run build
+      - name: Tear down Vue container
+        run: docker compose -f deploy/local/web.yml rm -f vue
+
+  # Frontend tests
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Build the Vue container
+        run: docker compose -f deploy/local/web.yml build vue
+
+      - name: Run Vue unit tests
+        run: docker compose -f deploy/local/web.yml run --rm vue npm run test:unit
 
       - name: Tear down Vue container
         run: docker compose -f deploy/local/web.yml rm -f vue
+
+  # Build check
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    needs: [backend-code-quality, backend-tests, frontend-code-quality, frontend-tests]
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Build Django container
+        run: docker compose -f deploy/local/web.yml build django
+
+      - name: Build Vue frontend
+        run: docker compose -f deploy/local/web.yml build vue
+
+      - name: Build frontend production artifacts
+        run: docker compose -f deploy/local/web.yml run --rm vue npm run build
+
+      - name: Check if build artifacts were created
+        run: docker compose -f deploy/local/web.yml run --rm vue ls -la dist/
+
+      - name: Tear down containers
+        run: docker compose -f deploy/local/web.yml down
