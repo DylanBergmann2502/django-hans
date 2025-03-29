@@ -24,17 +24,31 @@ if "%1"=="check" goto check
 if "%1"=="build" goto build
 if "%1"=="up" goto up
 if "%1"=="start" goto start
-if "%1"=="start-lite" goto start-lite
+if "%1"=="start:lite" goto start-lite
 if "%1"=="stop" goto stop
 if "%1"=="down" goto down
 if "%1"=="logs" goto logs
 if "%1"=="ps" goto ps
 if "%1"=="restart" goto restart
+
+:: Vue commands
 if "%1"=="vue" goto vue
+if "%1"=="vue:lint" goto vue-lint
+if "%1"=="vue:format" goto vue-format
+if "%1"=="vue:test" goto vue-test
+if "%1"=="vue:install" goto vue-install
+if "%1"=="vue:uninstall" goto vue-uninstall
+if "%1"=="vue:ncu" goto vue-ncu
+if "%1"=="vue:update" goto vue-update
+
+:: Django commands
 if "%1"=="django" goto django
 if "%1"=="shell" goto shell
 if "%1"=="script" goto script
 if "%1"=="format" goto format
+if "%1"=="lint" goto lint
+if "%1"=="mypy" goto mypy
+if "%1"=="pytest" goto pytest
 if "%1"=="freeze" goto freeze
 goto help
 
@@ -49,11 +63,13 @@ docker compose -f %COMPOSE_FILE% build
 goto :eof
 
 :up
-docker compose -f %COMPOSE_FILE% up %2 %3 %4 %5 %6 %7 %8 %9
+shift
+docker compose -f %COMPOSE_FILE% up %*
 goto :eof
 
 :start
-docker compose -f %COMPOSE_FILE% up --build --remove-orphans %2 %3 %4 %5 %6 %7 %8 %9
+shift
+docker compose -f %COMPOSE_FILE% up --build --remove-orphans %*
 goto :eof
 
 :start-lite
@@ -61,11 +77,13 @@ docker compose -f %COMPOSE_FILE% up --build --remove-orphans postgres django vue
 goto :eof
 
 :stop
-docker compose -f %COMPOSE_FILE% stop %2 %3 %4 %5 %6 %7 %8 %9
+shift
+docker compose -f %COMPOSE_FILE% stop %*
 goto :eof
 
 :down
-docker compose -f %COMPOSE_FILE% down %2 %3 %4 %5 %6 %7 %8 %9
+shift
+docker compose -f %COMPOSE_FILE% down %*
 goto :eof
 
 :logs
@@ -80,12 +98,48 @@ goto :eof
 docker compose -f %COMPOSE_FILE% restart
 goto :eof
 
+:: Vue command handlers
 :vue
-docker compose -f %COMPOSE_FILE% run --rm vue %2 %3 %4 %5 %6 %7 %8 %9
+shift
+docker compose -f %COMPOSE_FILE% run --rm vue %*
 goto :eof
 
+:vue-lint
+docker compose -f %COMPOSE_FILE% run --rm vue npm run lint
+goto :eof
+
+:vue-format
+docker compose -f %COMPOSE_FILE% run --rm vue npm run format
+goto :eof
+
+:vue-test
+shift
+docker compose -f %COMPOSE_FILE% run --rm vue npm run test:unit %*
+goto :eof
+
+:vue-install
+shift
+docker compose -f %COMPOSE_FILE% run --rm vue npm install %*
+goto :eof
+
+:vue-uninstall
+shift
+docker compose -f %COMPOSE_FILE% run --rm vue npm uninstall %*
+goto :eof
+
+:vue-ncu
+shift
+docker compose -f %COMPOSE_FILE% run --rm vue npx npm-check-updates %*
+goto :eof
+
+:vue-update
+docker compose -f %COMPOSE_FILE% run --rm vue npm update
+goto :eof
+
+:: Django command handlers
 :django
-docker compose -f %COMPOSE_FILE% run --rm django python manage.py %2 %3 %4 %5 %6 %7 %8 %9
+shift
+docker compose -f %COMPOSE_FILE% run --rm django python manage.py %*
 goto :eof
 
 :shell
@@ -93,19 +147,47 @@ docker compose -f %COMPOSE_FILE% run --rm django python manage.py shell_plus
 goto :eof
 
 :script
-docker compose -f %COMPOSE_FILE% run --rm django python manage.py runscript %2
+shift
+docker compose -f %COMPOSE_FILE% run --rm django python manage.py runscript %1
 goto :eof
 
 :format
-docker compose -f %COMPOSE_FILE% run --rm django ruff format .
+shift
+:: If no arguments provided, use "." as default
+if "%~1"=="" (
+    docker compose -f %COMPOSE_FILE% run --rm django ruff format .
+) else (
+    docker compose -f %COMPOSE_FILE% run --rm django ruff format %*
+)
+goto :eof
+
+:lint
+shift
+:: If no arguments provided, use "." as default
+if "%~1"=="" (
+    docker compose -f %COMPOSE_FILE% run --rm django ruff check .
+) else (
+    docker compose -f %COMPOSE_FILE% run --rm django ruff check %*
+)
+goto :eof
+
+:mypy
+shift
+:: If no arguments provided, use "." as default
+if "%~1"=="" (
+    docker compose -f %COMPOSE_FILE% run --rm django mypy .
+) else (
+    docker compose -f %COMPOSE_FILE% run --rm django mypy %*
+)
+goto :eof
+
+:pytest
+shift
+docker compose -f %COMPOSE_FILE% run --rm django pytest %*
 goto :eof
 
 :freeze
 docker compose -f %COMPOSE_FILE% run --rm django pip list --format=freeze > requirements.lock
-goto :eof
-
-:test
-docker compose -f %COMPOSE_FILE% run --rm django pytest %2 %3 %4 %5 %6 %7 %8 %9
 goto :eof
 
 :help
@@ -116,25 +198,34 @@ echo   .\bin\run.bat ^<command^>                        # Uses local environment
 echo   set ENV=production ^& .\bin\run.bat ^<command^>  # Uses production environment
 echo.
 echo Basic Commands:
-echo   check              - Check Docker installations
-echo   build              - Build all containers
-echo   up [options]       - Start containers with optional arguments
-echo   start [options]    - Build and start containers with orphan removal
-echo   start-lite         - Build and start only `django`, `postgres`, and `vue`
-echo   stop [options]     - Stop containers with optional arguments
-echo   down [options]     - Stop and remove containers with optional arguments
-echo   logs               - View container logs
-echo   ps                 - List running containers
-echo   restart            - Restart all containers
+echo   check               - Check Docker installations
+echo   build               - Build all containers
+echo   up [options]        - Start containers with optional arguments
+echo   start [options]     - Build and start containers with orphan removal
+echo   start:lite          - Build and start only `django`, `postgres`, and `vue`
+echo   stop [options]      - Stop containers with optional arguments
+echo   down [options]      - Stop and remove containers with optional arguments
+echo   logs                - View container logs
+echo   ps                  - List running containers
+echo   restart             - Restart all containers
 echo.
 echo Vue Commands:
-echo   vue ^<command^>   - Run any Vue/NPM/Vite command
+echo   vue ^<command^>         - Run any Vue/NPM/Vite command
+echo   vue:lint                - Lint Vue code
+echo   vue:format              - Format Vue code with Prettier
+echo   vue:test [options]      - Run Vue unit tests
+echo   vue:install ^<pkg^>     - Install npm package(s)
+echo   vue:uninstall ^<pkg^>   - Uninstall npm package(s)
+echo   vue:ncu [options]       - Check for npm package updates
+echo   vue:update              - Update npm dependencies
 echo.
 echo Django Commands:
-echo   django ^<command^>   - Run any Django management command
-echo   shell                - Open Django shell_plus
-echo   script ^<name^>      - Run a Django script
-echo   format               - Format Python code with ruff
-echo   freeze               - Update requirements.lock
-echo   test ^<options^>     - Run Django tests
+echo   django ^<command^>          - Run any Django management command
+echo   shell                       - Open Django shell_plus
+echo   script ^<name^>             - Run a Django script
+echo   format [paths]              - Format Django code with ruff (defaults to entire codebase)
+echo   lint [paths]                - Lint Django code with ruff (defaults to entire codebase)
+echo   mypy [paths]                - Run mypy static type checking (defaults to entire codebase)
+echo   pytest [options]            - Run Django tests
+echo   freeze                      - Update requirements.lock
 goto :eof

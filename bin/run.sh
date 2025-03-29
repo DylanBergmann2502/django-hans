@@ -55,7 +55,7 @@ case "$1" in
         docker compose -f $COMPOSE_FILE up --build --remove-orphans "$@"
         ;;
 
-    "start-lite")
+    "start:lite")
         check_docker
         shift  # Remove 'up' from arguments
         docker compose -f $COMPOSE_FILE up --build --remove-orphans postgres django vue
@@ -98,6 +98,52 @@ case "$1" in
         docker compose -f $COMPOSE_FILE run --rm vue "$@"
         ;;
 
+    "vue:lint")
+        # Lint Vue code
+        check_docker
+        docker compose -f $COMPOSE_FILE run --rm vue npm run lint
+        ;;
+
+    "vue:format")
+        # Format Vue code
+        check_docker
+        docker compose -f $COMPOSE_FILE run --rm vue npm run format
+        ;;
+
+    "vue:test")
+        # Run Vue unit tests
+        check_docker
+        shift  # Remove 'vue:test' from arguments
+        docker compose -f $COMPOSE_FILE run --rm vue npm run test:unit "$@"
+        ;;
+
+    "vue:install")
+        # Install npm package
+        check_docker
+        shift  # Remove 'vue:install' from arguments
+        docker compose -f $COMPOSE_FILE run --rm vue npm install "$@"
+        ;;
+
+    "vue:uninstall")
+        # Uninstall npm package
+        check_docker
+        shift  # Remove 'vue:uninstall' from arguments
+        docker compose -f $COMPOSE_FILE run --rm vue npm uninstall "$@"
+        ;;
+
+    "vue:ncu")
+        # Check for npm package updates
+        check_docker
+        shift  # Remove 'vue:ncu' from arguments
+        docker compose -f $COMPOSE_FILE run --rm vue npx npm-check-updates "$@"
+        ;;
+
+    "vue:update")
+        # Update npm dependencies
+        check_docker
+        docker compose -f $COMPOSE_FILE run --rm vue npm update
+        ;;
+
     "django")
         # Run any Django management command
         # Usage: ./bin/run.sh django <command>
@@ -113,25 +159,39 @@ case "$1" in
 
     "script")
         # Run a Django script
-        # Usage: ./bin/run.sh script <script_name>
         check_docker
         docker compose -f $COMPOSE_FILE run --rm django python manage.py runscript "$2"
         ;;
 
     "format")
+        # Format Django code with ruff
         check_docker
-        docker compose -f $COMPOSE_FILE run --rm django ruff format .
+        shift  # Remove 'format' from arguments
+        docker compose -f $COMPOSE_FILE run --rm django ruff format "${@:-.}"
+        ;;
+
+    "lint")
+        # Lint Django code with ruff
+        check_docker
+        shift  # Remove 'lint' from arguments
+        docker compose -f $COMPOSE_FILE run --rm django ruff check "${@:-.}"
+        ;;
+
+    "mypy")
+        check_docker
+        shift  # Remove 'mypy' from arguments
+        docker compose -f $COMPOSE_FILE run --rm django mypy "${@:-.}"
+        ;;
+
+    "pytest")
+        check_docker
+        shift  # Remove 'pytest' from arguments
+        docker compose -f $COMPOSE_FILE run --rm django pytest "$@"
         ;;
 
     "freeze")
         check_docker
         docker compose -f $COMPOSE_FILE run --rm django pip list --format=freeze > requirements.lock
-        ;;
-
-    "test")
-        check_docker
-        shift  # Remove 'test' from arguments
-        docker compose -f $COMPOSE_FILE run --rm django pytest "$@"
         ;;
 
     *)
@@ -142,26 +202,35 @@ case "$1" in
         echo "  ENV=production ./bin/run.sh <command> # Uses production environment"
         echo ""
         echo "Basic Commands:"
-        echo "  check              - Check Docker installations"
-        echo "  build              - Build all containers"
-        echo "  up [options]       - Start containers in attached mode"
-        echo "  start [options]    - Build and start containers with orphan removal"
-        echo "  start-lite         - Build and start only \`django\`, \`postgres\`, and \`vue\`"
-        echo "  stop [options]     - Stop containers"
-        echo "  down [options]     - Stop and remove containers"
-        echo "  logs               - View container logs"
-        echo "  ps                 - List running containers"
-        echo "  restart            - Restart all containers"
+        echo "  check               - Check Docker installations"
+        echo "  build               - Build all containers"
+        echo "  up [options]        - Start containers in attached mode"
+        echo "  start [options]     - Build and start containers with orphan removal"
+        echo "  start:lite          - Build and start only \`django\`, \`postgres\`, and \`vue\`"
+        echo "  stop [options]      - Stop containers"
+        echo "  down [options]      - Stop and remove containers"
+        echo "  logs                - View container logs"
+        echo "  ps                  - List running containers"
+        echo "  restart             - Restart all containers"
         echo ""
         echo "Vue Commands:"
-        echo "  vue <command>    - Run any Vue/NPM/Vite command"
+        echo "  vue <command>           - Run any Vue/NPM/Vite command"
+        echo "  vue:lint                - Lint Vue code"
+        echo "  vue:format              - Format Vue code with Prettier"
+        echo "  vue:test [options]      - Run Vue unit tests"
+        echo "  vue:install <pkg>       - Install npm package(s)"
+        echo "  vue:uninstall <pkg>     - Uninstall npm package(s)"
+        echo "  vue:ncu [options]       - Check for npm package updates"
+        echo "  vue:update              - Update npm dependencies"
         echo ""
         echo "Django Commands:"
-        echo "  django <command>   - Run any Django management command"
-        echo "  shell              - Open Django shell_plus"
-        echo "  script <name>      - Run a Django script"
-        echo "  format             - Format Python code with ruff"
-        echo "  freeze             - Update requirements.lock"
-        echo "  test [options]     - Run Django tests"
+        echo "  django <command>     - Run any Django management command"
+        echo "  shell                - Open Django shell_plus"
+        echo "  script <name>        - Run a Django script"
+        echo "  format [paths]       - Format Django code with ruff (defaults to entire codebase)"
+        echo "  lint [paths]         - Lint Django code with ruff (defaults to entire codebase)"
+        echo "  mypy [paths]         - Run mypy static type checking (defaults to entire codebase)"
+        echo "  pytest [options]     - Run Django tests"
+        echo "  freeze               - Update requirements.lock"
         ;;
 esac
