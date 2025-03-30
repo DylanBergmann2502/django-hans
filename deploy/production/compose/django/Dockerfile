@@ -41,6 +41,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libpq-dev \
   wait-for-it \
   postgresql-client \
+  # health checks and pings
+  curl \
   # Translations dependencies
   gettext \
   # cleaning up unused files

@@ -77,6 +77,13 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_extensions",
     "djoser",
+    # Health check apps
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "health_check.storage",
+    "health_check.contrib.celery",
+    "health_check.contrib.redis",
 ]
 
 LOCAL_APPS = [

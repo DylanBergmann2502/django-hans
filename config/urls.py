@@ -13,8 +13,8 @@ urlpatterns = [
     # Django Admin
     path(settings.ADMIN_URL, admin.site.urls),
 
-    # System urls
-    path("", include("django_hans.core.urls")),
+    # Health Checks
+    path("health/", include("health_check.urls")),
 
     # API base URL
     # Hard code the v1 version, which can simplify
