@@ -39,6 +39,6 @@
     "unplugin-vue-components": "^28.4.1",
     "vite": "^6.2.3",
     "vite-plugin-vue-devtools": "^7.7.2",
-    "vitest": "^3.0.9"
+    "vitest": "^3.1.1"
   }
 }
