@@ -6,14 +6,14 @@ import { setActivePinia, createPinia } from 'pinia'
 // Mock the auth store
 vi.mock('@/stores/auth', () => ({
   useAuthStore: vi.fn(() => ({
-    isAuthenticated: false
-  }))
+    isAuthenticated: false,
+  })),
 }))
 
 // Mock components
 const mockComponent = (name = 'Default') => ({
   name,
-  template: `<div>${name}</div>`
+  template: `<div>${name}</div>`,
 })
 
 // Import the auth store
@@ -54,20 +54,20 @@ describe('Router Guards', () => {
             component: mockComponent('Profile'),
             meta: { authRequired: true },
           },
-        ]
+        ],
       },
       {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
         component: mockComponent('NotFound'),
         meta: { authRequired: undefined },
-      }
+      },
     ]
 
     // Create router
     router = createRouter({
       history: createMemoryHistory(),
-      routes
+      routes,
     })
 
     // Add guard

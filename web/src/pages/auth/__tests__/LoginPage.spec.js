@@ -44,10 +44,10 @@ vi.mock('../LoginPage.vue', () => ({
         loading,
         handleLogin,
         authStore,
-        router
+        router,
       }
-    }
-  }
+    },
+  },
 }))
 
 // Create a mock for the useAuthStore function
@@ -57,23 +57,23 @@ vi.mock('@/stores/auth', () => ({
     user: null,
     loading: false,
     error: null,
-    isAuthenticated: false
-  }))
+    isAuthenticated: false,
+  })),
 }))
 
 // Create a mock for the router
 vi.mock('vue-router', () => ({
   useRouter: vi.fn(() => ({
     push: vi.fn(),
-    currentRoute: { value: { name: 'login' } }
-  }))
+    currentRoute: { value: { name: 'login' } },
+  })),
 }))
 
 // Mock PrimeVue toast
 vi.mock('primevue/usetoast', () => ({
   useToast: () => ({
-    add: vi.fn()
-  })
+    add: vi.fn(),
+  }),
 }))
 
 describe('LoginPage', () => {
@@ -95,9 +95,9 @@ describe('LoginPage', () => {
           InputText: true,
           Password: true,
           Button: true,
-          'router-link': true
-        }
-      }
+          'router-link': true,
+        },
+      },
     })
   })
 
@@ -137,9 +137,12 @@ describe('LoginPage', () => {
     vi.useFakeTimers()
 
     // Make login take some time
-    wrapper.vm.authStore.login = vi.fn().mockImplementation(() => new Promise(resolve => {
-      setTimeout(resolve, 10)
-    }))
+    wrapper.vm.authStore.login = vi.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(resolve, 10)
+        }),
+    )
 
     // Set form values
     await wrapper.find('input[type="email"]').setValue('test@example.com')

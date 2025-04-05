@@ -7,8 +7,8 @@ vi.mock('../tokenService', () => ({
     getToken: vi.fn(),
     getRefreshToken: vi.fn(),
     saveToken: vi.fn(),
-    removeToken: vi.fn()
-  }
+    removeToken: vi.fn(),
+  },
 }))
 
 // Import the tokenService directly
@@ -28,7 +28,11 @@ describe('Axios Service', () => {
   const responseErrorInterceptor = async (error) => {
     const originalRequest = error.config || {}
 
-    if (error.response?.status === 401 && !originalRequest._retry && tokenService.getRefreshToken()) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      tokenService.getRefreshToken()
+    ) {
       originalRequest._retry = true
 
       try {
@@ -87,11 +91,11 @@ describe('Axios Service', () => {
     // Create error object
     const originalRequest = {
       headers: {},
-      _retry: false
+      _retry: false,
     }
     const error = {
       config: originalRequest,
-      response: { status: 401 }
+      response: { status: 401 },
     }
 
     // Call the error interceptor directly
@@ -120,21 +124,25 @@ describe('Axios Service', () => {
     // Mock location.href setter
     Object.defineProperty(window, 'location', {
       value: { href: originalHref },
-      writable: true
+      writable: true,
     })
 
     // Create error object
     const originalRequest = { headers: {}, _retry: false }
     const error = {
       config: originalRequest,
-      response: { status: 401 }
+      response: { status: 401 },
     }
 
     // Create the simplified responseErrorInterceptor for this specific test
     const testInterceptor = async (error) => {
       const originalRequest = error.config || {}
 
-      if (error.response?.status === 401 && !originalRequest._retry && tokenService.getRefreshToken()) {
+      if (
+        error.response?.status === 401 &&
+        !originalRequest._retry &&
+        tokenService.getRefreshToken()
+      ) {
         originalRequest._retry = true
 
         // Always throw an error in this test
@@ -150,7 +158,7 @@ describe('Axios Service', () => {
     try {
       await testInterceptor(error)
       // If we reach here, fail the test
-      expect(true).toBe(false, "Should have thrown an error")
+      expect(true).toBe(false, 'Should have thrown an error')
     } catch (e) {
       // Verify the error message - now we're not expecting a specific error instance
       expect(e.message).toBe('Refresh failed')

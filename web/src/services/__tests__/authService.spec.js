@@ -9,7 +9,7 @@ vi.mock('@/services/axios', () => ({
   default: {
     post: vi.fn(),
     get: vi.fn(),
-  }
+  },
 }))
 
 vi.mock('@/services/tokenService', () => ({
@@ -19,7 +19,7 @@ vi.mock('@/services/tokenService', () => ({
     removeToken: vi.fn(),
     getRefreshToken: vi.fn(),
     hasValidToken: vi.fn(),
-  }
+  },
 }))
 
 describe('Auth Service', () => {

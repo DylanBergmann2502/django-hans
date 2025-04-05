@@ -22,7 +22,7 @@ const SimpleAppLayout = {
   data() {
     return {
       isAuthenticated: false,
-      user: null
+      user: null,
     }
   },
   methods: {
@@ -31,8 +31,8 @@ const SimpleAppLayout = {
     },
     handleLogout() {
       this.$emit('logout')
-    }
-  }
+    },
+  },
 }
 
 describe('AppLayout', () => {
@@ -42,9 +42,9 @@ describe('AppLayout', () => {
     wrapper = mount(SimpleAppLayout, {
       global: {
         stubs: {
-          'router-link': true
-        }
-      }
+          'router-link': true,
+        },
+      },
     })
   })
 
@@ -73,7 +73,7 @@ describe('AppLayout', () => {
     // Update data directly
     await wrapper.setData({
       isAuthenticated: true,
-      user: { email: 'test@example.com' }
+      user: { email: 'test@example.com' },
     })
 
     expect(wrapper.find('.user-menu').exists()).toBe(true)
@@ -85,7 +85,7 @@ describe('AppLayout', () => {
     // Set authenticated state
     await wrapper.setData({
       isAuthenticated: true,
-      user: { email: 'test@example.com' }
+      user: { email: 'test@example.com' },
     })
 
     // Click logout button

@@ -7,16 +7,16 @@ describe('Token Service', () => {
   const localStorageMock = (() => {
     let store = {}
     return {
-      getItem: vi.fn(key => store[key] || null),
+      getItem: vi.fn((key) => store[key] || null),
       setItem: vi.fn((key, value) => {
         store[key] = value.toString()
       }),
-      removeItem: vi.fn(key => {
+      removeItem: vi.fn((key) => {
         delete store[key]
       }),
       clear: vi.fn(() => {
         store = {}
-      })
+      }),
     }
   })()
 
@@ -24,7 +24,7 @@ describe('Token Service', () => {
     // Set up localStorage mock
     Object.defineProperty(window, 'localStorage', {
       value: localStorageMock,
-      writable: true
+      writable: true,
     })
 
     // Clear mock store before each test

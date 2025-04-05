@@ -25,7 +25,7 @@ app.use(PrimeVue, {
     preset: Aura,
     options: {
       darkModeSelector: 'none',
-    }
+    },
   },
 })
 app.use(ToastService)
