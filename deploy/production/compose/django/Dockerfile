@@ -90,6 +90,12 @@ COPY --chown=django:django . ${APP_HOME}
 # make django owner of the WORKDIR directory as well.
 RUN chown -R django:django ${APP_HOME}
 
+# Make staticfiles directory with proper permissions
+USER root
+RUN mkdir -p /app/staticfiles && \
+    chown -R django:django /app/staticfiles && \
+    chmod -R 755 /app/staticfiles
+
 USER django
 
 ENTRYPOINT ["/entrypoint"]
