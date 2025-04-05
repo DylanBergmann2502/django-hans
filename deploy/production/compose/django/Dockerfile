@@ -1,6 +1,6 @@
 # deploy/production/compose/django/Dockerfile
 # define an alias for the specific python version used in this file.
-FROM docker.io/python:3.12.9-slim-bookworm AS python
+FROM docker.io/python:3.13.2-slim-bookworm AS python
 
 # Python build stage
 FROM python AS python-build-stage
