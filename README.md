@@ -95,4 +95,5 @@ License: MIT
 ## Notes
 
 - You should generate new secrets for env variables in `deploy/local/.envs` and `deploy/production/.envs`.
-- You need to handle SSl/TLS Certs with `Nginx` before deploying it to production.
+
+- The current production `nginx` only serves as a proxy and a webserver to host frontend assets. I'm expecting you to have a `master nginx` elsewhere to handle domain routing and/or SSl/TLS termination. If not, you can update the `deploy/production/compose/nginx/nginx.conf` to handle them here and expose port `443` of the `nginx` service in `deploy/production/web.yml`.

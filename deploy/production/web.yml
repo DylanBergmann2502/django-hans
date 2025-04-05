@@ -32,8 +32,6 @@ services:
       - redis
     env_file:
       - ./.envs/.django
-    ports:
-      - "8000:8000"
     command: /start
 
   nginx:
@@ -52,7 +50,6 @@ services:
       - flower
     ports:
       - "80:80"
-      - "443:443"
 
   postgres:
     build:
@@ -138,6 +135,4 @@ services:
       - redis
     env_file:
       - ./.envs/.django
-    ports:
-      - "5555:5555"
     command: /start-flower
