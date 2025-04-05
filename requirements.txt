@@ -5,7 +5,7 @@ Pillow==11.1.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==23.1.0  # https://github.com/hynek/argon2_cffi
 redis==5.2.1  # https://github.com/redis/redis-py
 hiredis==3.1.0  # https://github.com/redis/hiredis-py
-celery==5.4.0  # pyup: < 6.0  # https://github.com/celery/celery
+celery==5.5.0  # pyup: < 6.0  # https://github.com/celery/celery
 django-celery-beat==2.7.0  # https://github.com/celery/django-celery-beat
 flower==2.0.1  # https://github.com/mher/flower
 psycopg==3.2.6  # https://github.com/psycopg/psycopg
@@ -15,11 +15,11 @@ psycopg==3.2.6  # https://github.com/psycopg/psycopg
 Django==5.1.7  # https://www.djangoproject.com/
 django-environ==0.12.0  # https://github.com/joke2k/django-environ
 django-model-utils==5.0.0  # https://github.com/jazzband/django-model-utils
-django-allauth[mfa]==65.5.0  # https://github.com/pennersr/django-allauth
+django-allauth[mfa]==65.7.0  # https://github.com/pennersr/django-allauth
 django-redis==5.4.0  # https://github.com/jazzband/django-redis
 
 # Django REST Framework
-djangorestframework==3.15.2  # https://github.com/encode/django-rest-framework
+djangorestframework==3.16.0  # https://github.com/encode/django-rest-framework
 django-cors-headers==4.7.0  # https://github.com/adamchainz/django-cors-headers
 # DRF-spectacular for api documentation
 drf-spectacular==0.28.0  # https://github.com/tfranzel/drf-spectacular
@@ -40,8 +40,8 @@ djangorestframework-stubs==3.15.3  # https://github.com/typeddjango/djangorestfr
 
 # Code quality
 # ------------------------------------------------------------------------------
-ruff==0.11.2  # https://github.com/astral-sh/ruff
-coverage==7.7.1  # https://github.com/nedbat/coveragepy
+ruff==0.11.4  # https://github.com/astral-sh/ruff
+coverage==7.8.0  # https://github.com/nedbat/coveragepy
 pre-commit==4.2.0  # https://github.com/pre-commit/pre-commit
 
 # Django
@@ -50,17 +50,17 @@ factory-boy==3.3.3  # https://github.com/FactoryBoy/factory_boy
 django-debug-toolbar==5.1.0  # https://github.com/jazzband/django-debug-toolbar
 django-extensions==3.2.3  # https://github.com/django-extensions/django-extensions
 django-coverage-plugin==3.1.0  # https://github.com/nedbat/django_coverage_plugin
-pytest-django==4.10.0  # https://github.com/pytest-dev/pytest-django
+pytest-django==4.11.1  # https://github.com/pytest-dev/pytest-django
 
 ##############################################################################
 ## production.txt
 gunicorn==23.0.0  # https://github.com/benoitc/gunicorn
-sentry-sdk==2.24.0  # https://github.com/getsentry/sentry-python
+sentry-sdk==2.25.1  # https://github.com/getsentry/sentry-python
 
 # Django
 # ------------------------------------------------------------------------------
-django-storages[s3]==1.14.5  # https://github.com/jschneier/django-storages
-django-anymail==12.0  # https://github.com/anymail/django-anymail
+django-storages[s3]==1.14.6  # https://github.com/jschneier/django-storages
+django-anymail==13.0  # https://github.com/anymail/django-anymail
 
 ###############################################################################
 ## Other Libraries
