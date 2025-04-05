@@ -56,11 +56,6 @@ services:
       - django_hans_local_postgres_data:/var/lib/postgresql/data
     env_file:
       - ./.envs/.postgres
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   django_migrations:
     build:
@@ -71,8 +66,7 @@ services:
     networks:
       - django_hans_local_setup
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     volumes:
       - ../../:/app:z
     env_file:

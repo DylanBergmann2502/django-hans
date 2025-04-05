@@ -76,48 +76,6 @@ if ! docker compose -f $SETUP_FILE up --build -d; then
     exit 1
 fi
 
-# Wait for the setup_complete service to finish
-print_status $YELLOW "Waiting for setup services to complete..."
-max_attempts=30
-attempt=0
-
-while [ $attempt -lt $max_attempts ]; do
-    # Check if setup_complete service has finished successfully
-    if docker inspect --format='{{.State.Status}}' django_hans_local_setup_complete 2>/dev/null | grep -q "exited"; then
-        # Check exit code
-        exit_code=$(docker inspect --format='{{.State.ExitCode}}' django_hans_local_setup_complete)
-        if [ "$exit_code" = "0" ]; then
-            print_status $GREEN "Setup completed successfully!"
-            break
-        else
-            print_status $RED "Setup failed with exit code $exit_code"
-            docker compose -f $SETUP_FILE logs
-            exit 1
-        fi
-    fi
-
-    # Check if any services failed
-    if docker compose -f $SETUP_FILE ps | grep -qE "Exit ([1-9]|[1-9][0-9]+)"; then
-        print_status $RED "One or more setup services failed:"
-        docker compose -f $SETUP_FILE ps
-        docker compose -f $SETUP_FILE logs
-        exit 1
-    fi
-
-    print_status $YELLOW "Waiting for setup to complete (attempt $((attempt+1))/$max_attempts)..."
-    attempt=$((attempt+1))
-    sleep 5
-done
-
-if [ $attempt -eq $max_attempts ]; then
-    print_status $RED "Setup timed out after $max_attempts attempts."
-    print_status $RED "Current status of services:"
-    docker compose -f $SETUP_FILE ps
-    print_status $RED "Logs:"
-    docker compose -f $SETUP_FILE logs
-    exit 1
-fi
-
 # Clean up setup services but keep volumes
 print_status $YELLOW "Cleaning up setup services..."
 docker compose -f $SETUP_FILE down --remove-orphans
