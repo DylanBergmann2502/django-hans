@@ -75,7 +75,7 @@ services:
 
   # This is our completion indicator service
   setup_complete:
-    image: alpine:3.19
+    image: alpine:latest
     container_name: django_hans_local_setup_complete
     networks:
       - django_hans_local_setup
