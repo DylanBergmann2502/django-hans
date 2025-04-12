@@ -6,9 +6,9 @@ asgiref==3.8.1
 asttokens==3.0.0
 attrs==25.3.0
 billiard==4.2.1
-boto3==1.37.28
-botocore==1.37.28
-celery==5.5.0
+boto3==1.37.33
+botocore==1.37.33
+celery==5.5.1
 certifi==2025.1.31
 cffi==1.17.1
 cfgv==3.4.0
@@ -31,7 +31,7 @@ django-cors-headers==4.7.0
 django-coverage-plugin==3.1.0
 django-debug-toolbar==5.1.0
 django-environ==0.12.0
-django-extensions==3.2.3
+django-extensions==4.1
 django-filter==25.1
 django-health-check==3.18.3
 django-model-utils==5.0.0
@@ -59,7 +59,7 @@ idna==3.10
 inflection==0.5.1
 iniconfig==2.1.0
 ipdb==0.13.13
-ipython==9.0.2
+ipython==9.1.0
 ipython_pygments_lexers==1.1.1
 jedi==0.19.2
 jmespath==1.0.1
@@ -78,7 +78,7 @@ pandas==2.2.3
 parso==0.8.4
 pexpect==4.9.0
 pillow==11.1.0
-pip==24.3.1
+pip==25.0.1
 platformdirs==4.3.7
 pluggy==1.5.0
 pre_commit==4.2.0
@@ -105,7 +105,7 @@ referencing==0.36.2
 requests==2.32.3
 requests-oauthlib==2.0.0
 rpds-py==0.24.0
-ruff==0.11.4
+ruff==0.11.5
 s3transfer==0.11.4
 sentry-sdk==2.25.1
 six==1.17.0
@@ -120,13 +120,13 @@ tornado==6.4.2
 traitlets==5.14.3
 types-PyYAML==6.0.12.20250402
 types-requests==2.32.0.20250328
-typing_extensions==4.13.1
+typing_extensions==4.13.2
 tzdata==2025.2
 uritemplate==4.1.1
-urllib3==2.3.0
+urllib3==2.4.0
 vine==5.1.0
 virtualenv==20.30.0
 watchdog==6.0.0
-watchfiles==1.0.4
+watchfiles==1.0.5
 wcwidth==0.2.13
 Werkzeug==3.1.3
