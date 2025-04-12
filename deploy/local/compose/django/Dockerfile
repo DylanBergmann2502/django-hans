@@ -1,6 +1,6 @@
 # deploy/local/compose/django/Dockerfile
 # define an alias for the specific python version used in this file.
-FROM docker.io/python:3.13.2-slim-bookworm AS python
+FROM docker.io/python:3.13.3-slim-bookworm AS python
 
 # Python build stage
 FROM python AS python-build-stage
@@ -17,7 +17,7 @@ COPY ./requirements.* .
 
 # Create Python Dependency and Sub-Dependency Wheels.
 RUN pip wheel --wheel-dir /usr/src/app/wheels  \
-  -r requirements.lock
+  -r requirements.txt
 
 
 # Python 'run' stage
