@@ -1,4 +1,4 @@
-// src/pages/NotFoundPage.vue
+<!-- src/pages/NotFoundPage.vue -->
 <script setup>
 import { useRouter } from 'vue-router'
 
