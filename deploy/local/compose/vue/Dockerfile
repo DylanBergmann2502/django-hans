@@ -1,6 +1,6 @@
 # deploy/local/compose/vue/Dockerfile
 # Stage 1: Dependencies
-FROM node:22.14-bookworm-slim AS deps
+FROM node:22.15-bookworm-slim AS deps
 WORKDIR /app
 
 # Install only the packages needed to install dependencies
