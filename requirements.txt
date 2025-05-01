@@ -8,7 +8,7 @@ hiredis==3.1.0  # https://github.com/redis/hiredis-py
 celery==5.5.2  # pyup: < 6.0  # https://github.com/celery/celery
 django-celery-beat==2.8.0  # https://github.com/celery/django-celery-beat
 flower==2.0.1  # https://github.com/mher/flower
-psycopg==3.2.6  # https://github.com/psycopg/psycopg
+psycopg==3.2.7  # https://github.com/psycopg/psycopg
 
 # Django
 # ------------------------------------------------------------------------------
