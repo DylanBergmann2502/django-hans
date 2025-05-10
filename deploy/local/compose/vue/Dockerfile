@@ -14,7 +14,7 @@ COPY web/package*.json ./
 RUN npm ci
 
 # Stage 2: Development
-FROM node:22.14-alpine AS development
+FROM node:22.15-alpine AS development
 WORKDIR /app
 
 # Install minimal development dependencies
