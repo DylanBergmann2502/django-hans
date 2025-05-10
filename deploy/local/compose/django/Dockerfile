@@ -17,7 +17,7 @@ COPY ./requirements.* .
 
 # Create Python Dependency and Sub-Dependency Wheels.
 RUN pip wheel --wheel-dir /usr/src/app/wheels  \
-  -r requirements.txt
+  -r requirements.lock
 
 
 # Python 'run' stage
