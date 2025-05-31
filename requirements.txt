@@ -3,19 +3,19 @@
 python-slugify==8.0.4  # https://github.com/un33k/python-slugify
 Pillow==11.2.1  # https://github.com/python-pillow/Pillow
 argon2-cffi==23.1.0  # https://github.com/hynek/argon2_cffi
-redis==6.0.0  # https://github.com/redis/redis-py
-hiredis==3.1.1  # https://github.com/redis/hiredis-py
+redis==6.2.0  # https://github.com/redis/redis-py
+hiredis==3.2.1  # https://github.com/redis/hiredis-py
 celery==5.5.2  # pyup: < 6.0  # https://github.com/celery/celery
-django-celery-beat==2.8.0  # https://github.com/celery/django-celery-beat
+django-celery-beat==2.8.1  # https://github.com/celery/django-celery-beat
 flower==2.0.1  # https://github.com/mher/flower
-psycopg==3.2.7  # https://github.com/psycopg/psycopg
+psycopg==3.2.9  # https://github.com/psycopg/psycopg
 
 # Django
 # ------------------------------------------------------------------------------
 Django==5.2.1  # https://www.djangoproject.com/
 django-environ==0.12.0  # https://github.com/joke2k/django-environ
 django-model-utils==5.0.0  # https://github.com/jazzband/django-model-utils
-django-allauth[mfa]==65.8.0  # https://github.com/pennersr/django-allauth
+django-allauth[mfa]==65.8.1  # https://github.com/pennersr/django-allauth
 django-redis==5.4.0  # https://github.com/jazzband/django-redis
 
 # Django REST Framework
@@ -40,8 +40,8 @@ djangorestframework-stubs==3.16.0  # https://github.com/typeddjango/djangorestfr
 
 # Code quality
 # ------------------------------------------------------------------------------
-ruff==0.11.9  # https://github.com/astral-sh/ruff
-coverage==7.8.0  # https://github.com/nedbat/coveragepy
+ruff==0.11.12  # https://github.com/astral-sh/ruff
+coverage==7.8.2  # https://github.com/nedbat/coveragepy
 pre-commit==4.2.0  # https://github.com/pre-commit/pre-commit
 
 # Django
@@ -55,7 +55,7 @@ pytest-django==4.11.1  # https://github.com/pytest-dev/pytest-django
 ##############################################################################
 ## production.txt
 gunicorn==23.0.0  # https://github.com/benoitc/gunicorn
-sentry-sdk==2.27.0  # https://github.com/getsentry/sentry-python
+sentry-sdk==2.29.1  # https://github.com/getsentry/sentry-python
 
 # Django
 # ------------------------------------------------------------------------------
