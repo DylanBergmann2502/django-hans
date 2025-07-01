@@ -12,7 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@primeuix/themes": "^1.1.1",
+    "@primeuix/themes": "^1.1.2",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "pinia": "^3.0.2",
