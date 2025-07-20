@@ -57,7 +57,7 @@ if env("USE_DOCKER") == "yes":
     import socket
 
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
+    INTERNAL_IPS += [".".join([*ip.split(".")[:-1], "1"]) for ip in ips]
     # RunServerPlus
     # ------------------------------------------------------------------------------
     # This is a custom setting for RunServerPlus to fix reloader issue in Windows docker environment

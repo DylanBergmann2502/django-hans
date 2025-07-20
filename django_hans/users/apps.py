@@ -11,4 +11,4 @@ class UsersConfig(AppConfig):
 
     def ready(self):
         with contextlib.suppress(ImportError):
-            import django_hans.users.signals  # noqa: F401
+            pass

@@ -1,5 +1,5 @@
 # config/wsgi.py
-# ruff: noqa: ERA001, E501
+# ruff: noqa: ERA001
 """
 WSGI config for Django Hans project.
 

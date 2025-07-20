@@ -1,4 +1,5 @@
 # config/celery_app.py
+# ruff: noqa: PLC0415
 import os
 
 from celery import Celery

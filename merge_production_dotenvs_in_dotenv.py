@@ -1,4 +1,3 @@
-# ruff: noqa: ERA001, E501
 import os
 from collections.abc import Sequence
 from pathlib import Path
