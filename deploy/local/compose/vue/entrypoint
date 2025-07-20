@@ -1,0 +1,8 @@
+#!/bin/bash
+# deploy/local/compose/vue/entrypoint
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+exec "$@"

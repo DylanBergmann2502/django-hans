@@ -1,6 +1,6 @@
 # deploy/local/compose/vue/Dockerfile
 # Stage 1: Dependencies
-FROM node:22.17-bookworm-slim AS deps
+FROM node:24.4-bookworm-slim AS deps
 WORKDIR /app
 
 # Install only the packages needed to install dependencies
@@ -14,7 +14,7 @@ COPY web/package*.json ./
 RUN npm ci
 
 # Stage 2: Development
-FROM node:22.17-alpine AS development
+FROM node:24.4-alpine AS development
 WORKDIR /app
 
 # Install minimal development dependencies
@@ -28,5 +28,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY web/package*.json ./
 
 # Copy start script
+COPY ./deploy/local/compose/vue/entrypoint /entrypoint
+RUN chmod +x /entrypoint
+
+# Copy start script
 COPY ./deploy/local/compose/vue/start /start
 RUN chmod +x /start
+
+ENTRYPOINT ["/entrypoint"]
