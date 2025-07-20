@@ -58,7 +58,7 @@ services:
   postgres:
     build:
       context: ../..
-      dockerfile: ./deploy/local/compose/postgres/Dockerfile
+      dockerfile: ./deploy/production/compose/postgres/Dockerfile
     image: django_hans_local_postgres
     container_name: django_hans_local_postgres
     networks:
