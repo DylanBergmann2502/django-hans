@@ -1,25 +1,20 @@
 # deploy/local/web.yml
-networks:
-  django_hans_local_web:
-    name: django_hans_local_web
+name: django_hans_local
 
 volumes:
-  django_hans_local_node_modules: {}
-  django_hans_local_postgres_data: {}
-  django_hans_local_postgres_data_backups: {}
-  django_hans_local_minio_data: {}
-  django_hans_local_redis_data: {}
+  node_modules: {}
+  postgres_data: {}
+  postgres_data_backups: {}
+  minio_data: {}
+  redis_data: {}
 
 services:
-  # Web
   django:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/django/Dockerfile
-    image: django_hans_local_django
-    container_name: django_hans_local_django
-    networks:
-      - django_hans_local_web
+    image: django
+    container_name: django
     depends_on:
       - postgres
       - redis
@@ -36,16 +31,14 @@ services:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/vue/Dockerfile
-    image: django_hans_local_vue
-    container_name: django_hans_local_vue
-    networks:
-      - django_hans_local_web
+    image: vue
+    container_name: vue
     volumes:
       - type: bind
         source: ../../web
         target: /app
       - type: volume
-        source: django_hans_local_node_modules
+        source: node_modules
         target: /app/node_modules
     env_file:
       - ./.envs/.vue
@@ -59,50 +52,40 @@ services:
     build:
       context: ../..
       dockerfile: ./deploy/production/compose/postgres/Dockerfile
-    image: django_hans_local_postgres
-    container_name: django_hans_local_postgres
-    networks:
-      - django_hans_local_web
+    image: postgres
+    container_name: postgres
     volumes:
-      - django_hans_local_postgres_data:/var/lib/postgresql/data
-      - django_hans_local_postgres_data_backups:/backups
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_backups:/backups
     env_file:
       - ./.envs/.postgres
 
-  # MinIO/S3
   minio:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/minio/Dockerfile
-    image: django_hans_local_minio
-    container_name: django_hans_local_minio
-    networks:
-      - django_hans_local_web
+    image: minio
+    container_name: minio
     volumes:
-      - django_hans_local_minio_data:/data
+      - minio_data:/data
     env_file:
       - ./.envs/.minio
     ports:
-    - "9000:9000"  # API
-    - "9001:9001"  # Console
+      - "9000:9000"
+      - "9001:9001"
 
-  # Worker
   redis:
     image: docker.io/redis:6
-    container_name: django_hans_local_redis
-    networks:
-      - django_hans_local_web
+    container_name: redis
     volumes:
-      - django_hans_local_redis_data:/data
+      - redis_data:/data
 
   celery_worker:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/django/Dockerfile
-    image: django_hans_local_celery_worker
-    container_name: django_hans_local_celery_worker
-    networks:
-      - django_hans_local_web
+    image: celery_worker
+    container_name: celery_worker
     depends_on:
       - redis
       - postgres
@@ -116,10 +99,8 @@ services:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/django/Dockerfile
-    image: django_hans_local_celery_beat
-    container_name: django_hans_local_celery_beat
-    networks:
-      - django_hans_local_web
+    image: celery_beat
+    container_name: celery_beat
     depends_on:
       - redis
       - postgres
@@ -133,10 +114,8 @@ services:
     build:
       context: ../..
       dockerfile: ./deploy/local/compose/django/Dockerfile
-    image: django_hans_local_flower
-    container_name: django_hans_local_flower
-    networks:
-      - django_hans_local_web
+    image: flower
+    container_name: flower
     depends_on:
       - redis
       - postgres
