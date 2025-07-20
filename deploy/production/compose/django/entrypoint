@@ -1,4 +1,5 @@
 #!/bin/bash
+# deploy/local/compose/minio/django/entrypoint
 
 set -o errexit
 set -o pipefail

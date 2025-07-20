@@ -28,5 +28,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY web/package*.json ./
 
 # Copy start script
+COPY ./deploy/local/compose/vue/entrypoint /entrypoint
+RUN chmod +x /entrypoint
+
+# Copy start script
 COPY ./deploy/local/compose/vue/start /start
 RUN chmod +x /start
+
+ENTRYPOINT ["/entrypoint"]

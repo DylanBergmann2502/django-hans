@@ -1,4 +1,5 @@
 #!/bin/sh
+# deploy/production/compose/aws/maintenance/download
 
 ### Download a file from your Amazon S3 bucket to the postgres /backups folder
 ###

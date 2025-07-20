@@ -1,4 +1,5 @@
 #!/bin/bash
+# deploy/local/compose/vue/start
 
 set -o errexit
 set -o pipefail

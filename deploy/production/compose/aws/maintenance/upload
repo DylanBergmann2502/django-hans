@@ -1,4 +1,5 @@
 #!/bin/sh
+# deploy/production/compose/aws/maintenance/upload
 
 ### Upload the /backups folder to Amazon S3
 ###

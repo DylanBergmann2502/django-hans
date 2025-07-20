@@ -1,4 +1,5 @@
 #!/bin/bash
+# deploy/production/compose/django/migrate
 
 set -o errexit
 set -o pipefail
