@@ -1,4 +1,5 @@
 #!/bin/bash
+# bin/run.sh
 
 # Make script executable from anywhere
 cd "$(dirname "$0")/.."
