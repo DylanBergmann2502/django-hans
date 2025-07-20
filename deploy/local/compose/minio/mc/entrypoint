@@ -1,4 +1,5 @@
 #!/bin/sh
+# deploy/local/compose/minio/mc/entrypoint
 
 # Wait for MinIO to be ready
 sleep 10

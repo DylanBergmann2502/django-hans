@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # ruff: noqa: F401, B904, TRY003, EM101
 import os
 import sys
