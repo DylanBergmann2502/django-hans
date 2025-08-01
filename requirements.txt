@@ -60,7 +60,7 @@ sentry-sdk==2.33.0  # https://github.com/getsentry/sentry-python
 # Django
 # ------------------------------------------------------------------------------
 django-storages[s3]==1.14.6  # https://github.com/jschneier/django-storages
-django-anymail==13.0  # https://github.com/anymail/django-anymail
+django-anymail==13.0.1  # https://github.com/anymail/django-anymail
 
 ###############################################################################
 ## Other Libraries
