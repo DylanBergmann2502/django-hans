@@ -55,7 +55,7 @@ pytest-django==4.11.1  # https://github.com/pytest-dev/pytest-django
 ##############################################################################
 ## production.txt
 gunicorn==23.0.0  # https://github.com/benoitc/gunicorn
-sentry-sdk==2.33.0  # https://github.com/getsentry/sentry-python
+sentry-sdk==2.34.1  # https://github.com/getsentry/sentry-python
 
 # Django
 # ------------------------------------------------------------------------------
