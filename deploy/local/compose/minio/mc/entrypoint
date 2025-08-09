@@ -5,7 +5,7 @@
 sleep 10
 
 # Configure MinIO client
-/usr/bin/mc config host add myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
+/usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
 
 # Create bucket if it doesn't exist
 /usr/bin/mc mb myminio/${MINIO_BUCKET_NAME} 2>/dev/null || true
