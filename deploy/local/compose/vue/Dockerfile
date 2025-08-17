@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Upgrade to latest npm
+RUN npm install -g npm@latest
+
 # Copy package files and install dependencies
 COPY web/package*.json ./
 RUN npm ci
@@ -19,6 +22,9 @@ WORKDIR /app
 
 # Install minimal development dependencies
 RUN apk add --no-cache bash
+
+# Upgrade to latest npm
+RUN npm install -g npm@latest
 
 # Install global packages
 RUN npm install -g npm-check-updates
