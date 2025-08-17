@@ -75,7 +75,7 @@ services:
       - "9001:9001"
 
   redis:
-    image: docker.io/redis:6
+    image: docker.io/redis:8
     container_name: redis
     volumes:
       - redis_data:/data
