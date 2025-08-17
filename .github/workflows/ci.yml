@@ -72,8 +72,8 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
 
-      - name: Build the Vue container
-        run: docker compose -f deploy/local/web.yml build vue
+      - name: Build containers
+        run: docker compose -f deploy/local/web.yml build django vue
 
       - name: Format frontend
         run: docker compose -f deploy/local/web.yml run --rm vue npm run format
@@ -92,8 +92,8 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
 
-      - name: Build the Vue container
-        run: docker compose -f deploy/local/web.yml build vue
+      - name: Build containers
+        run: docker compose -f deploy/local/web.yml build django vue
 
       - name: Run Vue unit tests
         run: docker compose -f deploy/local/web.yml run --rm vue npm run test:unit

@@ -29,4 +29,5 @@ COPY web/package*.json ./
 
 # Copy start script
 COPY ./deploy/local/compose/vue/start /start
+RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
