@@ -15,7 +15,7 @@ psycopg==3.2.9  # https://github.com/psycopg/psycopg
 Django==5.2.5  # https://www.djangoproject.com/
 django-environ==0.12.0  # https://github.com/joke2k/django-environ
 django-model-utils==5.0.0  # https://github.com/jazzband/django-model-utils
-django-allauth[mfa]==65.10.0  # https://github.com/pennersr/django-allauth
+django-allauth[mfa]==65.11.0  # https://github.com/pennersr/django-allauth
 django-redis==6.0.0  # https://github.com/jazzband/django-redis
 
 # Django REST Framework
@@ -35,14 +35,14 @@ watchfiles==1.1.0  # https://github.com/samuelcolvin/watchfiles
 mypy==1.17.1  # https://github.com/python/mypy
 django-stubs[compatible-mypy]==5.2.2  # https://github.com/typeddjango/django-stubs
 pytest==8.4.1  # https://github.com/pytest-dev/pytest
-pytest-sugar==1.0.0  # https://github.com/Frozenball/pytest-sugar
-djangorestframework-stubs==3.16.1  # https://github.com/typeddjango/djangorestframework-stubs
+pytest-sugar==1.1.0  # https://github.com/Frozenball/pytest-sugar
+djangorestframework-stubs==3.16.2  # https://github.com/typeddjango/djangorestframework-stubs
 
 # Code quality
 # ------------------------------------------------------------------------------
-ruff==0.12.8  # https://github.com/astral-sh/ruff
-coverage==7.10.2  # https://github.com/nedbat/coveragepy
-pre-commit==4.2.0  # https://github.com/pre-commit/pre-commit
+ruff==0.12.9  # https://github.com/astral-sh/ruff
+coverage==7.10.4  # https://github.com/nedbat/coveragepy
+pre-commit==4.3.0  # https://github.com/pre-commit/pre-commit
 
 # Django
 # ------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ pytest-django==4.11.1  # https://github.com/pytest-dev/pytest-django
 ##############################################################################
 ## production.txt
 gunicorn==23.0.0  # https://github.com/benoitc/gunicorn
-sentry-sdk==2.34.1  # https://github.com/getsentry/sentry-python
+sentry-sdk==2.35.0  # https://github.com/getsentry/sentry-python
 
 # Django
 # ------------------------------------------------------------------------------
