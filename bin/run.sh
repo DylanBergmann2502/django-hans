@@ -190,11 +190,6 @@ case "$1" in
         docker compose -f $COMPOSE_FILE run --rm django pytest "$@"
         ;;
 
-    "freeze")
-        check_docker
-        docker compose -f $COMPOSE_FILE run --rm django pip list --format=freeze > requirements.lock
-        ;;
-
     *)
         echo "Django Hans Management Commands"
         echo "=================================="
@@ -232,6 +227,5 @@ case "$1" in
         echo "  lint [paths]         - Lint Django code with ruff (defaults to entire codebase)"
         echo "  mypy [paths]         - Run mypy static type checking (defaults to entire codebase)"
         echo "  pytest [options]     - Run Django tests"
-        echo "  freeze               - Update requirements.lock"
         ;;
 esac

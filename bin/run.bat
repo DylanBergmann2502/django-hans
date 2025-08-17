@@ -49,7 +49,6 @@ if "%1"=="format" goto format
 if "%1"=="lint" goto lint
 if "%1"=="mypy" goto mypy
 if "%1"=="pytest" goto pytest
-if "%1"=="freeze" goto freeze
 goto help
 
 :check
@@ -186,10 +185,6 @@ shift
 docker compose -f %COMPOSE_FILE% run --rm django pytest %*
 goto :eof
 
-:freeze
-docker compose -f %COMPOSE_FILE% run --rm django pip list --format=freeze > requirements.lock
-goto :eof
-
 :help
 echo Django Hans Management Commands
 echo ==================================
@@ -227,5 +222,4 @@ echo   format [paths]              - Format Django code with ruff (defaults to e
 echo   lint [paths]                - Lint Django code with ruff (defaults to entire codebase)
 echo   mypy [paths]                - Run mypy static type checking (defaults to entire codebase)
 echo   pytest [options]            - Run Django tests
-echo   freeze                      - Update requirements.lock
 goto :eof

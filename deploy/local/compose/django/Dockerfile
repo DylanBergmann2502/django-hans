@@ -12,12 +12,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg dependencies
   libpq-dev
 
-# Requirements are installed here to ensure they will be cached.
-COPY ./requirements.* .
+# Install uv
+RUN pip install uv
 
-# Create Python Dependency and Sub-Dependency Wheels.
-RUN pip wheel --wheel-dir /usr/src/app/wheels  \
-  -r requirements.lock
+# Copy pyproject.toml and install dependencies
+COPY ./pyproject.toml .
+
+# Install Python dependencies using uv
+RUN uv pip install --system .
 
 
 # Python 'run' stage
@@ -56,13 +58,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-# All absolute dir copies ignore workdir instruction. All relative dir copies are wrt to the workdir instruction
-# copy python dependency wheels from python-build-stage
-COPY --from=python-build-stage /usr/src/app/wheels  /wheels/
+# Install uv in runtime stage
+RUN pip install uv
 
-# use wheels to install python dependencies
-RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
-  && rm -rf /wheels/
+# Copy pyproject.toml and install dependencies
+COPY ./pyproject.toml .
+
+# Install Python dependencies using uv
+RUN uv pip install --system .
 
 COPY ./deploy/local/compose/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
