@@ -274,3 +274,4 @@ django_hans/media/
 .pytest_cache/
 .ipython/
 .env
+.claude/
