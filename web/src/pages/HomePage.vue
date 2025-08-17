@@ -147,7 +147,9 @@ const resources = ref([
           Vue 3 frontend with PrimeVue components.
         </p>
         <div class="mt-4 p-4 bg-white rounded border border-green-200 font-mono text-sm">
-          <div class="text-green-600">// Start the development server (if you're on Unix systems)</div>
+          <div class="text-green-600">
+            // Start the development server (if you're on Unix systems)
+          </div>
           <div class="text-gray-800">./bin/run.sh start</div>
         </div>
       </div>
