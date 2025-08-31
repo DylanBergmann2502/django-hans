@@ -15,7 +15,7 @@ services:
       dockerfile: ./deploy/production/compose/django/Dockerfile
     image: django
     container_name: django
-    restart: unless-stopped
+    restart: always
     volumes:
       - type: bind
         source: ../..
@@ -36,7 +36,7 @@ services:
       dockerfile: ./deploy/production/compose/nginx/Dockerfile
     image: nginx
     container_name: nginx
-    restart: unless-stopped
+    restart: always
     volumes:
       - staticfiles:/usr/share/nginx/html/django-static:ro
     depends_on:
@@ -51,7 +51,7 @@ services:
       dockerfile: ./deploy/production/compose/postgres/Dockerfile
     image: postgres
     container_name: postgres
-    restart: unless-stopped
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_data_backups:/backups
@@ -74,7 +74,7 @@ services:
   redis:
     image: docker.io/redis:6
     container_name: redis
-    restart: unless-stopped
+    restart: always
     volumes:
       - redis_data:/data
 
@@ -84,7 +84,7 @@ services:
       dockerfile: ./deploy/production/compose/django/Dockerfile
     image: celery_worker
     container_name: celery_worker
-    restart: unless-stopped
+    restart: always
     depends_on:
       - postgres
       - redis
@@ -98,7 +98,7 @@ services:
       dockerfile: ./deploy/production/compose/django/Dockerfile
     image: celery_beat
     container_name: celery_beat
-    restart: unless-stopped
+    restart: always
     depends_on:
       - postgres
       - redis
@@ -112,7 +112,7 @@ services:
       dockerfile: ./deploy/production/compose/django/Dockerfile
     image: flower
     container_name: flower
-    restart: unless-stopped
+    restart: always
     depends_on:
       - postgres
       - redis
