@@ -3,7 +3,7 @@
 
 # Shell scripts should use LF and be executable
 *.sh text eol=lf
-bin/*.sh text eol=lf executable
+bin/* text eol=lf executable
 
 # Batch files should use CRLF
 *.{cmd,[cC][mM][dD]} text eol=crlf
