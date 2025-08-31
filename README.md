@@ -41,9 +41,9 @@ License: MIT
 - Set up the project for the first time (developing on `WSl`, `MacOS`, or `Linux` is recommended):
 
     ```sh
-    chmod +x ./bin/setup.sh
-    chmod +x ./bin/run.sh
-    ./bin/setup.sh
+    chmod +x ./bin/setup
+    chmod +x ./bin/run
+    ./bin/setup
     ```
 
 - If you prefer working with `Docker Desktop`:
@@ -52,7 +52,7 @@ License: MIT
     .\bin\setup.bat
     ```
 
-- Have a look at `./bin/run.sh` (or `.\bin\run.bat` for Windows) as it contains many shortcut for ease of development as well as `./bin/setup.sh` (or `.\bin\setup.bat` for Windows) for setting up your project unanimously across team members.
+- Have a look at `./bin/run` (or `.\bin\run.bat` for Windows) as it contains many shortcut for ease of development as well as `./bin/setup` (or `.\bin\setup.bat` for Windows) for setting up your project unanimously across team members.
 
 ## Useful Commands
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# bin/setup.sh
+# bin/setup
 
 # Navigate to project root
 cd "$(dirname "$0")/.."

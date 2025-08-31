@@ -150,7 +150,7 @@ const resources = ref([
           <div class="text-green-600">
             // Start the development server (if you're on Unix systems)
           </div>
-          <div class="text-gray-800">./bin/run.sh start</div>
+          <div class="text-gray-800">./bin/run start</div>
         </div>
       </div>
     </Panel>

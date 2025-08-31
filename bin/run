@@ -1,5 +1,5 @@
 #!/bin/bash
-# bin/run.sh
+# bin/run
 
 # Make script executable from anywhere
 cd "$(dirname "$0")/.."
@@ -93,7 +93,7 @@ case "$1" in
 
     "vue")
         # Run any Vue/NPM/Vite command
-        # Usage: ./bin/run.sh vue <command>
+        # Usage: ./bin/run vue <command>
         check_docker
         shift # Remove 'vue' from arguments
         docker compose -f $COMPOSE_FILE run --rm vue "$@"
@@ -147,7 +147,7 @@ case "$1" in
 
     "django")
         # Run any Django management command
-        # Usage: ./bin/run.sh django <command>
+        # Usage: ./bin/run django <command>
         check_docker
         shift  # Remove 'django' from arguments
         docker compose -f $COMPOSE_FILE run --rm django python manage.py "$@"
@@ -194,8 +194,8 @@ case "$1" in
         echo "Django Hans Management Commands"
         echo "=================================="
         echo "Usage:"
-        echo "  ./bin/run.sh <command>                # Uses local environment"
-        echo "  ENV=production ./bin/run.sh <command> # Uses production environment"
+        echo "  ./bin/run <command>                # Uses local environment"
+        echo "  ENV=production ./bin/run <command> # Uses production environment"
         echo ""
         echo "Basic Commands:"
         echo "  check               - Check Docker installations"
