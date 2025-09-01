@@ -33,7 +33,7 @@ dependencies = [
     "pytest-sugar==1.1.0",
     "djangorestframework-stubs==3.16.2",
     # Code quality
-    "ruff==0.12.9",
+    "ruff==0.12.11",
     "coverage==7.10.4",
     "pre-commit==4.3.0",
     # Django development
