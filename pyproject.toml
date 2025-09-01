@@ -48,7 +48,7 @@ dependencies = [
     "django-storages[s3]==1.14.6",
     "django-anymail==13.0.1",
     # Other libraries
-    "pandas==2.3.1",
+    "pandas==2.3.2",
     "django-filter==25.1",
     "djangorestframework-simplejwt==5.5.1",
     "djoser==2.3.3",
