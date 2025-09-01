@@ -44,7 +44,7 @@ dependencies = [
     "pytest-django==4.11.1",
     # Production
     "gunicorn==23.0.0",
-    "sentry-sdk==2.35.0",
+    "sentry-sdk==2.35.1",
     "django-storages[s3]==1.14.6",
     "django-anymail==13.0.1",
     # Other libraries
