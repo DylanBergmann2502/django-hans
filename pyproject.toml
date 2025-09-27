@@ -33,8 +33,8 @@ dependencies = [
     "pytest-sugar==1.1.1",
     "djangorestframework-stubs==3.16.3",
     # Code quality
-    "ruff==0.13.1",
-    "coverage==7.10.6",
+    "ruff==0.13.2",
+    "coverage==7.10.7",
     "pre-commit==4.3.0",
     # Django development
     "factory-boy==3.3.3",
@@ -44,7 +44,7 @@ dependencies = [
     "pytest-django==4.11.1",
     # Production
     "gunicorn==23.0.0",
-    "sentry-sdk==2.38.0",
+    "sentry-sdk==2.39.0",
     "django-storages[s3]==1.14.6",
     "django-anymail==13.1",
     # Other libraries
