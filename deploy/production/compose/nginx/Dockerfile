@@ -1,6 +1,6 @@
 # deploy/production/compose/nginx/Dockerfile
 # First stage: Build Frontend app
-FROM node:22.19-bookworm AS builder
+FROM node:22.20-bookworm AS builder
 
 WORKDIR /app
 COPY web/package*.json ./
