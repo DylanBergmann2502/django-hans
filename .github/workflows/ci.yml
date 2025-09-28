@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build the Django container
         run: docker compose -f deploy/local/web.yml build django
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build containers
         run: docker compose -f deploy/local/web.yml build django vue
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build containers
         run: docker compose -f deploy/local/web.yml build django vue
@@ -108,7 +108,7 @@ jobs:
     needs: [backend-code-quality, backend-tests, frontend-code-quality, frontend-tests]
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build Django container
         run: docker compose -f deploy/local/web.yml build django
