@@ -31,7 +31,7 @@ dependencies = [
     "django-stubs[compatible-mypy]==5.2.5",
     "pytest==8.4.2",
     "pytest-sugar==1.1.1",
-    "djangorestframework-stubs==3.16.3",
+    "djangorestframework-stubs==3.16.4",
     # Code quality
     "ruff==0.13.2",
     "coverage==7.10.7",
