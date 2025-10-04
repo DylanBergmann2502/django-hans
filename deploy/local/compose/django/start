@@ -9,5 +9,5 @@ set -o nounset
 # is only added as a utility for development.
 python /app/manage.py migrate
 
-# Start the server
-exec python /app/manage.py runserver_plus 0.0.0.0:8000
+# Start the server with uvicorn
+exec uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload --reload-include '*.html'

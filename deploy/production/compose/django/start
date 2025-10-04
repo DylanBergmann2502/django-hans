@@ -7,4 +7,7 @@ set -o nounset
 
 python /app/manage.py collectstatic --noinput
 
-exec /usr/local/bin/gunicorn config.wsgi --bind 0.0.0.0:8000 --chdir=/app
+exec gunicorn config.asgi:application \
+  --bind 0.0.0.0:8000 \
+  --chdir=/app \
+  --worker-class uvicorn.workers.UvicornWorker
