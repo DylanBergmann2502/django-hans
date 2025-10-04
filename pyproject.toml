@@ -13,7 +13,7 @@ dependencies = [
     "flower==2.0.1",
     "psycopg==3.2.10",
     # Django
-    "Django==5.2.6",
+    "Django==5.2.7",
     "django-environ==0.12.0",
     "django-model-utils==5.0.0",
     "django-allauth[mfa]==65.11.2",
@@ -31,9 +31,9 @@ dependencies = [
     "django-stubs[compatible-mypy]==5.2.5",
     "pytest==8.4.2",
     "pytest-sugar==1.1.1",
-    "djangorestframework-stubs==3.16.3",
+    "djangorestframework-stubs==3.16.4",
     # Code quality
-    "ruff==0.13.2",
+    "ruff==0.13.3",
     "coverage==7.10.7",
     "pre-commit==4.3.0",
     # Django development
@@ -48,7 +48,7 @@ dependencies = [
     "django-storages[s3]==1.14.6",
     "django-anymail==13.1",
     # Other libraries
-    "pandas==2.3.2",
+    "pandas==2.3.3",
     "django-filter==25.1",
     "djangorestframework-simplejwt==5.5.1",
     "djoser==2.3.3",
@@ -92,7 +92,6 @@ ignore_errors = true
 django_settings_module = "config.settings.test"
 
 [tool.ruff]
-target-version = "py313"
 # Exclude a variety of commonly ignored directories.
 extend-exclude = [
     "*/migrations/*.py",
@@ -161,16 +160,7 @@ ignore = [
   "S101", # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
   "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
   "SIM102", # sometimes it's better to nest
-  "UP038", # Checks for uses of isinstance/issubclass that take a tuple
-          # of types for comparison.
-          # Deactivated because it can make the code slow:
-          # https://github.com/astral-sh/ruff/issues/7871
   "COM812", # Trailing comma missing - conflicts with formatter
-]
-# The fixes in extend-unsafe-fixes will require
-# provide the `--unsafe-fixes` flag when fixing.
-extend-unsafe-fixes = [
-  "UP038",
 ]
 
 [tool.ruff.lint.isort]
