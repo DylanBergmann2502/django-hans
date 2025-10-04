@@ -9,27 +9,28 @@ updates:
     directory: '/'
     schedule:
       interval: 'monthly'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
 
   # Enable version updates for Docker - Django containers
   - package-ecosystem: 'docker'
-    directory: '/deploy/local/compose/django/'
+    directories:
+      - '/deploy/local/compose/django/'
+      - '/deploy/production/compose/django/'
     schedule:
       interval: 'monthly'
+    # Ignore minor version updates (3.10 -> 3.11) but update patch versions
     ignore:
       - dependency-name: '*'
         update-types:
           - 'version-update:semver-major'
           - 'version-update:semver-minor'
-
-  - package-ecosystem: 'docker'
-    directory: '/deploy/production/compose/django/'
-    schedule:
-      interval: 'monthly'
-    ignore:
-      - dependency-name: '*'
-        update-types:
-          - 'version-update:semver-major'
-          - 'version-update:semver-minor'
+    groups:
+      docker-python:
+        patterns:
+          - '*'
 
   # Enable version updates for Docker - Vue containers
   - package-ecosystem: 'docker'
@@ -39,43 +40,38 @@ updates:
 
   # Enable version updates for Docker - Other containers
   - package-ecosystem: 'docker'
-    directory: '/deploy/local/compose/postgres/'
+    directories:
+      - '/deploy/local/compose/postgres/'
+      - '/deploy/production/compose/postgres/'
+      - '/deploy/production/compose/nginx/'
+      - '/deploy/production/compose/aws/'
     schedule:
       interval: 'monthly'
-
-  - package-ecosystem: 'docker'
-    directory: '/deploy/local/compose/minio/'
-    schedule:
-      interval: 'monthly'
-
-  - package-ecosystem: 'docker'
-    directory: '/deploy/local/compose/minio/mc/'
-    schedule:
-      interval: 'monthly'
-
-  - package-ecosystem: 'docker'
-    directory: '/deploy/production/compose/postgres/'
-    schedule:
-      interval: 'monthly'
-
-  - package-ecosystem: 'docker'
-    directory: '/deploy/production/compose/nginx/'
-    schedule:
-      interval: 'monthly'
-
-  - package-ecosystem: 'docker'
-    directory: '/deploy/production/compose/aws/'
-    schedule:
-      interval: 'monthly'
+    groups:
+      docker-infrastructure:
+        patterns:
+          - '*'
 
   # Enable version updates for Python/Pip
   - package-ecosystem: 'pip'
     directory: '/'
     schedule:
       interval: 'monthly'
+    groups:
+      python:
+        update-types:
+          - 'minor'
+          - 'patch'
 
   # Enable version updates for npm packages in Vue app
   - package-ecosystem: 'npm'
     directory: '/web'
     schedule:
       interval: 'monthly'
+    ignore:
+      - dependency-name: 'node'
+        update-types:
+          - 'version-update:semver-major'
+      - dependency-name: 'vue'
+        update-types:
+          - 'version-update:semver-major'
