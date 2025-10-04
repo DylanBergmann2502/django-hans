@@ -2,6 +2,7 @@
 name: django_hans_local
 
 volumes:
+  venv_data: {}
   minio_data: {}
   postgres_data: {}
 
@@ -55,6 +56,7 @@ services:
     depends_on:
       - postgres
     volumes:
+      - venv_data:/app/.venv
       - ../../:/app:z
     env_file:
       - ./.envs/.django

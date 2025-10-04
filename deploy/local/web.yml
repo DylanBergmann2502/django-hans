@@ -2,6 +2,7 @@
 name: django_hans_local
 
 volumes:
+  venv_data: {}
   node_modules: {}
   postgres_data: {}
   postgres_data_backups: {}
@@ -20,6 +21,7 @@ services:
       - redis
       - minio
     volumes:
+      - venv_data:/app/.venv
       - ../..:/app:z
     env_file:
       - ./.envs/.django
@@ -90,6 +92,7 @@ services:
       - redis
       - postgres
     volumes:
+      - venv_data:/app/.venv
       - ../..:/app:z
     env_file:
       - ./.envs/.django
@@ -105,6 +108,7 @@ services:
       - redis
       - postgres
     volumes:
+      - venv_data:/app/.venv
       - ../..:/app:z
     env_file:
       - ./.envs/.django
@@ -120,6 +124,7 @@ services:
       - redis
       - postgres
     volumes:
+      - venv_data:/app/.venv
       - ../..:/app:z
     env_file:
       - ./.envs/.django

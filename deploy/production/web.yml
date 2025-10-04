@@ -17,12 +17,7 @@ services:
     container_name: django
     restart: always
     volumes:
-      - type: bind
-        source: ../..
-        target: /app
-      - type: volume
-        source: staticfiles
-        target: /app/staticfiles
+      - staticfiles:/app/staticfiles
     depends_on:
       - postgres
       - redis

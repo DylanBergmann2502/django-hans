@@ -1,0 +1,37 @@
+# deploy/production/setup.yml
+name: django_hans_production
+
+volumes:
+  postgres_data: {}
+
+services:
+  postgres:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/postgres/Dockerfile
+    image: postgres
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.postgres
+
+  django_migrations:
+    build:
+      context: ../..
+      dockerfile: ./deploy/production/compose/django/Dockerfile
+    image: django
+    container_name: django_migrations
+    depends_on:
+      - postgres
+    env_file:
+      - ./.envs/.django
+    command: /migrate
+
+  setup_complete:
+    image: alpine:latest
+    container_name: setup_complete
+    depends_on:
+      django_migrations:
+        condition: service_completed_successfully
+    command: sh -c "echo 'Setup completed successfully' && exit 0"
