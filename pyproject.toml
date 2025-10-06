@@ -16,7 +16,7 @@ dependencies = [
     "Django==5.2.7",
     "django-environ==0.12.0",
     "django-model-utils==5.0.0",
-    "django-allauth[mfa]==65.11.2",
+    "django-allauth[mfa]==65.12.0",
     "django-redis==6.0.0",
     # Django REST Framework
     "djangorestframework==3.16.1",
@@ -28,7 +28,7 @@ dependencies = [
     "watchfiles==1.1.0",
     # Testing
     "mypy==1.18.2",
-    "django-stubs[compatible-mypy]==5.2.5",
+    "django-stubs[compatible-mypy]==5.2.6",
     "pytest==8.4.2",
     "pytest-sugar==1.1.1",
     "djangorestframework-stubs==3.16.4",
@@ -40,7 +40,7 @@ dependencies = [
     "factory-boy==3.3.3",
     "django-debug-toolbar==6.0.0",
     "django-extensions==4.1",
-    "django-coverage-plugin==3.1.1",
+    "django-coverage-plugin==3.2.0",
     "pytest-django==4.11.1",
     # Production
     "gunicorn==23.0.0",
@@ -51,7 +51,7 @@ dependencies = [
     "django-anymail==13.1",
     # Other libraries
     "pandas==2.3.3",
-    "django-filter==25.1",
+    "django-filter==25.2",
     "djangorestframework-simplejwt==5.5.1",
     "djoser==2.3.3",
     "django-health-check==3.20.0",
