@@ -1,6 +1,6 @@
 # deploy/production/compose/nginx/Dockerfile
 # First stage: Build Frontend app
-FROM node:22.20-bookworm AS builder
+FROM node:22.21-bookworm AS builder
 
 WORKDIR /app
 COPY web/package*.json ./
@@ -11,7 +11,7 @@ COPY ./deploy/production/.envs/.vue .env.production
 RUN npm run build
 
 # Second stage: Nginx
-FROM nginx:1.29.1-alpine
+FROM nginx:1.29.2-alpine
 
 COPY ./deploy/production/compose/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
