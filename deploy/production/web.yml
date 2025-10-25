@@ -48,7 +48,7 @@ services:
     container_name: postgres
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
       - postgres_data_backups:/backups
     env_file:
       - ./.envs/.postgres
