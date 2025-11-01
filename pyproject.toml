@@ -11,12 +11,12 @@ dependencies = [
     "celery==5.5.3",
     "django-celery-beat==2.8.1",
     "flower==2.0.1",
-    "psycopg==3.2.11",
+    "psycopg==3.2.12",
     # Django
     "Django==5.2.7",
     "django-environ==0.12.0",
     "django-model-utils==5.0.0",
-    "django-allauth[mfa]==65.12.1",
+    "django-allauth[mfa]==65.13.0",
     "django-redis==6.0.0",
     # Django REST Framework
     "djangorestframework==3.16.1",
@@ -33,12 +33,12 @@ dependencies = [
     "pytest-sugar==1.1.1",
     "djangorestframework-stubs==3.16.5",
     # Code quality
-    "ruff==0.14.1",
+    "ruff==0.14.3",
     "coverage==7.11.0",
     "pre-commit==4.3.0",
     # Django development
     "factory-boy==3.3.3",
-    "django-debug-toolbar==6.0.0",
+    "django-debug-toolbar==6.1.0",
     "django-extensions==4.1",
     "django-coverage-plugin==3.2.0",
     "pytest-django==4.11.1",
@@ -46,7 +46,7 @@ dependencies = [
     "gunicorn==23.0.0",
     "uvicorn[standard]==0.38.0",
     "uvicorn-worker==0.4.0",
-    "sentry-sdk==2.42.1",
+    "sentry-sdk==2.43.0",
     "django-storages[s3]==1.14.6",
     "django-anymail==13.1",
     # Other libraries
