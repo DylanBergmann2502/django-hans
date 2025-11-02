@@ -86,12 +86,6 @@ License: MIT
     docker compose -f deploy/local/web.yml run --rm django ruff format .
     ```
 
-- To freeze the dependencies to `requirements.lock`, run:
-
-    ```sh
-    docker compose -f deploy/local/web.yml run --rm django pip list --format=freeze > requirements.lock
-    ```
-
 ## Notes
 
 - You should generate new secrets for env variables in `deploy/local/.envs` and `deploy/production/.envs`.
