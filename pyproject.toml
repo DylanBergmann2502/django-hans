@@ -6,17 +6,17 @@ dependencies = [
     "python-slugify==8.0.4",
     "Pillow==12.0.0",
     "argon2-cffi==25.1.0",
-    "redis==7.0.1",
+    "redis==7.1.0",
     "hiredis==3.3.0",
     "celery==5.5.3",
     "django-celery-beat==2.8.1",
     "flower==2.0.1",
-    "psycopg==3.2.12",
+    "psycopg==3.2.13",
     # Django
     "Django==5.2.8",
     "django-environ==0.12.0",
     "django-model-utils==5.0.0",
-    "django-allauth[mfa]==65.13.0",
+    "django-allauth[mfa]==65.13.1",
     "django-redis==6.0.0",
     # Django REST Framework
     "djangorestframework==3.16.1",
@@ -29,13 +29,13 @@ dependencies = [
     # Testing
     "mypy==1.18.2",
     "django-stubs[compatible-mypy]==5.2.7",
-    "pytest==9.0.0",
+    "pytest==9.0.1",
     "pytest-sugar==1.1.1",
     "djangorestframework-stubs==3.16.5",
     # Code quality
-    "ruff==0.14.4",
-    "coverage==7.11.3",
-    "pre-commit==4.4.0",
+    "ruff==0.14.7",
+    "coverage==7.12.0",
+    "pre-commit==4.5.0",
     # Django development
     "factory-boy==3.3.3",
     "django-debug-toolbar==6.1.0",
@@ -46,7 +46,7 @@ dependencies = [
     "gunicorn==23.0.0",
     "uvicorn[standard]==0.38.0",
     "uvicorn-worker==0.4.0",
-    "sentry-sdk==2.43.0",
+    "sentry-sdk==2.46.0",
     "django-storages[s3]==1.14.6",
     "django-anymail==13.1",
     # Other libraries
