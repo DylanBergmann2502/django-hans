@@ -14,7 +14,6 @@ venv
 
 # Local development
 /deploy/local/postgres/data
-/deploy/local/minio/data
 /deploy/local/redis/data
 /web/node_modules
 /web/.env.development

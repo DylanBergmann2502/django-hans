@@ -351,7 +351,7 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX": "/api/",
 }
 
-# S3/MinIO Storage Settings
+# S3 Storage Settings
 # ------------------------------------------------------------------------------
 if env.bool("USE_S3_STORAGE", default=False):
     AWS_ACCESS_KEY_ID = env("DJANGO_AWS_ACCESS_KEY_ID")

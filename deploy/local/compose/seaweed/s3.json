@@ -1,0 +1,20 @@
+{
+  "identities": [
+    {
+      "name": "local-django-hans",
+      "credentials": [
+        {
+          "accessKey": "LQwunDef2pGQ9pPXourD",
+          "secretKey": "sVVsPxUfXcyVFKeR1XQSwTLVMBnGgY2mXPasWfSn"
+        }
+      ],
+      "actions": [
+        "Admin",
+        "Read",
+        "List",
+        "Tagging",
+        "Write"
+      ]
+    }
+  ]
+}

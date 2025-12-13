@@ -62,6 +62,6 @@ echo [INFO] - Frontend: http://localhost:5173
 echo [INFO] - Backend API: http://localhost:8000
 echo [INFO] - Admin interface: http://localhost:8000/admin/
 echo [INFO] - Flower dashboard: http://localhost:5555
-echo [INFO] - MinIO Console: http://localhost:9001
+echo [INFO] - SeaweedFS UI: http://localhost:8888
 
 exit /b 0

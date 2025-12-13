@@ -6,7 +6,8 @@ volumes:
   node_modules: {}
   postgres_data: {}
   postgres_data_backups: {}
-  minio_data: {}
+  seaweed_master_data: {}
+  seaweed_volume_data: {}
   redis_data: {}
 
 services:
@@ -19,7 +20,7 @@ services:
     depends_on:
       - postgres
       - redis
-      - minio
+      - seaweeds3
     volumes:
       - venv_data:/app/.venv
       - ../..:/app:z
@@ -62,19 +63,44 @@ services:
     env_file:
       - ./.envs/.postgres
 
-  minio:
-    build:
-      context: ../..
-      dockerfile: ./deploy/local/compose/minio/Dockerfile
-    image: minio
-    container_name: minio
+  seaweed_master:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweed_master
     volumes:
-      - minio_data:/data
-    env_file:
-      - ./.envs/.minio
+      - seaweed_master_data:/data
+    command: "master -ip=seaweed_master -ip.bind=0.0.0.0 -port=9333 -mdir=/data"
+
+  seaweed_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweed_volume
+    volumes:
+      - seaweed_volume_data:/data
+    depends_on:
+      - seaweed_master
+    command: "volume -ip=seaweed_volume -ip.bind=0.0.0.0 -master=seaweed_master:9333 -port=8080 -dir=/data"
+
+  seaweed_filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweed_filer
+    depends_on:
+      - seaweed_master
+      - seaweed_volume
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "8888:8888"
+    command: "filer -ip=seaweed_filer -ip.bind=0.0.0.0 -master=seaweed_master:9333"
+
+  seaweeds3:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweeds3
+    volumes:
+      - ../../deploy/local/compose/seaweed/s3.json:/config/s3.json:ro
+    depends_on:
+      - seaweed_master
+      - seaweed_volume
+      - seaweed_filer
+    ports:
+      - "8333:8333"
+    command: "s3 -ip.bind=0.0.0.0 -port=8333 -filer=seaweed_filer:8888 -config=/config/s3.json"
 
   redis:
     image: docker.io/redis:8

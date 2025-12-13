@@ -3,38 +3,9 @@ name: django_hans_local
 
 volumes:
   venv_data: {}
-  minio_data: {}
   postgres_data: {}
 
 services:
-  minio:
-    build:
-      context: ../..
-      dockerfile: ./deploy/local/compose/minio/Dockerfile
-    image: minio
-    container_name: minio
-    volumes:
-      - minio_data:/data
-    env_file:
-      - ./.envs/.minio
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 2s
-
-  create_minio_buckets:
-    build:
-      context: ../..
-      dockerfile: ./deploy/local/compose/minio/mc/Dockerfile
-    image: create_minio_buckets
-    container_name: create_minio_buckets
-    depends_on:
-      minio:
-        condition: service_healthy
-    env_file:
-      - ./.envs/.minio
 
   postgres:
     build:
@@ -66,8 +37,6 @@ services:
     image: alpine:latest
     container_name: setup_complete
     depends_on:
-      create_minio_buckets:
-        condition: service_completed_successfully
       django_migrations:
         condition: service_completed_successfully
     command: sh -c "echo 'Setup completed successfully' && exit 0"

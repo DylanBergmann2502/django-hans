@@ -94,6 +94,6 @@ print_status $GREEN "- Frontend: http://localhost:5173"
 print_status $GREEN "- Backend API: http://localhost:8000"
 print_status $GREEN "- Admin interface: http://localhost:8000/admin/"
 print_status $GREEN "- Flower dashboard: http://localhost:5555"
-print_status $GREEN "- MinIO Console: http://localhost:9001"
+print_status $GREEN "- SeaweedFS UI: http://localhost:8888"
 
 exit 0
