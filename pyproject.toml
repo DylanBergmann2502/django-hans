@@ -48,7 +48,7 @@ dependencies = [
     "uvicorn-worker==0.4.0",
     "sentry-sdk==2.47.0",
     "django-storages[s3]==1.14.6",
-    "django-anymail==13.1",
+    "django-anymail==14.0",
     # Other libraries
     "pandas==2.3.3",
     "django-filter==25.2",
