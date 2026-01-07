@@ -4,11 +4,11 @@ version = "0.1.0"
 dependencies = [
     # Base dependencies
     "python-slugify==8.0.4",
-    "Pillow==12.0.0",
+    "Pillow==12.1.0",
     "argon2-cffi==25.1.0",
     "redis==7.1.0",
     "hiredis==3.3.0",
-    "celery==5.6.0",
+    "celery==5.6.2",
     "django-celery-beat==2.8.1",
     "flower==2.0.1",
     "psycopg==3.3.2",
@@ -27,15 +27,15 @@ dependencies = [
     "ipdb==0.13.13",
     "watchfiles==1.1.1",
     # Testing
-    "mypy==1.19.0",
+    "mypy==1.19.1",
     "django-stubs[compatible-mypy]==5.2.8",
     "pytest==9.0.2",
     "pytest-sugar==1.1.1",
     "djangorestframework-stubs==3.16.6",
     # Code quality
-    "ruff==0.14.9",
-    "coverage==7.13.0",
-    "pre-commit==4.5.0",
+    "ruff==0.14.10",
+    "coverage==7.13.1",
+    "pre-commit==4.5.1",
     # Django development
     "factory-boy==3.3.3",
     "django-debug-toolbar==6.1.0",
@@ -44,17 +44,17 @@ dependencies = [
     "pytest-django==4.11.1",
     # Production
     "gunicorn==23.0.0",
-    "uvicorn[standard]==0.38.0",
+    "uvicorn[standard]==0.40.0",
     "uvicorn-worker==0.4.0",
-    "sentry-sdk==2.47.0",
+    "sentry-sdk==2.48.0",
     "django-storages[s3]==1.14.6",
-    "django-anymail==13.1",
+    "django-anymail==14.0",
     # Other libraries
     "pandas==2.3.3",
     "django-filter==25.2",
     "djangorestframework-simplejwt==5.5.1",
     "djoser==2.3.3",
-    "django-health-check==3.20.0",
+    "django-health-check==3.20.8",
 ]
 
 # ==== pytest ====
