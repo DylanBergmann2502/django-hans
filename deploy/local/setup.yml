@@ -4,9 +4,10 @@ name: django_hans_local
 volumes:
   venv_data: {}
   postgres_data: {}
+  seaweed_master_data: {}
+  seaweed_volume_data: {}
 
 services:
-
   postgres:
     build:
       context: ../..
@@ -33,10 +34,64 @@ services:
       - ./.envs/.django
     command: /migrate
 
+  seaweed_master:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweed_master
+    volumes:
+      - seaweed_master_data:/data
+    command: "master -ip=seaweed_master -ip.bind=0.0.0.0 -port=9333 -mdir=/data"
+
+  seaweed_volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweed_volume
+    volumes:
+      - seaweed_volume_data:/data
+    depends_on:
+      - seaweed_master
+    command: "volume -ip=seaweed_volume -ip.bind=0.0.0.0 -master=seaweed_master:9333 -port=8080 -dir=/data"
+
+  seaweed_filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweed_filer
+    depends_on:
+      - seaweed_master
+      - seaweed_volume
+    command: "filer -ip=seaweed_filer -ip.bind=0.0.0.0 -master=seaweed_master:9333"
+
+  seaweeds3:
+    image: chrislusf/seaweedfs:latest
+    container_name: seaweeds3
+    volumes:
+      - ../../deploy/local/compose/seaweed/s3.json:/config/s3.json:ro
+    depends_on:
+      - seaweed_master
+      - seaweed_volume
+      - seaweed_filer
+    command: "s3 -ip.bind=0.0.0.0 -port=8333 -filer=seaweed_filer:8888 -config=/config/s3.json"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -q -O- http://localhost:8333 || exit 0"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  create_seaweed_buckets:
+    image: amazon/aws-cli:latest
+    container_name: create_seaweed_buckets
+    depends_on:
+      seaweeds3:
+        condition: service_healthy
+    env_file:
+      - ./.envs/.seaweedfs
+    entrypoint: >
+      sh -c "aws --endpoint-url http://seaweeds3:8333 s3 mb s3://local-rails-cruella || true"
+
   setup_complete:
     image: alpine:latest
     container_name: setup_complete
     depends_on:
       django_migrations:
+        condition: service_completed_successfully
+      create_seaweed_buckets:
         condition: service_completed_successfully
     command: sh -c "echo 'Setup completed successfully' && exit 0"
