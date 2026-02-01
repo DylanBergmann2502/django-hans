@@ -50,7 +50,7 @@ dependencies = [
     "django-storages[s3]==1.14.6",
     "django-anymail==14.0",
     # Other libraries
-    "pandas==2.3.3",
+    "pandas==3.0.0",
     "django-filter==25.2",
     "djangorestframework-simplejwt==5.5.1",
     "djoser==2.3.3",
