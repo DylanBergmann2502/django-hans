@@ -16,29 +16,29 @@ dependencies = [
     "Django==5.2.9",
     "django-environ==0.12.0",
     "django-model-utils==5.0.0",
-    "django-allauth[mfa]==65.13.1",
+    "django-allauth[mfa]==65.14.0",
     "django-redis==6.0.0",
     # Django REST Framework
     "djangorestframework==3.16.1",
     "django-cors-headers==4.9.0",
     "drf-spectacular==0.29.0",
     # Local development
-    "Werkzeug[watchdog]==3.1.4",
+    "Werkzeug[watchdog]==3.1.5",
     "ipdb==0.13.13",
     "watchfiles==1.1.1",
     # Testing
     "mypy==1.19.1",
-    "django-stubs[compatible-mypy]==5.2.8",
+    "django-stubs[compatible-mypy]==5.2.9",
     "pytest==9.0.2",
     "pytest-sugar==1.1.1",
-    "djangorestframework-stubs==3.16.6",
+    "djangorestframework-stubs==3.16.7",
     # Code quality
-    "ruff==0.14.10",
-    "coverage==7.13.1",
+    "ruff==0.14.14",
+    "coverage==7.13.2",
     "pre-commit==4.5.1",
     # Django development
     "factory-boy==3.3.3",
-    "django-debug-toolbar==6.1.0",
+    "django-debug-toolbar==6.2.0",
     "django-extensions==4.1",
     "django-coverage-plugin==3.2.0",
     "pytest-django==4.11.1",
@@ -46,7 +46,7 @@ dependencies = [
     "gunicorn==23.0.0",
     "uvicorn[standard]==0.40.0",
     "uvicorn-worker==0.4.0",
-    "sentry-sdk==2.48.0",
+    "sentry-sdk==2.51.0",
     "django-storages[s3]==1.14.6",
     "django-anymail==14.0",
     # Other libraries
@@ -54,7 +54,7 @@ dependencies = [
     "django-filter==25.2",
     "djangorestframework-simplejwt==5.5.1",
     "djoser==2.3.3",
-    "django-health-check==3.20.8",
+    "django-health-check==3.21.0",
 ]
 
 # ==== pytest ====
