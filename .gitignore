@@ -275,3 +275,4 @@ django_hans/media/
 .ipython/
 .env
 .claude/
+.gemini/
