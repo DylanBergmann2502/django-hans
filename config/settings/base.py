@@ -86,13 +86,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "django_extensions",
     "djoser",
-    # Health check apps
     "health_check",
-    "health_check.db",
-    "health_check.cache",
-    "health_check.storage",
-    "health_check.contrib.celery",
-    "health_check.contrib.redis",
 ]
 
 LOCAL_APPS = [
@@ -302,6 +296,7 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 CELERY_TASK_SEND_SENT_EVENT = True
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#worker-hijack-root-logger
 CELERY_WORKER_HIJACK_ROOT_LOGGER = False
+
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)

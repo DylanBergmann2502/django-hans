@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
+from health_check.views import HealthCheckView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -15,7 +16,18 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
 
     # Health Checks
-    path("health/", include("health_check.urls")),
+    path(
+        "health/",
+        HealthCheckView.as_view(
+            checks=[
+                "health_check.Database",
+                "health_check.Cache",
+                "health_check.Storage",
+                "health_check.contrib.celery.Ping",
+                "health_check.contrib.redis.Redis",
+            ]
+        ),
+    ),
 
     # API base URL
     # Hard code the v1 version, which can simplify
