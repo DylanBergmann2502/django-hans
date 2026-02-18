@@ -4,6 +4,7 @@
   "include": [
     "vite.config.*",
     "vitest.config.*",
+    "playwright.config.*",
     "eslint.config.*"
   ],
   "compilerOptions": {
