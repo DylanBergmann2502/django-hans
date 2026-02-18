@@ -99,19 +99,14 @@ describe('Axios Service', () => {
     }
 
     // Call the error interceptor directly
-    try {
-      const result = await responseErrorInterceptor(error)
+    const result = await responseErrorInterceptor(error)
 
-      // Since we don't actually make the axios.post call in our interceptor
-      // implementation above, we just verify the other actions
-      expect(tokenService.saveToken).toHaveBeenCalledWith('new-access-token')
-      expect(originalRequest.headers.Authorization).toBe('Bearer new-access-token')
-      expect(originalRequest._retry).toBe(true)
-      expect(result).toBe('success')
-    } catch (e) {
-      // This should not happen in this test
-      expect(e).toBeUndefined()
-    }
+    // Since we don't actually make the axios.post call in our interceptor
+    // implementation above, we just verify the other actions
+    expect(tokenService.saveToken).toHaveBeenCalledWith('new-access-token')
+    expect(originalRequest.headers.Authorization).toBe('Bearer new-access-token')
+    expect(originalRequest._retry).toBe(true)
+    expect(result).toBe('success')
   })
 
   it('redirects to login on token refresh failure', async () => {
@@ -154,17 +149,10 @@ describe('Axios Service', () => {
       return Promise.reject(error)
     }
 
-    // Call the test interceptor and catch the rejection
-    try {
-      await testInterceptor(error)
-      // If we reach here, fail the test
-      expect(true).toBe(false, 'Should have thrown an error')
-    } catch (e) {
-      // Verify the error message - now we're not expecting a specific error instance
-      expect(e.message).toBe('Refresh failed')
-      expect(tokenService.removeToken).toHaveBeenCalled()
-      expect(window.location.href).toBe('/login')
-    }
+    // Call the test interceptor and assert it rejects
+    await expect(testInterceptor(error)).rejects.toThrow('Refresh failed')
+    expect(tokenService.removeToken).toHaveBeenCalled()
+    expect(window.location.href).toBe('/login')
 
     // Restore location.href
     window.location.href = originalHref
