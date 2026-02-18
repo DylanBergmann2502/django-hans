@@ -1,8 +1,7 @@
 // src/services/axios.ts
 import axios, { type InternalAxiosRequestConfig } from 'axios'
-import tokenService from '@/services/tokenService'
+import { accessToken, refreshToken, clearTokens } from '@/stores/auth'
 
-// Extend axios config to support our retry flag
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
 }
@@ -17,44 +16,35 @@ const axiosInstance = axios.create({
   },
 })
 
-// Request interceptor for adding the JWT token
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = tokenService.getToken()
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    if (accessToken.value) {
+      config.headers.Authorization = `Bearer ${accessToken.value}`
     }
     return config
   },
   (error) => Promise.reject(error),
 )
 
-// Response interceptor for handling token refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config as RetryableRequestConfig
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      tokenService.getRefreshToken()
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry && refreshToken.value) {
       originalRequest._retry = true
 
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/${apiVersion}/auth/jwt/refresh/`,
-          { refresh: tokenService.getRefreshToken() },
+          `${import.meta.env.VITE_API_BASE_URL}/api/${apiVersion}/auth/jwt/refresh/`,
+          { refresh: refreshToken.value },
         )
-
         const { access } = response.data as { access: string }
-        tokenService.saveToken(access)
-
+        accessToken.value = access
         originalRequest.headers.Authorization = `Bearer ${access}`
         return axiosInstance(originalRequest)
       } catch (refreshError) {
-        tokenService.removeToken()
+        clearTokens()
         window.location.href = '/login'
         return Promise.reject(refreshError)
       }

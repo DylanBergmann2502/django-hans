@@ -35,11 +35,5 @@ app.config.globalProperties.$axios = axios
 
 app.mount('#app')
 
-// Initialize auth store after mounting
 const authStore = useAuthStore()
 authStore.initialize()
-
-// Clean up event listeners when app is unmounted
-app.unmount = () => {
-  authStore.clearListeners()
-}

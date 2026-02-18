@@ -2,25 +2,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { InternalAxiosRequestConfig } from 'axios'
 
-vi.mock('../tokenService', () => ({
-  default: {
-    getToken: vi.fn(),
-    getRefreshToken: vi.fn(),
-    saveToken: vi.fn(),
-    removeToken: vi.fn(),
-  },
+vi.mock('@/stores/auth', () => ({
+  accessToken: { value: null },
+  refreshToken: { value: null },
+  clearTokens: vi.fn(),
 }))
 
-import tokenService from '../tokenService'
+import { accessToken, refreshToken, clearTokens } from '@/stores/auth'
 
-const mockedTokenService = vi.mocked(tokenService)
+const mockedClearTokens = vi.mocked(clearTokens)
 
 describe('Axios Service', () => {
   const requestInterceptor = (config: InternalAxiosRequestConfig) => {
-    const token = mockedTokenService.getToken()
-    if (token) {
+    if (accessToken.value) {
       config.headers = config.headers ?? ({} as InternalAxiosRequestConfig['headers'])
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${accessToken.value}`
     }
     return config
   }
@@ -33,20 +29,16 @@ describe('Axios Service', () => {
   const responseErrorInterceptor = async (error: MockError) => {
     const originalRequest = error.config ?? { headers: {} }
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      mockedTokenService.getRefreshToken()
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry && refreshToken.value) {
       originalRequest._retry = true
 
       try {
-        const response = { data: { access: 'new-access-token' } }
-        mockedTokenService.saveToken(response.data.access)
-        originalRequest.headers.Authorization = `Bearer ${response.data.access}`
+        const newAccess = 'new-access-token'
+        accessToken.value = newAccess
+        originalRequest.headers.Authorization = `Bearer ${newAccess}`
         return 'success'
       } catch (refreshError) {
-        mockedTokenService.removeToken()
+        clearTokens()
         window.location.href = '/login'
         return Promise.reject(refreshError)
       }
@@ -57,25 +49,25 @@ describe('Axios Service', () => {
 
   beforeEach(() => {
     vi.resetAllMocks()
+    accessToken.value = null
+    refreshToken.value = null
   })
 
   it('adds authorization header when token exists', () => {
-    mockedTokenService.getToken.mockReturnValue('test-token')
+    accessToken.value = 'test-token'
 
     const config = { headers: {} } as unknown as InternalAxiosRequestConfig
     const result = requestInterceptor(config)
 
-    expect(mockedTokenService.getToken).toHaveBeenCalled()
     expect(result.headers.Authorization).toBe('Bearer test-token')
   })
 
-  it('does not add authorization header when token does not exist', () => {
-    mockedTokenService.getToken.mockReturnValue(null)
+  it('does not add authorization header when token is null', () => {
+    accessToken.value = null
 
     const config = { headers: {} } as unknown as InternalAxiosRequestConfig
     const result = requestInterceptor(config)
 
-    expect(mockedTokenService.getToken).toHaveBeenCalled()
     expect(result.headers.Authorization).toBeUndefined()
   })
 
@@ -85,7 +77,7 @@ describe('Axios Service', () => {
   })
 
   it('attempts to refresh token on 401 error', async () => {
-    mockedTokenService.getRefreshToken.mockReturnValue('refresh-token')
+    refreshToken.value = 'refresh-token'
 
     const originalRequest: { headers: Record<string, string>; _retry: boolean } = {
       headers: {},
@@ -95,39 +87,36 @@ describe('Axios Service', () => {
 
     const result = await responseErrorInterceptor(error)
 
-    expect(mockedTokenService.saveToken).toHaveBeenCalledWith('new-access-token')
+    expect(accessToken.value).toBe('new-access-token')
     expect(originalRequest.headers.Authorization).toBe('Bearer new-access-token')
     expect(originalRequest._retry).toBe(true)
     expect(result).toBe('success')
   })
 
   it('redirects to login on token refresh failure', async () => {
-    mockedTokenService.getRefreshToken.mockReturnValue('refresh-token')
+    refreshToken.value = 'refresh-token'
 
-    const originalHref = window.location.href
     Object.defineProperty(window, 'location', {
-      value: { href: originalHref },
+      value: { href: '' },
       writable: true,
     })
 
     const originalRequest = { headers: {}, _retry: false }
     const error: MockError = { config: originalRequest, response: { status: 401 } }
 
-    const testInterceptor = async (err: MockError) => {
+    const failingInterceptor = async (err: MockError) => {
       const req = err.config ?? { headers: {} }
-      if (err.response?.status === 401 && !req._retry && mockedTokenService.getRefreshToken()) {
+      if (err.response?.status === 401 && !req._retry && refreshToken.value) {
         req._retry = true
-        mockedTokenService.removeToken()
+        clearTokens()
         window.location.href = '/login'
         throw new Error('Refresh failed')
       }
       return Promise.reject(err)
     }
 
-    await expect(testInterceptor(error)).rejects.toThrow('Refresh failed')
-    expect(mockedTokenService.removeToken).toHaveBeenCalled()
+    await expect(failingInterceptor(error)).rejects.toThrow('Refresh failed')
+    expect(mockedClearTokens).toHaveBeenCalled()
     expect(window.location.href).toBe('/login')
-
-    window.location.href = originalHref
   })
 })
