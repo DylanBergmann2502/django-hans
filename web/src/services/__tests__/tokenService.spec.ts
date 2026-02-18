@@ -1,17 +1,16 @@
-// src/services/__tests__/tokenService.spec.js
+// src/services/__tests__/tokenService.spec.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import tokenService from '../tokenService'
 
 describe('Token Service', () => {
-  // Mock localStorage
   const localStorageMock = (() => {
-    let store = {}
+    let store: Record<string, string> = {}
     return {
-      getItem: vi.fn((key) => store[key] || null),
-      setItem: vi.fn((key, value) => {
+      getItem: vi.fn((key: string) => store[key] ?? null),
+      setItem: vi.fn((key: string, value: string) => {
         store[key] = value.toString()
       }),
-      removeItem: vi.fn((key) => {
+      removeItem: vi.fn((key: string) => {
         delete store[key]
       }),
       clear: vi.fn(() => {
@@ -21,13 +20,10 @@ describe('Token Service', () => {
   })()
 
   beforeEach(() => {
-    // Set up localStorage mock
     Object.defineProperty(window, 'localStorage', {
       value: localStorageMock,
       writable: true,
     })
-
-    // Clear mock store before each test
     localStorageMock.clear()
   })
 
@@ -73,11 +69,9 @@ describe('Token Service', () => {
   })
 
   it('checks if token is valid', () => {
-    // Test when token exists
     localStorageMock.getItem.mockReturnValueOnce('valid-token')
     expect(tokenService.hasValidToken()).toBe(true)
 
-    // Test when token doesn't exist
     localStorageMock.getItem.mockReturnValueOnce(null)
     expect(tokenService.hasValidToken()).toBe(false)
   })

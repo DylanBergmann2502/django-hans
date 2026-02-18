@@ -1,37 +1,35 @@
-// src/router/__tests__/index.spec.js
+// src/router/__tests__/index.spec.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { setActivePinia, createPinia } from 'pinia'
+import type { RouteRecordRaw } from 'vue-router'
 
-// Mock the auth store
 vi.mock('@/stores/auth', () => ({
   useAuthStore: vi.fn(() => ({
     isAuthenticated: false,
   })),
 }))
 
-// Mock components
+import { useAuthStore } from '@/stores/auth'
+
+const mockedUseAuthStore = vi.mocked(useAuthStore)
+
 const mockComponent = (name = 'Default') => ({
   name,
   template: `<div>${name}</div>`,
 })
 
-// Import the auth store
-import { useAuthStore } from '@/stores/auth'
-
 describe('Router Guards', () => {
-  let router
-  let authStore
+  let router: ReturnType<typeof createRouter>
+  let authStore: { isAuthenticated: boolean }
 
   beforeEach(() => {
-    // Create a fresh pinia
     setActivePinia(createPinia())
 
-    // Get the auth store
-    authStore = useAuthStore()
+    authStore = { isAuthenticated: false }
+    mockedUseAuthStore.mockReturnValue(authStore as ReturnType<typeof useAuthStore>)
 
-    // Define routes
-    const routes = [
+    const routes: RouteRecordRaw[] = [
       {
         path: '/',
         component: mockComponent('Layout'),
@@ -64,13 +62,8 @@ describe('Router Guards', () => {
       },
     ]
 
-    // Create router
-    router = createRouter({
-      history: createMemoryHistory(),
-      routes,
-    })
+    router = createRouter({ history: createMemoryHistory(), routes })
 
-    // Add guard
     router.beforeEach((to, from, next) => {
       const isAuthenticated = authStore.isAuthenticated
 
@@ -113,7 +106,6 @@ describe('Router Guards', () => {
   it('redirects to home when accessing login while authenticated', async () => {
     authStore.isAuthenticated = true
 
-    // Start at the home page and then try to go to login
     await router.push('/')
     expect(router.currentRoute.value.name).toBe('home')
 
@@ -124,17 +116,12 @@ describe('Router Guards', () => {
   it('prevents navigation to login when already authenticated and coming from another route', async () => {
     authStore.isAuthenticated = true
 
-    // Navigate to home first
     await router.push('/')
     expect(router.currentRoute.value.name).toBe('home')
 
-    // Store the current route before trying to navigate
     const currentRoute = router.currentRoute.value.name
 
-    // Attempt to navigate to login
     await router.push('/login')
-
-    // We should still be on the home page
     expect(router.currentRoute.value.name).toBe(currentRoute)
   })
 

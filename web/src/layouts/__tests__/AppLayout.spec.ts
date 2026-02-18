@@ -1,9 +1,9 @@
-// src/layouts/__tests__/AppLayout.spec.js
+// src/layouts/__tests__/AppLayout.spec.ts
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { defineComponent } from 'vue'
 
-// Create a simple component for testing
-const SimpleAppLayout = {
+const SimpleAppLayout = defineComponent({
   template: `
     <div class="layout">
       <header>
@@ -22,7 +22,7 @@ const SimpleAppLayout = {
   data() {
     return {
       isAuthenticated: false,
-      user: null,
+      user: null as { email: string } | null,
     }
   },
   methods: {
@@ -33,17 +33,15 @@ const SimpleAppLayout = {
       this.$emit('logout')
     },
   },
-}
+})
 
 describe('AppLayout', () => {
-  let wrapper
+  let wrapper: ReturnType<typeof mount>
 
   beforeEach(() => {
     wrapper = mount(SimpleAppLayout, {
       global: {
-        stubs: {
-          'router-link': true,
-        },
+        stubs: { 'router-link': true },
       },
     })
   })
@@ -55,26 +53,19 @@ describe('AppLayout', () => {
   })
 
   it('navigates home when logo is clicked', async () => {
-    // Click the logo
     await wrapper.find('.logo').trigger('click')
 
-    // Check if the event was emitted
     expect(wrapper.emitted()['navigate-home']).toBeTruthy()
-    expect(wrapper.emitted()['navigate-home'].length).toBe(1)
+    expect(wrapper.emitted()['navigate-home']!.length).toBe(1)
   })
 
   it('displays login and register links when not authenticated', () => {
-    // Default state is not authenticated
     expect(wrapper.find('.auth-buttons').exists()).toBe(true)
     expect(wrapper.find('.user-menu').exists()).toBe(false)
   })
 
   it('displays user menu when authenticated', async () => {
-    // Update data directly
-    await wrapper.setData({
-      isAuthenticated: true,
-      user: { email: 'test@example.com' },
-    })
+    await wrapper.setData({ isAuthenticated: true, user: { email: 'test@example.com' } })
 
     expect(wrapper.find('.user-menu').exists()).toBe(true)
     expect(wrapper.find('.auth-buttons').exists()).toBe(false)
@@ -82,17 +73,11 @@ describe('AppLayout', () => {
   })
 
   it('calls logout when logout button is clicked', async () => {
-    // Set authenticated state
-    await wrapper.setData({
-      isAuthenticated: true,
-      user: { email: 'test@example.com' },
-    })
+    await wrapper.setData({ isAuthenticated: true, user: { email: 'test@example.com' } })
 
-    // Click logout button
     await wrapper.find('.user-menu button').trigger('click')
 
-    // Check if logout event was emitted
     expect(wrapper.emitted().logout).toBeTruthy()
-    expect(wrapper.emitted().logout.length).toBe(1)
+    expect(wrapper.emitted().logout!.length).toBe(1)
   })
 })

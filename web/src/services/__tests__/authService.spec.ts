@@ -1,10 +1,9 @@
-// src/services/__tests__/authService.spec.js
+// src/services/__tests__/authService.spec.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import authService from '../authService'
 import axios from '@/services/axios'
 import tokenService from '@/services/tokenService'
 
-// Mock dependencies
 vi.mock('@/services/axios', () => ({
   default: {
     post: vi.fn(),
@@ -22,6 +21,10 @@ vi.mock('@/services/tokenService', () => ({
   },
 }))
 
+const mockedAxiosPost = vi.mocked(axios.post)
+const mockedAxiosGet = vi.mocked(axios.get)
+const mockedTokenService = vi.mocked(tokenService)
+
 describe('Auth Service', () => {
   beforeEach(() => {
     vi.resetAllMocks()
@@ -29,73 +32,73 @@ describe('Auth Service', () => {
 
   it('login should make API call and save tokens', async () => {
     const mockResponse = { data: { access: 'access-token', refresh: 'refresh-token' } }
-    axios.post.mockResolvedValue(mockResponse)
+    mockedAxiosPost.mockResolvedValue(mockResponse)
 
     const response = await authService.login('test@example.com', 'password')
 
-    expect(axios.post).toHaveBeenCalledWith('/auth/jwt/create/', {
+    expect(mockedAxiosPost).toHaveBeenCalledWith('/auth/jwt/create/', {
       email: 'test@example.com',
       password: 'password',
     })
-    expect(tokenService.saveToken).toHaveBeenCalledWith('access-token')
-    expect(tokenService.saveRefreshToken).toHaveBeenCalledWith('refresh-token')
+    expect(mockedTokenService.saveToken).toHaveBeenCalledWith('access-token')
+    expect(mockedTokenService.saveRefreshToken).toHaveBeenCalledWith('refresh-token')
     expect(response).toEqual(mockResponse)
   })
 
   it('register should make API call with user data', async () => {
     const userData = { email: 'new@example.com', password: 'password' }
     const mockResponse = { data: { id: 1, email: 'new@example.com' } }
-    axios.post.mockResolvedValue(mockResponse)
+    mockedAxiosPost.mockResolvedValue(mockResponse)
 
     const response = await authService.register(userData)
 
-    expect(axios.post).toHaveBeenCalledWith('/auth/users/', userData)
+    expect(mockedAxiosPost).toHaveBeenCalledWith('/auth/users/', userData)
     expect(response).toEqual(mockResponse)
   })
 
-  it('logout should remove tokens', async () => {
-    await authService.logout()
+  it('logout should remove tokens', () => {
+    authService.logout()
 
-    expect(tokenService.removeToken).toHaveBeenCalled()
+    expect(mockedTokenService.removeToken).toHaveBeenCalled()
   })
 
   it('getUserInfo should make API call', async () => {
     const mockResponse = { data: { id: 1, email: 'test@example.com' } }
-    axios.get.mockResolvedValue(mockResponse)
+    mockedAxiosGet.mockResolvedValue(mockResponse)
 
     const response = await authService.getUserInfo()
 
-    expect(axios.get).toHaveBeenCalledWith('/auth/users/me/')
+    expect(mockedAxiosGet).toHaveBeenCalledWith('/auth/users/me/')
     expect(response).toEqual(mockResponse)
   })
 
   it('refreshToken should make API call and save new token', async () => {
-    tokenService.getRefreshToken.mockReturnValue('old-refresh-token')
-    const mockResponse = { data: { access: 'new-access-token' } }
-    axios.post.mockResolvedValue(mockResponse)
+    mockedTokenService.getRefreshToken.mockReturnValue('old-refresh-token')
+    const mockResponse = { data: { access: 'new-access-token', refresh: '' } }
+    mockedAxiosPost.mockResolvedValue(mockResponse)
 
     const response = await authService.refreshToken()
 
-    expect(axios.post).toHaveBeenCalledWith('/auth/jwt/refresh/', {
+    expect(mockedAxiosPost).toHaveBeenCalledWith('/auth/jwt/refresh/', {
       refresh: 'old-refresh-token',
     })
-    expect(tokenService.saveToken).toHaveBeenCalledWith('new-access-token')
+    expect(mockedTokenService.saveToken).toHaveBeenCalledWith('new-access-token')
     expect(response).toEqual(mockResponse)
   })
 
   it('refreshToken should throw error if no refresh token', async () => {
-    tokenService.getRefreshToken.mockReturnValue(null)
+    mockedTokenService.getRefreshToken.mockReturnValue(null)
 
     await expect(authService.refreshToken()).rejects.toThrow('No refresh token available')
-    expect(axios.post).not.toHaveBeenCalled()
+    expect(mockedAxiosPost).not.toHaveBeenCalled()
   })
 
   it('isAuthenticated should check token validity', () => {
-    tokenService.hasValidToken.mockReturnValue(true)
+    mockedTokenService.hasValidToken.mockReturnValue(true)
 
     const result = authService.isAuthenticated()
 
-    expect(tokenService.hasValidToken).toHaveBeenCalled()
+    expect(mockedTokenService.hasValidToken).toHaveBeenCalled()
     expect(result).toBe(true)
   })
 })

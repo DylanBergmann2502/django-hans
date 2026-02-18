@@ -1,6 +1,11 @@
-// src/services/axios.js
-import axios from 'axios'
+// src/services/axios.ts
+import axios, { type InternalAxiosRequestConfig } from 'axios'
 import tokenService from '@/services/tokenService'
+
+// Extend axios config to support our retry flag
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean
+}
 
 const apiVersion = 'v1'
 
@@ -21,18 +26,15 @@ axiosInstance.interceptors.request.use(
     }
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  },
+  (error) => Promise.reject(error),
 )
 
 // Response interceptor for handling token refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config
+    const originalRequest = error.config as RetryableRequestConfig
 
-    // If error is 401 and not a retry
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -41,22 +43,17 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true
 
       try {
-        // Try to refresh the token
         const response = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/${apiVersion}/auth/jwt/refresh/`,
-          {
-            refresh: tokenService.getRefreshToken(),
-          },
+          { refresh: tokenService.getRefreshToken() },
         )
 
-        const { access } = response.data
+        const { access } = response.data as { access: string }
         tokenService.saveToken(access)
 
-        // Update the authorization header
         originalRequest.headers.Authorization = `Bearer ${access}`
         return axiosInstance(originalRequest)
       } catch (refreshError) {
-        // If refresh fails, clear tokens and redirect to login
         tokenService.removeToken()
         window.location.href = '/login'
         return Promise.reject(refreshError)

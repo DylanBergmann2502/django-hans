@@ -1,9 +1,11 @@
 <!-- src/layouts/AppLayout.vue -->
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import type Menu from 'primevue/menu'
+import type { MenuItem } from 'primevue/menuitem'
 
 const toast = useToast()
 const authStore = useAuthStore()
@@ -12,8 +14,11 @@ const router = useRouter()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 const user = computed(() => authStore.user)
 
-// Menu items with 'to' property for router links
-const menuItems = ref([
+const userMenu = ref<InstanceType<typeof Menu> | null>(null)
+
+type AppMenuItem = MenuItem & { isLogout?: boolean }
+
+const menuItems = ref<AppMenuItem[]>([
   {
     label: 'Home',
     icon: 'pi pi-fw pi-home',
@@ -26,8 +31,7 @@ const menuItems = ref([
   },
 ])
 
-// User menu items with special flag for logout
-const userMenuItems = ref([
+const userMenuItems = ref<AppMenuItem[]>([
   {
     label: 'Profile',
     icon: 'pi pi-fw pi-user',
@@ -44,8 +48,10 @@ const userMenuItems = ref([
   {
     label: 'Logout',
     icon: 'pi pi-fw pi-sign-out',
-    command: () => handleLogout(),
-    isLogout: true, // Special flag to identify logout action
+    command: () => {
+      handleLogout()
+    },
+    isLogout: true,
   },
 ])
 
@@ -84,9 +90,9 @@ const navigateHome = () => {
         <!-- Menu items with real links -->
         <div class="ml-6 flex space-x-4">
           <router-link
-            v-for="item in menuItems"
-            :key="item.label"
-            :to="item.to"
+            v-for="(item, index) in menuItems"
+            :key="index"
+            :to="item.to!"
             class="p-menuitem-link flex items-center px-3 py-2 rounded-md hover:bg-gray-100"
           >
             <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
@@ -115,7 +121,7 @@ const navigateHome = () => {
               <!-- Special handling for logout - no href, just click handler -->
               <div
                 v-else-if="item.isLogout"
-                @click="item.command"
+                @click="handleLogout"
                 class="p-menuitem-link flex align-items-center p-3 text-color hover:surface-200 border-noround cursor-pointer"
               >
                 <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
@@ -132,7 +138,7 @@ const navigateHome = () => {
             rounded
             text
             aria-label="User Menu"
-            @click="$refs.userMenu.toggle($event)"
+            @click="(e) => userMenu?.toggle(e)"
           />
         </div>
         <div v-else class="flex gap-2">

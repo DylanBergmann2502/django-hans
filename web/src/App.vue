@@ -1,5 +1,5 @@
 <!-- src/App.vue -->
-<script setup></script>
+<script setup lang="ts"></script>
 
 <template>
   <router-view />

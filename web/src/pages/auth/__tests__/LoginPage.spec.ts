@@ -1,11 +1,10 @@
-// src/pages/auth/__tests__/LoginPage.spec.js
+// src/pages/auth/__tests__/LoginPage.spec.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia } from 'pinia'
 import { ref } from 'vue'
 import LoginPage from '../LoginPage.vue'
 
-// Mock the component
 vi.mock('../LoginPage.vue', () => ({
   default: {
     name: 'LoginPage',
@@ -32,25 +31,17 @@ vi.mock('../LoginPage.vue', () => ({
           await authStore.login(email.value, password.value)
           router.push('/')
         } catch {
-          // Handle error (removed unused error variable)
+          // handle error
         } finally {
           loading.value = false
         }
       }
 
-      return {
-        email,
-        password,
-        loading,
-        handleLogin,
-        authStore,
-        router,
-      }
+      return { email, password, loading, handleLogin, authStore, router }
     },
   },
 }))
 
-// Create a mock for the useAuthStore function
 vi.mock('@/stores/auth', () => ({
   useAuthStore: vi.fn(() => ({
     login: vi.fn().mockResolvedValue({}),
@@ -61,35 +52,29 @@ vi.mock('@/stores/auth', () => ({
   })),
 }))
 
-// Create a mock for the router
 vi.mock('vue-router', () => ({
   useRouter: vi.fn(() => ({
     push: vi.fn(),
     currentRoute: { value: { name: 'login' } },
   })),
+  useRoute: vi.fn(() => ({
+    query: {},
+  })),
 }))
 
-// Mock PrimeVue toast
 vi.mock('primevue/usetoast', () => ({
-  useToast: () => ({
-    add: vi.fn(),
-  }),
+  useToast: () => ({ add: vi.fn() }),
 }))
 
 describe('LoginPage', () => {
-  let wrapper
+  let wrapper: ReturnType<typeof mount>
 
   beforeEach(() => {
-    // Reset mocks
     vi.clearAllMocks()
 
-    // Create a fresh pinia
-    const pinia = createPinia()
-
-    // Mount the component
     wrapper = mount(LoginPage, {
       global: {
-        plugins: [pinia],
+        plugins: [createPinia()],
         stubs: {
           Card: true,
           InputText: true,
@@ -107,81 +92,69 @@ describe('LoginPage', () => {
   })
 
   it('updates form values on input', async () => {
-    const emailInput = wrapper.find('input[type="email"]')
-    const passwordInput = wrapper.find('input[type="password"]')
+    await wrapper.find('input[type="email"]').setValue('test@example.com')
+    await wrapper.find('input[type="password"]').setValue('password123')
 
-    await emailInput.setValue('test@example.com')
-    await passwordInput.setValue('password123')
-
-    expect(wrapper.vm.email).toBe('test@example.com')
-    expect(wrapper.vm.password).toBe('password123')
+    expect((wrapper.vm as unknown as { email: string }).email).toBe('test@example.com')
+    expect((wrapper.vm as unknown as { password: string }).password).toBe('password123')
   })
 
   it('calls login action on form submission', async () => {
-    // Set form values
     await wrapper.find('input[type="email"]').setValue('test@example.com')
     await wrapper.find('input[type="password"]').setValue('password123')
 
-    // Submit the form
     await wrapper.find('form').trigger('submit.prevent')
 
-    // Check if store action was called with correct params
-    expect(wrapper.vm.authStore.login).toHaveBeenCalledWith('test@example.com', 'password123')
-
-    // Should navigate to home after successful login
-    expect(wrapper.vm.router.push).toHaveBeenCalledWith('/')
+    const vm = wrapper.vm as unknown as {
+      authStore: { login: ReturnType<typeof vi.fn> }
+      router: { push: ReturnType<typeof vi.fn> }
+    }
+    expect(vm.authStore.login).toHaveBeenCalledWith('test@example.com', 'password123')
+    expect(vm.router.push).toHaveBeenCalledWith('/')
   })
 
   it('shows loading state during login', async () => {
-    // Enable fake timers
     vi.useFakeTimers()
 
-    // Make login take some time
-    wrapper.vm.authStore.login = vi.fn().mockImplementation(
-      () =>
-        new Promise((resolve) => {
-          setTimeout(resolve, 10)
-        }),
-    )
+    const vm = wrapper.vm as unknown as {
+      authStore: { login: ReturnType<typeof vi.fn> }
+      loading: boolean
+    }
 
-    // Set form values
+    vm.authStore.login = vi
+      .fn()
+      .mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 10)))
+
     await wrapper.find('input[type="email"]').setValue('test@example.com')
     await wrapper.find('input[type="password"]').setValue('password123')
 
-    // Submit the form
     const formSubmitPromise = wrapper.find('form').trigger('submit.prevent')
 
-    // Check loading state
-    expect(wrapper.vm.loading).toBe(true)
+    expect(vm.loading).toBe(true)
 
-    // Advance timers to resolve the setTimeout
     vi.advanceTimersByTime(20)
-
-    // Wait for the login promise to resolve
     await formSubmitPromise
 
-    // After resolution, loading should be false
-    expect(wrapper.vm.loading).toBe(false)
+    expect(vm.loading).toBe(false)
 
-    // Restore real timers
     vi.useRealTimers()
   })
 
   it('handles login errors', async () => {
-    // Setup mock to reject with error
-    wrapper.vm.authStore.login = vi.fn().mockRejectedValue(new Error('Invalid credentials'))
+    const vm = wrapper.vm as unknown as {
+      authStore: { login: ReturnType<typeof vi.fn> }
+      router: { push: ReturnType<typeof vi.fn> }
+      loading: boolean
+    }
 
-    // Set form values
+    vm.authStore.login = vi.fn().mockRejectedValue(new Error('Invalid credentials'))
+
     await wrapper.find('input[type="email"]').setValue('test@example.com')
     await wrapper.find('input[type="password"]').setValue('wrong')
 
-    // Submit the form
     await wrapper.find('form').trigger('submit.prevent')
 
-    // Should not navigate
-    expect(wrapper.vm.router.push).not.toHaveBeenCalled()
-
-    // Loading should be false
-    expect(wrapper.vm.loading).toBe(false)
+    expect(vm.router.push).not.toHaveBeenCalled()
+    expect(vm.loading).toBe(false)
   })
 })

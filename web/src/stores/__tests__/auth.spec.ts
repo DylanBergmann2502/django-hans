@@ -1,9 +1,9 @@
-// src/stores/__tests__/auth.spec.js
+// src/stores/__tests__/auth.spec.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useAuthStore } from '../auth'
+import type { User } from '@/types'
 
-// Mock the services
 vi.mock('@/services/authService', () => ({
   default: {
     login: vi.fn(),
@@ -25,17 +25,17 @@ vi.mock('@/services/tokenService', () => ({
 import authService from '@/services/authService'
 import tokenService from '@/services/tokenService'
 
+const mockedAuthService = vi.mocked(authService)
+const mockedTokenService = vi.mocked(tokenService)
+
 describe('Auth Store', () => {
   beforeEach(() => {
-    // Create a fresh pinia instance for each test
     setActivePinia(createPinia())
-
-    // Reset mocks
     vi.resetAllMocks()
   })
 
   it('initializes with correct default state', () => {
-    tokenService.hasValidToken.mockReturnValue(false)
+    mockedTokenService.hasValidToken.mockReturnValue(false)
     const store = useAuthStore()
 
     expect(store.user).toBe(null)
@@ -45,43 +45,47 @@ describe('Auth Store', () => {
   })
 
   it('sets isAuthenticated to true when token is valid', () => {
-    tokenService.hasValidToken.mockReturnValue(true)
+    mockedTokenService.hasValidToken.mockReturnValue(true)
     const store = useAuthStore()
 
     expect(store.isAuthenticated).toBe(true)
   })
 
   it('login action should set authenticated state', async () => {
-    tokenService.hasValidToken.mockReturnValue(false)
-    authService.login.mockResolvedValue({ data: { access: 'token', refresh: 'refresh' } })
-    authService.getUserInfo.mockResolvedValue({ data: { email: 'test@example.com' } })
+    mockedTokenService.hasValidToken.mockReturnValue(false)
+    mockedAuthService.login.mockResolvedValue({
+      data: { access: 'token', refresh: 'refresh' },
+    } as never)
+    mockedAuthService.getUserInfo.mockResolvedValue({
+      data: { id: 1, email: 'test@example.com' } satisfies User,
+    } as never)
 
     const store = useAuthStore()
     await store.login('test@example.com', 'password')
 
-    expect(authService.login).toHaveBeenCalledWith('test@example.com', 'password')
+    expect(mockedAuthService.login).toHaveBeenCalledWith('test@example.com', 'password')
     expect(store.isAuthenticated).toBe(true)
-    expect(store.user).toEqual({ email: 'test@example.com' })
+    expect(store.user).toEqual({ id: 1, email: 'test@example.com' })
     expect(store.loading).toBe(false)
     expect(store.error).toBe(null)
   })
 
   it('logout action should clear auth state', async () => {
-    tokenService.hasValidToken.mockReturnValue(true)
+    mockedTokenService.hasValidToken.mockReturnValue(true)
     const store = useAuthStore()
-    store.user = { email: 'test@example.com' }
+    store.user = { id: 1, email: 'test@example.com' }
 
     await store.logout()
 
-    expect(authService.logout).toHaveBeenCalled()
+    expect(mockedAuthService.logout).toHaveBeenCalled()
     expect(store.isAuthenticated).toBe(false)
     expect(store.user).toBe(null)
   })
 
   it('handles login failure', async () => {
-    tokenService.hasValidToken.mockReturnValue(false)
+    mockedTokenService.hasValidToken.mockReturnValue(false)
     const errorResponse = { response: { data: { detail: 'Invalid credentials' } } }
-    authService.login.mockRejectedValue(errorResponse)
+    mockedAuthService.login.mockRejectedValue(errorResponse)
 
     const store = useAuthStore()
 

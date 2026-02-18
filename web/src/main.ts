@@ -1,4 +1,4 @@
-// src/main.js
+// src/main.ts
 import '@/assets/styles.css'
 
 import { createApp } from 'vue'
@@ -11,7 +11,7 @@ import ToastService from 'primevue/toastservice'
 
 import App from './App.vue'
 import router from './router'
-import axios from '@/services/axios.js'
+import axios from '@/services/axios'
 import { useAuthStore } from '@/stores/auth'
 
 const app = createApp(App)

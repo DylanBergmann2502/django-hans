@@ -1,9 +1,10 @@
 <!-- src/pages/auth/RegisterPage.vue -->
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from 'primevue/usetoast'
+import type { ApiError } from '@/types'
 
 const email = ref('')
 const password = ref('')
@@ -34,16 +35,17 @@ const handleRegister = async () => {
     })
 
     router.push('/login')
-  } catch (error) {
-    const errors = error.response?.data || {}
-    const errorMessages = []
+  } catch (err: unknown) {
+    const axiosError = err as { response?: { data?: ApiError } }
+    const errors = axiosError.response?.data ?? {}
+    const errorMessages: string[] = []
 
-    // Format error messages
     Object.keys(errors).forEach((key) => {
-      if (Array.isArray(errors[key])) {
-        errorMessages.push(`${key}: ${errors[key].join(', ')}`)
-      } else {
-        errorMessages.push(`${key}: ${errors[key]}`)
+      const val = errors[key as keyof ApiError]
+      if (Array.isArray(val)) {
+        errorMessages.push(`${key}: ${val.join(', ')}`)
+      } else if (val) {
+        errorMessages.push(`${key}: ${val}`)
       }
     })
 

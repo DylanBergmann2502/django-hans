@@ -1,5 +1,5 @@
 <!-- src/pages/HomePage.vue -->
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -42,7 +42,7 @@ const resources = ref([
   <div>
     <!-- Hero Section -->
     <div
-      class="bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg shadow-lg mb-6 p-8 text-white"
+      class="bg-linear-to-r from-emerald-500 to-green-600 rounded-lg shadow-lg mb-6 p-8 text-white"
     >
       <h1 class="text-3xl font-bold mb-4">
         Welcome to Django Hans
@@ -68,7 +68,7 @@ const resources = ref([
       <Card
         v-for="(feature, index) in features"
         :key="index"
-        class="border-1 border-gray-200 shadow-sm"
+        class="border border-gray-200 shadow-sm"
       >
         <template #header>
           <!-- Changed background color to light green -->
@@ -88,7 +88,7 @@ const resources = ref([
 
     <!-- Components Demo Section -->
     <h2 class="text-2xl font-bold mb-4 text-gray-800">UI Component Library</h2>
-    <Card class="mb-6 border-1 border-gray-200 shadow-sm">
+    <Card class="mb-6 border border-gray-200 shadow-sm">
       <template #content>
         <p class="mb-4 text-gray-600">
           Explore the variety of PrimeVue components available in this template:
@@ -110,7 +110,7 @@ const resources = ref([
     <Panel
       header="Resources & Documentation"
       toggleable
-      class="mb-6 border-1 border-gray-200 shadow-sm"
+      class="mb-6 border border-gray-200 shadow-sm"
     >
       <div class="flex flex-col gap-2">
         <div
@@ -135,7 +135,7 @@ const resources = ref([
     <Panel
       header="Getting Started"
       toggleable
-      class="border-1 border-green-100 shadow-sm bg-green-50"
+      class="border border-green-100 shadow-sm bg-green-50"
     >
       <div class="prose max-w-none">
         <p class="text-gray-700">

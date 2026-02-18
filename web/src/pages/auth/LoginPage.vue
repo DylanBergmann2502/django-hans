@@ -1,5 +1,5 @@
 <!-- src/pages/auth/LoginPage.vue -->
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -13,7 +13,7 @@ const route = useRoute()
 const toast = useToast()
 const loading = ref(false)
 
-const redirectPath = route.query.redirect || '/'
+const redirectPath = (route.query.redirect as string) || '/'
 
 const handleLogin = async () => {
   loading.value = true
@@ -21,8 +21,9 @@ const handleLogin = async () => {
     await authStore.login(email.value, password.value)
     toast.add({ severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000 })
     router.push(redirectPath)
-  } catch (error) {
-    const errorMessage = error.response?.data?.detail || 'Login failed'
+  } catch (err: unknown) {
+    const axiosError = err as { response?: { data?: { detail?: string } } }
+    const errorMessage = axiosError.response?.data?.detail || 'Login failed'
     toast.add({ severity: 'error', summary: 'Error', detail: errorMessage, life: 3000 })
   } finally {
     loading.value = false
