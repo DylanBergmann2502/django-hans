@@ -6,8 +6,8 @@ volumes:
   node_modules: {}
   postgres_data: {}
   postgres_data_backups: {}
-  seaweed_master_data: {}
-  seaweed_volume_data: {}
+  garage_meta: {}
+  garage_data: {}
   redis_data: {}
 
 services:
@@ -20,7 +20,7 @@ services:
     depends_on:
       - postgres
       - redis
-      - seaweeds3
+      - garage
     volumes:
       - venv_data:/app/.venv
       - ../..:/app:z
@@ -63,44 +63,28 @@ services:
     env_file:
       - ./.envs/.postgres
 
-  seaweed_master:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweed_master
+  garage:
+    image: dxflrs/garage:v2.2.0
+    container_name: garage
     volumes:
-      - seaweed_master_data:/data
-    command: "master -ip=seaweed_master -ip.bind=0.0.0.0 -port=9333 -mdir=/data"
-
-  seaweed_volume:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweed_volume
-    volumes:
-      - seaweed_volume_data:/data
-    depends_on:
-      - seaweed_master
-    command: "volume -ip=seaweed_volume -ip.bind=0.0.0.0 -master=seaweed_master:9333 -port=8080 -dir=/data"
-
-  seaweed_filer:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweed_filer
-    depends_on:
-      - seaweed_master
-      - seaweed_volume
+      - ../../deploy/local/compose/garage/garage.toml:/etc/garage.toml:ro
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
     ports:
-      - "8888:8888"
-    command: "filer -ip=seaweed_filer -ip.bind=0.0.0.0 -master=seaweed_master:9333"
+      - "3900:3900"
+      - "3903:3903"
 
-  seaweeds3:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweeds3
-    volumes:
-      - ../../deploy/local/compose/seaweed/s3.json:/config/s3.json:ro
+  garage_webui:
+    image: khairul169/garage-webui:latest
+    container_name: garage_webui
     depends_on:
-      - seaweed_master
-      - seaweed_volume
-      - seaweed_filer
+      - garage
+    volumes:
+      - ../../deploy/local/compose/garage/garage.toml:/etc/garage.toml:ro
+    environment:
+      - GARAGE_ADMIN_TOKEN=b8b4901892035bfd7a098412c4135523a43bec6628ef3029319a915ae5ec3e59
     ports:
-      - "8333:8333"
-    command: "s3 -ip.bind=0.0.0.0 -port=8333 -filer=seaweed_filer:8888 -config=/config/s3.json"
+      - "3909:3909"
 
   redis:
     image: docker.io/redis:8

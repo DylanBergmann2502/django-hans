@@ -94,6 +94,6 @@ print_status $GREEN "- Frontend: http://localhost:5173"
 print_status $GREEN "- Backend API: http://localhost:8000"
 print_status $GREEN "- Admin interface: http://localhost:8000/admin/"
 print_status $GREEN "- Flower dashboard: http://localhost:5555"
-print_status $GREEN "- SeaweedFS UI: http://localhost:8888"
+print_status $GREEN "- Garage Web UI: http://localhost:3909"
 
 exit 0

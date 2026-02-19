@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
+from redis.asyncio import Redis as AsyncRedis
 from health_check.views import HealthCheckView
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -24,7 +25,7 @@ urlpatterns = [
                 "health_check.Cache",
                 "health_check.Storage",
                 "health_check.contrib.celery.Ping",
-                "health_check.contrib.redis.Redis",
+                ("health_check.contrib.redis.Redis", {"client": AsyncRedis.from_url(settings.REDIS_URL)}),
             ]
         ),
     ),

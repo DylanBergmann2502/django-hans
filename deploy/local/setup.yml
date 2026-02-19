@@ -4,8 +4,8 @@ name: django_hans_local
 volumes:
   venv_data: {}
   postgres_data: {}
-  seaweed_master_data: {}
-  seaweed_volume_data: {}
+  garage_meta: {}
+  garage_data: {}
 
 services:
   postgres:
@@ -34,57 +34,43 @@ services:
       - ./.envs/.django
     command: /migrate
 
-  seaweed_master:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweed_master
+  garage:
+    image: dxflrs/garage:v2.2.0
+    container_name: garage
     volumes:
-      - seaweed_master_data:/data
-    command: "master -ip=seaweed_master -ip.bind=0.0.0.0 -port=9333 -mdir=/data"
-
-  seaweed_volume:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweed_volume
-    volumes:
-      - seaweed_volume_data:/data
-    depends_on:
-      - seaweed_master
-    command: "volume -ip=seaweed_volume -ip.bind=0.0.0.0 -master=seaweed_master:9333 -port=8080 -dir=/data"
-
-  seaweed_filer:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweed_filer
-    depends_on:
-      - seaweed_master
-      - seaweed_volume
-    command: "filer -ip=seaweed_filer -ip.bind=0.0.0.0 -master=seaweed_master:9333"
-
-  seaweeds3:
-    image: chrislusf/seaweedfs:latest
-    container_name: seaweeds3
-    volumes:
-      - ../../deploy/local/compose/seaweed/s3.json:/config/s3.json:ro
-    depends_on:
-      - seaweed_master
-      - seaweed_volume
-      - seaweed_filer
-    command: "s3 -ip.bind=0.0.0.0 -port=8333 -filer=seaweed_filer:8888 -config=/config/s3.json"
+      - ../../deploy/local/compose/garage/garage.toml:/etc/garage.toml:ro
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
     healthcheck:
-      test: ["CMD", "sh", "-c", "wget -q -O- http://localhost:8333 || exit 0"]
+      test: ["CMD", "/garage", "status"]
       interval: 5s
       timeout: 5s
-      retries: 5
-      start_period: 10s
+      retries: 10
+      start_period: 5s
 
-  create_seaweed_buckets:
-    image: amazon/aws-cli:latest
-    container_name: create_seaweed_buckets
+  create_garage_bucket:
+    build:
+      context: ../..
+      dockerfile: ./deploy/local/compose/garage/Dockerfile.init
+    container_name: create_garage_bucket
+    volumes:
+      - ../../deploy/local/compose/garage/garage.toml:/etc/garage.toml:ro
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
     depends_on:
-      seaweeds3:
+      garage:
         condition: service_healthy
     env_file:
-      - ./.envs/.seaweedfs
+      - ./.envs/.garage
     entrypoint: >
-      sh -c "aws --endpoint-url http://seaweeds3:8333 s3 mb s3://local-rails-cruella || true"
+      sh -c "
+        NODE_ID=$$(/garage node id -q 2>/dev/null | cut -d@ -f1) &&
+        /garage layout assign -z local -c 1G $$NODE_ID || true &&
+        /garage layout apply --version 1 || true &&
+        /garage bucket create local-django-hans || true &&
+        /garage key import --yes -n local-django-hans-key $$GARAGE_ACCESS_KEY_ID $$GARAGE_SECRET_ACCESS_KEY || true &&
+        /garage bucket allow --read --write --owner local-django-hans --key local-django-hans-key
+      "
 
   setup_complete:
     image: alpine:latest
@@ -92,6 +78,6 @@ services:
     depends_on:
       django_migrations:
         condition: service_completed_successfully
-      create_seaweed_buckets:
+      create_garage_bucket:
         condition: service_completed_successfully
     command: sh -c "echo 'Setup completed successfully' && exit 0"
