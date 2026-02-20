@@ -7,10 +7,12 @@ from django.db.models import EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from django_hans.core.models import BaseModel
+
 from .managers import UserManager
 
 
-class User(AbstractUser):
+class User(BaseModel, AbstractUser):
     """
     Default custom user model for Django Hans.
     If adding fields that need to be filled at user signup,
