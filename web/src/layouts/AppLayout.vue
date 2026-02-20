@@ -48,9 +48,6 @@ const userMenuItems = ref<AppMenuItem[]>([
   {
     label: 'Logout',
     icon: 'pi pi-fw pi-sign-out',
-    command: () => {
-      handleLogout()
-    },
     isLogout: true,
   },
 ])

@@ -24,7 +24,8 @@ const handleRegister = async () => {
   try {
     await authStore.register({
       email: email.value,
-      password: password.value,
+      password1: password.value,
+      password2: confirmPassword.value,
     })
 
     toast.add({

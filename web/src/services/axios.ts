@@ -36,7 +36,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/${apiVersion}/auth/jwt/refresh/`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/${apiVersion}/auth/token/refresh/`,
           { refresh: refreshToken.value },
         )
         const { access } = response.data as { access: string }

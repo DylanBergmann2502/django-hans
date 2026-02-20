@@ -7,7 +7,8 @@ import type { User, TokenResponse, ApiError } from '@/types'
 
 export interface RegisterData {
   email: string
-  password: string
+  password1: string
+  password2: string
   [key: string]: string
 }
 
@@ -41,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      const response = await axiosInstance.post<TokenResponse>('/auth/jwt/create/', {
+      const response = await axiosInstance.post<TokenResponse>('/auth/login/', {
         email,
         password,
       })
@@ -62,7 +63,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      return await axiosInstance.post<User>('/auth/users/', userData)
+      return await axiosInstance.post<User>('/auth/registration/', userData)
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: ApiError } }
       error.value = axiosError.response?.data ?? { detail: 'Registration failed' }
@@ -73,6 +74,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout() {
+    try {
+      await axiosInstance.post('/auth/logout/')
+    } catch {
+      // best-effort — clear locally regardless
+    }
     clearTokens()
     user.value = null
     isAuthenticated.value = false
@@ -83,7 +89,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     loading.value = true
     try {
-      const response = await axiosInstance.get<User>('/auth/users/me/')
+      const response = await axiosInstance.get<User>('/auth/user/')
       user.value = response.data
     } catch (err: unknown) {
       const axiosError = err as { response?: { status?: number } }

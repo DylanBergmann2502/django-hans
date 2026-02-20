@@ -1,13 +1,8 @@
 # django_hans/users/tests/test_admin.py
-import contextlib
 from http import HTTPStatus
-from importlib import reload
 
-import pytest
-from django.contrib import admin
 from django.urls import reverse
 
-import django_hans.users.admin as users_admin
 from django_hans.users.models import User
 
 
@@ -43,10 +38,3 @@ class TestUserAdmin:
         url = reverse("admin:users_user_change", kwargs={"object_id": user.pk})
         response = admin_client.get(url)
         assert response.status_code == HTTPStatus.OK
-
-    @pytest.fixture
-    def _force_allauth(self, settings):
-        settings.DJANGO_ADMIN_FORCE_ALLAUTH = True
-        # Reload the admin module to apply the setting change
-        with contextlib.suppress(admin.sites.AlreadyRegistered):  # type: ignore[attr-defined]
-            reload(users_admin)

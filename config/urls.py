@@ -37,8 +37,8 @@ urlpatterns = [
     path("api/v1/", include("config.api_router")),
 
     # Authentication
-    path("api/v1/auth/", include("djoser.urls")),
-    path("api/v1/auth/", include("djoser.urls.jwt")),
+    path("api/v1/auth/", include("dj_rest_auth.urls")),
+    path("api/v1/auth/registration/", include("dj_rest_auth.registration.urls")),
 
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),

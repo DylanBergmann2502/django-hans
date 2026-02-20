@@ -1,5 +1,6 @@
 // src/stores/__tests__/auth.spec.ts
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
+import { ref } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
 import type { User } from '@/types'
 
@@ -11,7 +12,7 @@ vi.mock('@/services/axios', () => ({
 }))
 
 vi.mock('@vueuse/core', () => ({
-  useStorage: vi.fn((_, defaultValue) => ({ value: defaultValue })),
+  useStorage: vi.fn((_, defaultValue) => ref(defaultValue)),
 }))
 
 import axiosInstance from '@/services/axios'
@@ -56,7 +57,7 @@ describe('Auth Store', () => {
     const store = useAuthStore()
     await store.login('test@example.com', 'password')
 
-    expect(mockedPost).toHaveBeenCalledWith('/auth/jwt/create/', {
+    expect(mockedPost).toHaveBeenCalledWith('/auth/login/', {
       email: 'test@example.com',
       password: 'password',
     })
@@ -68,13 +69,15 @@ describe('Auth Store', () => {
     expect(store.error).toBe(null)
   })
 
-  it('logout clears tokens and resets state', async () => {
+  it('logout calls /auth/logout/, clears tokens and resets state', async () => {
     accessToken.value = 'some-token'
+    mockedPost.mockResolvedValueOnce({})
     const store = useAuthStore()
     store.user = { id: 1, email: 'test@example.com' }
 
     await store.logout()
 
+    expect(mockedPost).toHaveBeenCalledWith('/auth/logout/')
     expect(accessToken.value).toBe(null)
     expect(refreshToken.value).toBe(null)
     expect(store.isAuthenticated).toBe(false)
@@ -103,14 +106,14 @@ describe('Auth Store', () => {
     expect(store.loading).toBe(false)
   })
 
-  it('register calls POST /auth/users/', async () => {
-    const userData = { email: 'new@example.com', password: 'password' }
+  it('register calls POST /auth/registration/', async () => {
+    const userData = { email: 'new@example.com', password1: 'password', password2: 'password' }
     mockedPost.mockResolvedValueOnce({ data: { id: 2, email: 'new@example.com' } })
 
     const store = useAuthStore()
     const response = await store.register(userData)
 
-    expect(mockedPost).toHaveBeenCalledWith('/auth/users/', userData)
+    expect(mockedPost).toHaveBeenCalledWith('/auth/registration/', userData)
     expect(response?.data).toEqual({ id: 2, email: 'new@example.com' })
   })
 })
