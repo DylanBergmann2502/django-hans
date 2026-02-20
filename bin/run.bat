@@ -48,6 +48,7 @@ if "%1"=="format" goto format
 if "%1"=="lint" goto lint
 if "%1"=="mypy" goto mypy
 if "%1"=="pytest" goto pytest
+if "%1"=="pre-commit" goto pre-commit
 goto help
 
 :check
@@ -184,6 +185,11 @@ shift
 docker compose -f %COMPOSE_FILE% run --rm django pytest %*
 goto :eof
 
+:pre-commit
+shift
+docker compose -f %COMPOSE_FILE% run --rm -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/app django pre-commit %*
+goto :eof
+
 :help
 echo Django Hans Management Commands
 echo ==================================
@@ -220,4 +226,5 @@ echo   format [paths]              - Format Django code with ruff (defaults to e
 echo   lint [paths]                - Lint Django code with ruff (defaults to entire codebase)
 echo   mypy [paths]                - Run mypy static type checking (defaults to entire codebase)
 echo   pytest [options]            - Run Django tests
+echo   pre-commit [args]           - Run pre-commit hooks (e.g. run --all-files)
 goto :eof

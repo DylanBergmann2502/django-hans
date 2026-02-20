@@ -184,6 +184,12 @@ case "$1" in
         docker compose -f $COMPOSE_FILE run --rm django pytest "$@"
         ;;
 
+    "pre-commit")
+        check_docker
+        shift  # Remove 'pre-commit' from arguments
+        docker compose -f $COMPOSE_FILE run --rm -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/app django pre-commit "$@"
+        ;;
+
     *)
         echo "Django Hans Management Commands"
         echo "=================================="
@@ -220,5 +226,6 @@ case "$1" in
         echo "  lint [paths]         - Lint Django code with ruff (defaults to entire codebase)"
         echo "  mypy [paths]         - Run mypy static type checking (defaults to entire codebase)"
         echo "  pytest [options]     - Run Django tests"
+        echo "  pre-commit [args]    - Run pre-commit hooks (e.g. run --all-files)"
         ;;
 esac
