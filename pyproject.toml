@@ -1,77 +1,149 @@
 [project]
 name = "django-hans"
 version = "0.1.0"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
 dependencies = [
-    # Base dependencies
-    "python-slugify==8.0.4",
-    "Pillow==12.1.1",
-    "argon2-cffi==25.1.0",
-    "redis==7.2.0",
-    "hiredis==3.3.0",
-    "celery==5.6.2",
-    "django-celery-beat==2.8.1",
-    "flower==2.0.1",
-    "psycopg==3.3.2",
-    # Django
-    "Django==5.2.11",
-    "django-environ==0.13.0",
-    "django-model-utils==5.0.0",
-    "django-redis==6.0.0",
-    # Django REST Framework
-    "djangorestframework==3.16.1",
-    "django-cors-headers==4.9.0",
-    "drf-spectacular==0.29.0",
-    # Local development
-    "Werkzeug[watchdog]==3.1.6",
-    "ipdb==0.13.13",
-    "watchfiles==1.1.1",
-    # Testing
-    "mypy==1.19.1",
-    "django-stubs[compatible-mypy]==5.2.9",
-    "pytest==9.0.2",
-    "pytest-sugar==1.1.1",
-    "djangorestframework-stubs==3.16.8",
-    # Code quality
-    "ruff==0.15.2",
-    "coverage==7.13.4",
-    "pre-commit==4.5.1",
-    # Django development
-    "factory-boy==3.3.3",
-    "django-debug-toolbar==6.2.0",
-    "django-extensions==4.1",
-    "django-coverage-plugin==3.2.0",
-    "pytest-django==4.12.0",
-    # Production
-    "gunicorn==25.1.0",
-    "uvicorn[standard]==0.41.0",
-    "uvicorn-worker==0.4.0",
-    "sentry-sdk==2.53.0",
-    "django-storages[s3]==1.14.6",
-    "django-anymail==14.0",
-    # Other libraries
-    "pandas==3.0.1",
-    "django-filter==25.2",
-    "djangorestframework-simplejwt==5.5.1",
-    "dj-rest-auth==7.1.1",
-    "django-allauth==65.14.3",
-    "django-health-check==4.0.4",
+  "argon2-cffi==25.1",
+  "celery==5.6.2",
+  "coverage==7.13.4",
+  "dj-rest-auth==7.1.1",
+  "django==5.2.11",
+  "django-allauth==65.14.3",
+  "django-anymail==14",
+  "django-celery-beat==2.8.1",
+  "django-cors-headers==4.9",
+  "django-coverage-plugin==3.2",
+  "django-debug-toolbar==6.2",
+  "django-environ==0.13",
+  "django-extensions==4.1",
+  "django-filter==25.2",
+  "django-health-check==4.0.4",
+  "django-model-utils==5",
+  "django-redis==6",
+  "django-storages[s3]==1.14.6",
+  "django-stubs[compatible-mypy]==5.2.9",
+  "djangorestframework==3.16.1",
+  "djangorestframework-simplejwt==5.5.1",
+  "djangorestframework-stubs==3.16.8",
+  "drf-spectacular==0.29",
+  "factory-boy==3.3.3",
+  "flower==2.0.1",
+  "gunicorn==25.1",
+  "hiredis==3.3",
+  "ipdb==0.13.13",
+  "mypy==1.19.1",
+  "pandas==3.0.1",
+  "pillow==12.1.1",
+  "pre-commit==4.5.1",
+  "psycopg==3.3.2",
+  "pytest==9.0.2",
+  "pytest-django==4.12",
+  "pytest-sugar==1.1.1",
+  "python-slugify==8.0.4",
+  "redis==7.2",
+  "ruff==0.15.2",
+  "sentry-sdk==2.53",
+  "uvicorn[standard]==0.41",
+  "uvicorn-worker==0.4",
+  "watchfiles==1.1.1",
+  "werkzeug[watchdog]==3.1.6",
 ]
 
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+extend-exclude = [
+  "*/migrations/*.py",
+  "config/urls.py",
+  "staticfiles/*",
+]
+lint.select = [
+  "A",
+  # "ANN", # flake8-annotations: we should support this in the future but 100+ errors atm
+  "ASYNC",
+  "B",
+  "BLE",
+  "C4",
+  "C90",
+  "COM",
+  "DJ",
+  "DTZ",
+  "E",
+  "EM",
+  "ERA",
+  "EXE",
+  "F",
+  "FA",
+  "FBT",
+  "FLY",
+  "G",
+  "I",
+  "ICN",
+  "INP",
+  "INT",
+  "ISC",
+  "N",
+  "PD",
+  # "NPY",
+  # "AIR",
+  "PERF",
+  "PGH",
+  "PIE",
+  "PL",
+  "PT",
+  # "ARG", # Unused function argument
+  "PTH",
+  "PYI",
+  "Q",
+  "RET",
+  "RSE",
+  # "FURB",
+  # "LOG",
+  "RUF",
+  "S",
+  "SIM",
+  "SLF",
+  "SLOT",
+  "T10",
+  "T20",
+  "TC",
+  "TID",
+  "TRY",
+  "UP",
+  "W",
+  "YTT",
+]
+lint.ignore = [
+  "COM812", # Trailing comma missing - conflicts with formatter
+  "EXE002", # File is executable but no shebang is present — WSL file permission artifact
+  "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+  "S101",   # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
+  "SIM102", # sometimes it's better to nest
+]
+
+[tool.pytest]
 # ==== pytest ====
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "--ds=config.settings.test --reuse-db --import-mode=importlib"
-python_files = [
-    "tests.py",
-    "test_*.py",
-]
-norecursedirs = [".git", "node_modules", ".venv"]
 
+ini_options.minversion = "6.0"
+ini_options.addopts = "--ds=config.settings.test --reuse-db --import-mode=importlib"
+ini_options.python_files = [
+  "tests.py",
+  "test_*.py",
+]
+ini_options.norecursedirs = [ ".git", "node_modules", ".venv" ]
+
+[tool.coverage]
 # ==== Coverage ====
-[tool.coverage.run]
-include = ["django_hans/**"]
-omit = ["*/migrations/*", "*/tests/*"]
-plugins = ["django_coverage_plugin"]
+
+run.include = [ "django_hans/**" ]
+run.omit = [ "*/migrations/*", "*/tests/*" ]
+run.plugins = [ "django_coverage_plugin" ]
 
 # ==== mypy ====
 [tool.mypy]
@@ -82,90 +154,13 @@ warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true
 plugins = [
-    "mypy_django_plugin.main",
-    "mypy_drf_plugin.main",
+  "mypy_django_plugin.main",
+  "mypy_drf_plugin.main",
 ]
-
-[[tool.mypy.overrides]]
-# Django migrations should not produce any errors:
-module = "*.migrations.*"
-ignore_errors = true
+overrides = [
+  # Django migrations should not produce any errors:
+  { module = "*.migrations.*", ignore_errors = true },
+]
 
 [tool.django-stubs]
 django_settings_module = "config.settings.test"
-
-[tool.ruff]
-# Exclude a variety of commonly ignored directories.
-extend-exclude = [
-    "*/migrations/*.py",
-    "staticfiles/*",
-    "config/urls.py",
-]
-
-[tool.ruff.lint]
-select = [
-  "F",
-  "E",
-  "W",
-  "C90",
-  "I",
-  "N",
-  "UP",
-  "YTT",
-  # "ANN", # flake8-annotations: we should support this in the future but 100+ errors atm
-  "ASYNC",
-  "S",
-  "BLE",
-  "FBT",
-  "B",
-  "A",
-  "COM",
-  "C4",
-  "DTZ",
-  "T10",
-  "DJ",
-  "EM",
-  "EXE",
-  "FA",
-  'ISC',
-  "ICN",
-  "G",
-  'INP',
-  'PIE',
-  "T20",
-  'PYI',
-  'PT',
-  "Q",
-  "RSE",
-  "RET",
-  "SLF",
-  "SLOT",
-  "SIM",
-  "TID",
-  "TC",
-  "INT",
-  # "ARG", # Unused function argument
-  "PTH",
-  "ERA",
-  "PD",
-  "PGH",
-  "PL",
-  "TRY",
-  "FLY",
-  # "NPY",
-  # "AIR",
-  "PERF",
-  # "FURB",
-  # "LOG",
-  "RUF",
-]
-ignore = [
-  "S101", # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
-  "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
-  "SIM102", # sometimes it's better to nest
-  "COM812", # Trailing comma missing - conflicts with formatter
-  "EXE002", # File is executable but no shebang is present — WSL file permission artifact
-]
-
-[tool.ruff.lint.isort]
-force-single-line = true
