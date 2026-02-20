@@ -39,22 +39,30 @@ if %ERRORLEVEL% neq 0 (
 :: Clean up existing containers and volumes
 echo [INFO] Cleaning up existing containers and volumes...
 docker compose -f %WEB_FILE% down -v
-echo [INFO] Cleanup exit code: %ERRORLEVEL%
+if %ERRORLEVEL% neq 0 (
+    echo [ERROR] Failed to clean up existing containers and volumes
+    exit /b 1
+)
 
 :: Run setup services in detached mode
 echo [INFO] Starting setup services...
 docker compose -f %SETUP_FILE% up --build -d
-echo [INFO] Setup services exit code: %ERRORLEVEL%
+if %ERRORLEVEL% neq 0 (
+    echo [ERROR] Failed to start setup services
+    exit /b 1
+)
 
 :: Clean up setup services but keep volumes
 echo [INFO] Cleaning up setup services...
 docker compose -f %SETUP_FILE% down --remove-orphans
-echo [INFO] Cleanup setup services exit code: %ERRORLEVEL%
 
 :: Start main application services
 echo [INFO] Building and starting all main application services...
 docker compose -f %WEB_FILE% up -d --build --remove-orphans
-echo [INFO] Start main application exit code: %ERRORLEVEL%
+if %ERRORLEVEL% neq 0 (
+    echo [ERROR] Failed to start services
+    exit /b 1
+)
 
 echo [SUCCESS] Setup completed successfully!
 echo [INFO] The application is now running. You can access it at:
@@ -62,6 +70,6 @@ echo [INFO] - Frontend: http://localhost:5173
 echo [INFO] - Backend API: http://localhost:8000
 echo [INFO] - Admin interface: http://localhost:8000/admin/
 echo [INFO] - Flower dashboard: http://localhost:5555
-echo [INFO] - SeaweedFS UI: http://localhost:8888
+echo [INFO] - Garage Web UI: http://localhost:3909
 
 exit /b 0
