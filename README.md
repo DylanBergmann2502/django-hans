@@ -1,93 +1,125 @@
 # Django Hans
 
-This is an opinionated Django boilerplate built on top of Django Cookie Cutter for REST API/SPA apps.
+An opinionated Django + Vue boilerplate for REST API / SPA development.
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 License: MIT
 
-## Techstack
+## Tech Stack
 
 ### Backend
-
-- `Django` + `DRF`
-- `Django Allauth` (for admin site MVC compatibility)
-- `SimpleJWT` + `djoser` (If you don't like this combo, have a look at `django-rest-knox` and/or `dj-rest-auth`, or enhance `SimpleJWT` with HTTPOnly Cookies)
+- **Django** + **Django REST Framework**
+- **SimpleJWT** + **dj-rest-auth** — JWT auth with token refresh, server-side logout blacklisting
+- **Django Allauth** — required dependency of dj-rest-auth registration (`account` + `socialaccount` only)
+- **Celery** + **Redis** — async task queue with Beat scheduler
+- **PostgreSQL 18**
 
 ### Frontend
+- **Vue** + **TypeScript** + **Vite**
+- **Pinia** — state management (composition API style)
+- **Vue Router**
+- **PrimeVue** + **TailwindCSS**
+- **VueUse** — reactive utilities (`useStorage` for token management, etc.)
+- **Axios** — HTTP client with JWT interceptors and auto token refresh
+- **Vitest** — unit tests
+- **Playwright** — E2E tests (configured, browsers installed separately)
 
-- `Vue.js` + `Pinia` + `Vue Router`
-- `PrimeVue` + `TailwindCSS`
+### Infrastructure
+- **Garage** — S3-compatible object storage
+- **Nginx** — production reverse proxy + static asset serving
+- **Sentry** — error monitoring (production)
+- **Flower** — Celery task monitoring
 
-### Others
+## Service URLs (local)
 
-- `Postgres`
-- `MinIO/S3`
-- `Sentry`
-- `Celery`
+| Service | URL |
+|---|---|
+| Vue frontend | http://localhost:5173 |
+| Django API | http://localhost:8000 |
+| Swagger UI | http://localhost:8000/api/docs/ |
+| Django admin | http://localhost:8000/admin/ |
+| Flower | http://localhost:5555 |
+| Garage S3 API | http://localhost:3900 |
+| Garage Web UI | http://localhost:3909 |
 
-## Basic Commands
+## Setup
 
-### Installation
+Requires `docker` and `docker compose`.
 
-- Make sure you have `docker` and `docker compose` installed:
+```sh
+docker --version
+docker compose version
+```
 
-    ```sh
-    docker  --version
-    docker compose version
-    ```
+**Unix (WSL, macOS, Linux):**
 
-- Set up the project for the first time (developing on `WSl`, `MacOS`, or `Linux` is recommended):
+```sh
+chmod +x ./bin/setup ./bin/run
+./bin/setup
+```
 
-    ```sh
-    chmod +x ./bin/setup
-    chmod +x ./bin/run
-    ./bin/setup
-    ```
+**Windows (Docker Desktop):**
 
-- If you prefer working with `Docker Desktop`:
+```bat
+.\bin\setup.bat
+```
 
-    ```sh
-    .\bin\setup.bat
-    ```
+The `./bin/setup` script pulls images, runs migrations, and starts all services. See `./bin/run` (or `.\bin\run.bat`) for all available dev shortcuts.
 
-- Have a look at `./bin/run` (or `.\bin\run.bat` for Windows) as it contains many shortcut for ease of development as well as `./bin/setup` (or `.\bin\setup.bat` for Windows) for setting up your project unanimously across team members.
+## Common Commands
 
-## Useful Commands
+All commands route through `./bin/run`:
 
-- To start up the development server, run:
+### Lifecycle
 
-    ```sh
-    docker compose -f deploy/local/web.yml up --build --remove-orphans
-    ```
+```sh
+./bin/run start        # Build and start all services
+./bin/run stop         # Stop containers
+./bin/run down         # Stop and remove containers
+./bin/run logs         # Tail container logs
+```
 
-- To run `django` command, use:
+### Django
 
-    ```sh
-    docker compose -f deploy/local/web.yml run --rm django python manage.py <command>
-    ```
+```sh
+./bin/run django migrate
+./bin/run django makemigrations
+./bin/run django createsuperuser
+./bin/run shell                    # shell_plus
+./bin/run script <name>            # run a django-extensions script
+```
 
-- To access `django` shell, run:
+### Python code quality
 
-    ```sh
-    docker compose -f deploy/local/web.yml run --rm django python manage.py shell_plus
-    ```
+```sh
+./bin/run pytest           # Run all tests
+./bin/run pytest <path>    # Run specific file or directory
+./bin/run format           # Ruff format
+./bin/run lint             # Ruff lint
+./bin/run mypy             # Type checking
+```
 
-- To run `django` script, run:
+### Frontend (Vue)
 
-    ```sh
-    docker compose -f deploy/local/web.yml run --rm django python manage.py runscript <script filename>
-    ```
+```sh
+./bin/run vue:test         # Vitest unit tests
+./bin/run vue:lint         # ESLint with auto-fix
+./bin/run vue:format       # Prettier
+./bin/run vue:install <pkg>
+./bin/run vue:update       # Update npm packages
+```
 
-- To format python code with `ruff`, run:
+For E2E tests, install Playwright browsers once, then run:
 
-    ```sh
-    docker compose -f deploy/local/web.yml run --rm django ruff format .
-    ```
+```sh
+npx playwright install     # one-time, inside the Vue container
+./bin/run vue test:e2e
+./bin/run vue test:e2e:ui  # interactive UI mode
+```
 
 ## Notes
 
-- You should generate new secrets for env variables in `deploy/local/.envs` and `deploy/production/.envs`.
-
-- The current production `nginx` only serves as a proxy and a webserver to host frontend assets. I'm expecting you to have a `master nginx` elsewhere to handle domain routing and/or SSl/TLS termination. If not, you can update the `deploy/production/compose/nginx/nginx.conf` to handle them here and expose port `443` of the `nginx` service in `deploy/production/web.yml`.
+- Generate fresh secrets for `deploy/local/.envs/` and `deploy/production/.envs/` before running.
+- The production Nginx config is intentionally minimal — it proxies Django and serves the Vue build. It assumes a **master Nginx** upstream handles domain routing and SSL/TLS termination. If you want to terminate SSL here, update `deploy/production/compose/nginx/nginx.conf` and expose port `443` in `deploy/production/web.yml`.
