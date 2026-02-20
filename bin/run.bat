@@ -24,7 +24,6 @@ if "%1"=="check" goto check
 if "%1"=="build" goto build
 if "%1"=="up" goto up
 if "%1"=="start" goto start
-if "%1"=="start:lite" goto start-lite
 if "%1"=="stop" goto stop
 if "%1"=="down" goto down
 if "%1"=="logs" goto logs
@@ -197,7 +196,6 @@ echo   check               - Check Docker installations
 echo   build               - Build all containers
 echo   up [options]        - Start containers with optional arguments
 echo   start [options]     - Build and start containers with orphan removal
-echo   start:lite          - Build and start only `django`, `postgres`, and `vue`
 echo   stop [options]      - Stop containers with optional arguments
 echo   down [options]      - Stop and remove containers with optional arguments
 echo   logs                - View container logs
