@@ -276,3 +276,5 @@ django_hans/media/
 .env
 .claude/
 .gemini/
+
+newsql/
