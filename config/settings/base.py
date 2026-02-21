@@ -305,7 +305,6 @@ CELERY_WORKER_HIJACK_ROOT_LOGGER = False
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
@@ -326,7 +325,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Django Hans API",
     "DESCRIPTION": "Documentation of API endpoints of Django Hans",
     "VERSION": "1.0.0",
-    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
     "SCHEMA_PATH_PREFIX": "/api/",
 }
 
@@ -418,8 +417,10 @@ REST_AUTH = {
     "USE_JWT": True,
     "JWT_AUTH_COOKIE": None,
     "JWT_AUTH_REFRESH_COOKIE": None,
+    "JWT_AUTH_HTTPONLY": False,
     "SESSION_LOGIN": False,
     "TOKEN_MODEL": None,
+    "LOGIN_SERIALIZER": "django_hans.users.serializers.LoginSerializer",
     "REGISTER_SERIALIZER": "django_hans.users.serializers.RegisterSerializer",
     "USER_DETAILS_SERIALIZER": "dj_rest_auth.serializers.UserDetailsSerializer",
     "PASSWORD_RESET_USE_SITES_DOMAIN": False,

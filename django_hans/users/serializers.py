@@ -1,8 +1,34 @@
 # django_hans/users/serializers.py
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError as DjangoValidationError
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
+
+
+class LoginSerializer(serializers.Serializer):
+    """
+    Custom login serializer — email + password only, no username field.
+    Replaces dj-rest-auth's default LoginSerializer via REST_AUTH setting.
+    """
+
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        user = authenticate(
+            self.context["request"],
+            email=attrs["email"],
+            password=attrs["password"],
+        )
+        if not user:
+            msg = "Unable to log in with provided credentials."
+            raise exceptions.ValidationError(msg)
+        if not user.is_active:
+            msg = "User account is disabled."
+            raise exceptions.ValidationError(msg)
+        attrs["user"] = user
+        return attrs
 
 
 class RegisterSerializer(serializers.Serializer):

@@ -12,10 +12,10 @@ def test_api_docs_accessible_by_admin(admin_client):
 
 
 @pytest.mark.django_db
-def test_api_docs_not_accessible_by_anonymous_users(client):
+def test_api_docs_accessible_by_anonymous_users(client):
     url = reverse("api-docs")
     response = client.get(url)
-    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.status_code == HTTPStatus.OK
 
 
 def test_api_schema_generated_successfully(admin_client):

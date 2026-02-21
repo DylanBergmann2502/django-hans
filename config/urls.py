@@ -11,6 +11,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
+from drf_spectacular.renderers import OpenApiJsonRenderer as JSONOpenAPIRenderer
 
 urlpatterns = [
     # Django Admin
@@ -41,7 +42,7 @@ urlpatterns = [
     path("api/v1/auth/registration/", include("dj_rest_auth.registration.urls")),
 
     # API Documentation
-    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path("api/schema/", SpectacularAPIView.as_view(renderer_classes=[JSONOpenAPIRenderer]), name="api-schema"),
     path(
         "api/docs/",
         SpectacularSwaggerView.as_view(url_name="api-schema"),
