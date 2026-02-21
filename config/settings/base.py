@@ -324,7 +324,7 @@ CORS_ALLOW_CREDENTIALS = True
 SPECTACULAR_SETTINGS = {
     "TITLE": "Django Hans API",
     "DESCRIPTION": "Documentation of API endpoints of Django Hans",
-    "VERSION": "1.0.0",
+    "VERSION": "0.1.0",
     "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
     "SCHEMA_PATH_PREFIX": "/api/",
 }
