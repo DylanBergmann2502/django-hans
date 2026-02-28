@@ -1,3 +1,4 @@
+# deploy/local/compose/garage/garage.toml
 metadata_dir = "/var/lib/garage/meta"
 data_dir = "/var/lib/garage/data"
 db_engine = "sqlite"
