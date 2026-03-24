@@ -274,7 +274,16 @@ django_hans/media/
 .pytest_cache/
 .ipython/
 .env
+
+### AI tools
 .claude/
 .gemini/
+.cursor/
+.copilot/
+.aider*
+.continue/
+.codeium/
+.tabnine/
+.windsurfer/
 
 newsql/

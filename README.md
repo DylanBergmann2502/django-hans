@@ -10,6 +10,7 @@ License: MIT
 ## Tech Stack
 
 ### Backend
+
 - **Django** + **Django REST Framework**
 - **SimpleJWT** + **dj-rest-auth** — JWT auth with token refresh, server-side logout blacklisting
 - **Django Allauth** — required dependency of dj-rest-auth registration (`account` + `socialaccount` only)
@@ -17,6 +18,7 @@ License: MIT
 - **PostgreSQL 18**
 
 ### Frontend
+
 - **Vue** + **TypeScript** + **Vite**
 - **Pinia** — state management (composition API style)
 - **Vue Router**
@@ -27,6 +29,7 @@ License: MIT
 - **Playwright** — E2E tests (configured, browsers installed separately)
 
 ### Infrastructure
+
 - **Garage** — S3-compatible object storage
 - **Nginx** — production reverse proxy + static asset serving
 - **Sentry** — error monitoring (production)
@@ -34,15 +37,15 @@ License: MIT
 
 ## Service URLs (local)
 
-| Service | URL |
-|---|---|
-| Vue frontend | http://localhost:5173 |
-| Django API | http://localhost:8000 |
-| Swagger UI | http://localhost:8000/api/docs/ |
-| Django admin | http://localhost:8000/admin/ |
-| Flower | http://localhost:5555 |
-| Garage S3 API | http://localhost:3900 |
-| Garage Web UI | http://localhost:3909 |
+| Service       | URL                             |
+| ------------- | ------------------------------- |
+| Vue frontend  | http://localhost:5173           |
+| Django API    | http://localhost:8000           |
+| Swagger UI    | http://localhost:8000/api/docs/ |
+| Django admin  | http://localhost:8000/admin/    |
+| Flower        | http://localhost:5555           |
+| Garage S3 API | http://localhost:3900           |
+| Garage Web UI | http://localhost:3909           |
 
 ## Setup
 
