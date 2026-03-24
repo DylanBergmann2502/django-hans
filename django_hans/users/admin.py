@@ -2,15 +2,17 @@
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.utils.translation import gettext_lazy as _
+from unfold.admin import ModelAdmin as UnfoldModelAdmin
+from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
 
-from .forms import UserAdminChangeForm, UserAdminCreationForm
 from .models import User
 
 
 @admin.register(User)
-class UserAdmin(auth_admin.UserAdmin):
-    form = UserAdminChangeForm
-    add_form = UserAdminCreationForm
+class UserAdmin(UnfoldModelAdmin, auth_admin.UserAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         (_("Personal info"), {"fields": ("name",)}),

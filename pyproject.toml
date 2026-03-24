@@ -29,6 +29,7 @@ dependencies = [
   "django-redis==6",
   "django-storages[s3]==1.14.6",
   "django-stubs[compatible-mypy]==6.0.1",
+  "django-unfold==0.86.1",
   "djangorestframework==3.17",
   "djangorestframework-simplejwt==5.5.1",
   "djangorestframework-stubs==3.16.8",

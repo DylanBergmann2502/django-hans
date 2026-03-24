@@ -67,6 +67,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -230,6 +234,68 @@ ADMIN_URL = "admin/"
 ADMINS = ["noreply@gmail.com"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
+
+# UNFOLD
+# ------------------------------------------------------------------------------
+# https://unfoldadmin.com/docs/
+UNFOLD = {
+    "SITE_TITLE": "Django Hans",
+    "SITE_HEADER": "Django Hans",
+    "SITE_URL": "/",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "COLORS": {
+        # Neutral base — warm off-white → dark green-grey
+        "base": {
+            "50":  "oklch(98% 0.004 150)",
+            "100": "oklch(95% 0.008 150)",
+            "200": "oklch(90% 0.012 150)",
+            "300": "oklch(82% 0.018 150)",
+            "400": "oklch(65% 0.025 150)",
+            "500": "oklch(52% 0.030 150)",
+            "600": "oklch(42% 0.032 150)",
+            "700": "oklch(34% 0.030 150)",
+            "800": "oklch(26% 0.026 150)",
+            "900": "oklch(18% 0.020 150)",
+            "950": "oklch(12% 0.016 150)",
+        },
+        # Primary accent — fresh mid green
+        "primary": {
+            "50":  "oklch(97% 0.020 145)",
+            "100": "oklch(93% 0.048 145)",
+            "200": "oklch(87% 0.090 145)",
+            "300": "oklch(78% 0.140 145)",
+            "400": "oklch(67% 0.175 145)",
+            "500": "oklch(56% 0.185 145)",
+            "600": "oklch(47% 0.175 145)",
+            "700": "oklch(40% 0.155 145)",
+            "800": "oklch(33% 0.125 145)",
+            "900": "oklch(27% 0.095 145)",
+            "950": "oklch(20% 0.070 145)",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": "Users",
+                "items": [
+                    {
+                        "title": "Users",
+                        "icon": "person",
+                        "link": "/admin/users/user/",
+                    },
+                    {
+                        "title": "Groups",
+                        "icon": "group",
+                        "link": "/admin/auth/group/",
+                    },
+                ],
+            },
+        ],
+    },
+}
 
 # LOGGING
 # ------------------------------------------------------------------------------
