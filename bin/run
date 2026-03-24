@@ -90,53 +90,53 @@ case "$1" in
         # Usage: ./bin/run vue <command>
         check_docker
         shift # Remove 'vue' from arguments
-        docker compose -f $COMPOSE_FILE run --rm vue "$@"
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue "$@"
         ;;
 
     "vue:lint")
         # Lint Vue code
         check_docker
-        docker compose -f $COMPOSE_FILE run --rm vue npm run lint
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run lint
         ;;
 
     "vue:format")
         # Format Vue code
         check_docker
-        docker compose -f $COMPOSE_FILE run --rm vue npm run format
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run format
         ;;
 
     "vue:test")
         # Run Vue unit tests
         check_docker
         shift  # Remove 'vue:test' from arguments
-        docker compose -f $COMPOSE_FILE run --rm vue npm run test:unit "$@"
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run test:unit "$@"
         ;;
 
     "vue:install")
         # Install npm package
         check_docker
         shift  # Remove 'vue:install' from arguments
-        docker compose -f $COMPOSE_FILE run --rm vue npm install "$@"
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm install "$@"
         ;;
 
     "vue:uninstall")
         # Uninstall npm package
         check_docker
         shift  # Remove 'vue:uninstall' from arguments
-        docker compose -f $COMPOSE_FILE run --rm vue npm uninstall "$@"
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm uninstall "$@"
         ;;
 
     "vue:ncu")
         # Check for npm package updates
         check_docker
         shift  # Remove 'vue:ncu' from arguments
-        docker compose -f $COMPOSE_FILE run --rm vue npx npm-check-updates "$@"
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npx npm-check-updates "$@"
         ;;
 
     "vue:update")
         # Update npm dependencies
         check_docker
-        docker compose -f $COMPOSE_FILE run --rm vue npm update
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm update
         ;;
 
     "django")
