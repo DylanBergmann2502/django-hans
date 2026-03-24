@@ -75,11 +75,14 @@ jobs:
       - name: Build containers
         run: docker compose -f deploy/local/web.yml build django vue
 
+      - name: Install frontend dependencies
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm install
+
       - name: Format frontend
-        run: docker compose -f deploy/local/web.yml run --rm vue npm run format
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run format
 
       - name: Lint frontend
-        run: docker compose -f deploy/local/web.yml run --rm vue npm run lint
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run lint
 
       - name: Tear down Vue container
         run: docker compose -f deploy/local/web.yml rm -f vue
@@ -95,8 +98,11 @@ jobs:
       - name: Build containers
         run: docker compose -f deploy/local/web.yml build django vue
 
+      - name: Install frontend dependencies
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm install
+
       - name: Run Vue unit tests
-        run: docker compose -f deploy/local/web.yml run --rm vue npm run test:unit
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run test:unit
 
       - name: Tear down Vue container
         run: docker compose -f deploy/local/web.yml rm -f vue
@@ -116,11 +122,14 @@ jobs:
       - name: Build Vue frontend
         run: docker compose -f deploy/local/web.yml build vue
 
+      - name: Install frontend dependencies
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm install
+
       - name: Build frontend production artifacts
-        run: docker compose -f deploy/local/web.yml run --rm vue npm run build
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run build
 
       - name: Check if build artifacts were created
-        run: docker compose -f deploy/local/web.yml run --rm vue ls -la dist/
+        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue ls -la dist/
 
       - name: Tear down containers
         run: docker compose -f deploy/local/web.yml down
