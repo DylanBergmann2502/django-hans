@@ -6,6 +6,8 @@ from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.exceptions import (
     APIException,
+)
+from rest_framework.exceptions import (
     ValidationError as DRFValidationError,
 )
 from rest_framework.response import Response
