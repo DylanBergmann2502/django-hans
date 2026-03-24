@@ -64,19 +64,17 @@ describe('Router Guards', () => {
 
     router = createRouter({ history: createMemoryHistory(), routes })
 
-    router.beforeEach((to, from, next) => {
+    router.beforeEach((to, from) => {
       const isAuthenticated = authStore.isAuthenticated
 
       if (to.meta.authRequired === true && !isAuthenticated) {
-        next({ name: 'login', query: { redirect: to.fullPath } })
+        return { name: 'login', query: { redirect: to.fullPath } }
       } else if (to.meta.authRequired === false && isAuthenticated) {
         if (from.name) {
-          next(false)
+          return false
         } else {
-          next({ name: 'home' })
+          return { name: 'home' }
         }
-      } else {
-        next()
       }
     })
   })
