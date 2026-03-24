@@ -247,7 +247,7 @@ UNFOLD = {
     "COLORS": {
         # Neutral base — warm off-white → dark green-grey
         "base": {
-            "50":  "oklch(98% 0.004 150)",
+            "50": "oklch(98% 0.004 150)",
             "100": "oklch(95% 0.008 150)",
             "200": "oklch(90% 0.012 150)",
             "300": "oklch(82% 0.018 150)",
@@ -261,7 +261,7 @@ UNFOLD = {
         },
         # Primary accent — fresh mid green
         "primary": {
-            "50":  "oklch(97% 0.020 145)",
+            "50": "oklch(97% 0.020 145)",
             "100": "oklch(93% 0.048 145)",
             "200": "oklch(87% 0.090 145)",
             "300": "oklch(78% 0.140 145)",
