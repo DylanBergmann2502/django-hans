@@ -29,13 +29,13 @@ repos:
         args: ['--target-version', '6.0']
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "v2.16.2"
+    rev: "v2.21.0"
     hooks:
       - id: pyproject-fmt
 
   # Run the Ruff linter.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.7
+    rev: v0.15.10
     hooks:
       # Linter
       - id: ruff-check

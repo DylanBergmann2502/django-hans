@@ -11,50 +11,50 @@ classifiers = [
 ]
 dependencies = [
   "argon2-cffi==25.1",
-  "celery==5.6.2",
+  "celery==5.6.3",
   "coverage==7.13.5",
   "dj-rest-auth==7.2",
-  "django==6.0.3",
-  "django-allauth==65.15",
+  "django==6.0.4",
+  "django-allauth==65.15.1",
   "django-anymail==14",
   "django-celery-beat==2.9",
   "django-cors-headers==4.9",
-  "django-coverage-plugin==3.2",
-  "django-debug-toolbar==6.2",
+  "django-coverage-plugin==3.2.2",
+  "django-debug-toolbar==6.3",
   "django-environ==0.13",
   "django-extensions==4.1",
   "django-filter==25.2",
-  "django-health-check==4.2.1",
+  "django-health-check==4.2.2",
   "django-model-utils==5",
   "django-redis==6",
   "django-storages[s3]==1.14.6",
-  "django-stubs[compatible-mypy]==6.0.1",
-  "django-unfold==0.86.1",
-  "djangorestframework==3.17",
+  "django-stubs[compatible-mypy]==6.0.2",
+  "django-unfold==0.89",
+  "djangorestframework==3.17.1",
   "djangorestframework-simplejwt==5.5.1",
-  "djangorestframework-stubs==3.16.8",
+  "djangorestframework-stubs==3.16.9",
   "drf-spectacular==0.29",
   "factory-boy==3.3.3",
   "flower==2.0.1",
-  "gunicorn==25.1",
+  "gunicorn==25.3",
   "hiredis==3.3.1",
   "ipdb==0.13.13",
-  "mypy==1.19.1",
-  "pandas==3.0.1",
-  "pillow==12.1.1",
+  "mypy==1.20",
+  "pandas==3.0.2",
+  "pillow==12.2",
   "pre-commit==4.5.1",
   "psycopg==3.3.3",
-  "pytest==9.0.2",
+  "pytest==9.0.3",
   "pytest-django==4.12",
   "pytest-sugar==1.1.1",
   "python-slugify==8.0.4",
-  "redis==7.3",
-  "ruff==0.15.7",
-  "sentry-sdk==2.55",
-  "uvicorn[standard]==0.42",
+  "redis==7.4",
+  "ruff==0.15.10",
+  "sentry-sdk==2.57",
+  "uvicorn[standard]==0.44",
   "uvicorn-worker==0.4",
   "watchfiles==1.1.1",
-  "werkzeug[watchdog]==3.1.6",
+  "werkzeug[watchdog]==3.1.8",
 ]
 
 [tool.ruff]
@@ -128,24 +128,6 @@ lint.ignore = [
   "SIM102", # sometimes it's better to nest
 ]
 
-[tool.pytest]
-# ==== pytest ====
-
-ini_options.minversion = "6.0"
-ini_options.addopts = "--ds=config.settings.test --reuse-db --import-mode=importlib"
-ini_options.python_files = [
-  "tests.py",
-  "test_*.py",
-]
-ini_options.norecursedirs = [ ".git", "node_modules", ".venv" ]
-
-[tool.coverage]
-# ==== Coverage ====
-
-run.include = [ "django_hans/**" ]
-run.omit = [ "*/migrations/*", "*/tests/*" ]
-run.plugins = [ "django_coverage_plugin" ]
-
 # ==== mypy ====
 [tool.mypy]
 python_version = "3.13"
@@ -165,3 +147,19 @@ overrides = [
 
 [tool.django-stubs]
 django_settings_module = "config.settings.test"
+
+[tool.pytest]
+# ==== pytest ====
+ini_options.minversion = "6.0"
+ini_options.addopts = "--ds=config.settings.test --reuse-db --import-mode=importlib"
+ini_options.python_files = [
+  "tests.py",
+  "test_*.py",
+]
+ini_options.norecursedirs = [ ".git", "node_modules", ".venv" ]
+
+[tool.coverage]
+# ==== Coverage ====
+run.include = [ "django_hans/**" ]
+run.omit = [ "*/migrations/*", "*/tests/*" ]
+run.plugins = [ "django_coverage_plugin" ]
