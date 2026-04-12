@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build the Django container
         run: docker compose -f deploy/local/web.yml build django
