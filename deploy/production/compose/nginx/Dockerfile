@@ -11,7 +11,7 @@ COPY ./deploy/production/.envs/.vue .env.production
 RUN npm run build
 
 # Second stage: Nginx
-FROM nginx:1.29.6-alpine
+FROM nginx:1.29.8-alpine
 
 COPY ./deploy/production/compose/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
