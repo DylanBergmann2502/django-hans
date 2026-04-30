@@ -64,7 +64,7 @@ services:
       - ./.envs/.postgres
 
   garage:
-    image: dxflrs/garage:v2.2.0
+    image: dxflrs/garage:v2.3.0
     container_name: garage
     volumes:
       - ../../deploy/local/compose/garage/garage.toml:/etc/garage.toml:ro
