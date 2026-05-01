@@ -1,5 +1,5 @@
 # deploy/local/compose/vue/Dockerfile
-FROM node:24.15-alpine AS development
+FROM node:25.9-alpine AS development
 WORKDIR /app
 
 # Install minimal development dependencies
