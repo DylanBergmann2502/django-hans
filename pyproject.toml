@@ -36,7 +36,7 @@ dependencies = [
   "drf-spectacular==0.29",
   "factory-boy==3.3.3",
   "flower==2.0.1",
-  "gunicorn==25.3",
+  "gunicorn==26.0.0",
   "hiredis==3.3.1",
   "ipdb==0.13.13",
   "mypy==1.20.2",
