@@ -39,7 +39,7 @@ dependencies = [
   "gunicorn==25.3",
   "hiredis==3.3.1",
   "ipdb==0.13.13",
-  "mypy==1.20.2",
+  "mypy==2.1.0",
   "pandas==3.0.2",
   "pillow==12.2",
   "pre-commit==4.6.0",
