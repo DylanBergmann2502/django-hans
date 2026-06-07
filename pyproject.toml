@@ -12,10 +12,10 @@ classifiers = [
 dependencies = [
   "argon2-cffi==25.1",
   "celery==5.6.3",
-  "coverage==7.13.5",
+  "coverage==7.14.1",
   "dj-rest-auth==7.2",
-  "django==6.0.4",
-  "django-allauth==65.16.1",
+  "django==6.0.6",
+  "django-allauth==65.18",
   "django-anymail==15",
   "django-celery-beat==2.9",
   "django-cors-headers==4.9",
@@ -24,36 +24,36 @@ dependencies = [
   "django-environ==0.13",
   "django-extensions==4.1",
   "django-filter==25.2",
-  "django-health-check==4.4.0",
+  "django-health-check==4.4.2",
   "django-model-utils==5",
-  "django-redis==6",
+  "django-redis==7",
   "django-storages[s3]==1.14.6",
-  "django-stubs[compatible-mypy]==6.0.3",
-  "django-unfold==0.91",
+  "django-stubs[compatible-mypy]==6.0.5",
+  "django-unfold==0.97",
   "djangorestframework==3.17.1",
   "djangorestframework-simplejwt==5.5.1",
-  "djangorestframework-stubs==3.16.9",
+  "djangorestframework-stubs==3.17",
   "drf-spectacular==0.29",
   "factory-boy==3.3.3",
   "flower==2.0.1",
-  "gunicorn==25.3",
-  "hiredis==3.3.1",
+  "gunicorn==26",
+  "hiredis==3.4",
   "ipdb==0.13.13",
-  "mypy==1.20.2",
-  "pandas==3.0.2",
+  "mypy==2.1",
+  "pandas==3.0.3",
   "pillow==12.2",
-  "pre-commit==4.6.0",
-  "psycopg==3.3.3",
+  "pre-commit==4.6",
+  "psycopg==3.3.4",
   "pytest==9.0.3",
   "pytest-django==4.12",
   "pytest-sugar==1.1.1",
   "python-slugify==8.0.4",
-  "redis==7.4",
-  "ruff==0.15.12",
-  "sentry-sdk==2.58",
-  "uvicorn[standard]==0.46",
+  "redis==8",
+  "ruff==0.15.16",
+  "sentry-sdk==2.61.1",
+  "uvicorn[standard]==0.49",
   "uvicorn-worker==0.4",
-  "watchfiles==1.1.1",
+  "watchfiles==1.2",
   "werkzeug[watchdog]==3.1.8",
 ]
 
@@ -130,16 +130,16 @@ lint.ignore = [
 
 # ==== mypy ====
 [tool.mypy]
+ignore_missing_imports = true
 python_version = "3.13"
 check_untyped_defs = true
-ignore_missing_imports = true
-warn_unused_ignores = true
 warn_redundant_casts = true
-warn_unused_configs = true
+warn_unused_ignores = true
 plugins = [
   "mypy_django_plugin.main",
   "mypy_drf_plugin.main",
 ]
+warn_unused_configs = true
 overrides = [
   # Django migrations should not produce any errors:
   { module = "*.migrations.*", ignore_errors = true },
@@ -151,12 +151,12 @@ django_settings_module = "config.settings.test"
 [tool.pytest]
 # ==== pytest ====
 ini_options.minversion = "6.0"
-ini_options.addopts = "--ds=config.settings.test --reuse-db --import-mode=importlib"
+ini_options.norecursedirs = [ ".git", ".venv", "node_modules" ]
 ini_options.python_files = [
-  "tests.py",
   "test_*.py",
+  "tests.py",
 ]
-ini_options.norecursedirs = [ ".git", "node_modules", ".venv" ]
+ini_options.addopts = "--ds=config.settings.test --reuse-db --import-mode=importlib"
 
 [tool.coverage]
 # ==== Coverage ====
