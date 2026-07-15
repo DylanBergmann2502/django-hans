@@ -112,6 +112,12 @@ case "$1" in
         docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run test:unit "$@"
         ;;
 
+    "vue:type-check")
+        # Run Vue/TypeScript type checking
+        check_docker
+        docker compose -f $COMPOSE_FILE run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run type-check
+        ;;
+
     "vue:install")
         # Install npm package
         check_docker
@@ -213,6 +219,7 @@ case "$1" in
         echo "  vue:lint                - Lint Vue code"
         echo "  vue:format              - Format Vue code with Prettier"
         echo "  vue:test [options]      - Run Vue unit tests"
+        echo "  vue:type-check         - Run Vue/TypeScript type checking"
         echo "  vue:install <pkg>       - Install npm package(s)"
         echo "  vue:uninstall <pkg>     - Uninstall npm package(s)"
         echo "  vue:ncu [options]       - Check for npm package updates"

@@ -14,6 +14,9 @@ on:
     branches: ['master', 'main']
     paths-ignore: ['docs/**']
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -23,9 +26,10 @@ jobs:
   backend-code-quality:
     name: Backend Code Quality
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -39,97 +43,127 @@ jobs:
   backend-tests:
     name: Backend Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSE_FILE: deploy/local/web.yml
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+
+      - name: Validate Docker Compose configuration
+        run: docker compose config --quiet
 
       - name: Build the Django container
-        run: docker compose -f deploy/local/web.yml build django
+        run: docker compose build django
 
       - name: Start PostgreSQL
-        run: docker compose -f deploy/local/web.yml up -d postgres
+        run: docker compose up -d postgres
 
       - name: Wait for PostgreSQL to be ready
-        run: sleep 10
+        run: |
+          postgres_user="$(awk -F= '/^POSTGRES_USER=/{print $2}' deploy/local/.envs/.postgres)"
+          for attempt in {1..30}; do
+            if docker compose exec -T postgres pg_isready -U "$postgres_user" -d django_hans; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
 
       - name: Check DB Migrations
-        run: docker compose -f deploy/local/web.yml run --rm django python manage.py makemigrations --check
+        run: docker compose run --rm django python manage.py makemigrations --check
 
       - name: Run DB Migrations
-        run: docker compose -f deploy/local/web.yml run --rm django python manage.py migrate
+        run: docker compose run --rm django python manage.py migrate
 
       - name: Run Django Tests
-        run: docker compose -f deploy/local/web.yml run --rm django pytest
+        run: docker compose run --rm django pytest
 
       - name: Tear down the Stack
-        run: docker compose -f deploy/local/web.yml down -v
+        if: always()
+        run: docker compose down -v --remove-orphans
 
   # Frontend code quality checks
   frontend-code-quality:
     name: Frontend Code Quality
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSE_FILE: deploy/local/web.yml
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build containers
-        run: docker compose -f deploy/local/web.yml build django vue
+        run: docker compose build django vue
 
       - name: Install frontend dependencies
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm install
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm ci
 
-      - name: Format frontend
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run format
+      - name: Check frontend formatting
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run format:check
 
       - name: Lint frontend
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run lint
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run lint:check
 
-      - name: Tear down Vue container
-        run: docker compose -f deploy/local/web.yml rm -f vue
+      - name: Type-check frontend
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run type-check
+
+      - name: Tear down containers
+        if: always()
+        run: docker compose down -v --remove-orphans
 
   # Frontend tests
   frontend-tests:
     name: Frontend Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSE_FILE: deploy/local/web.yml
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build containers
-        run: docker compose -f deploy/local/web.yml build django vue
+        run: docker compose build django vue
 
       - name: Install frontend dependencies
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm install
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm ci
 
       - name: Run Vue unit tests
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run test:unit
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run test:unit
 
-      - name: Tear down Vue container
-        run: docker compose -f deploy/local/web.yml rm -f vue
+      - name: Tear down containers
+        if: always()
+        run: docker compose down -v --remove-orphans
 
   # Build check
   build:
     name: Build Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMPOSE_FILE: deploy/local/web.yml
     needs: [backend-code-quality, backend-tests, frontend-code-quality, frontend-tests]
     steps:
       - name: Checkout Code Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build Django container
-        run: docker compose -f deploy/local/web.yml build django
+        run: docker compose build django
 
       - name: Build Vue frontend
-        run: docker compose -f deploy/local/web.yml build vue
+        run: docker compose build vue
 
       - name: Install frontend dependencies
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm install
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm ci
 
       - name: Build frontend production artifacts
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run build
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue npm run build
 
       - name: Check if build artifacts were created
-        run: docker compose -f deploy/local/web.yml run --rm -v django_hans_local_node_modules:/app/node_modules vue ls -la dist/
+        run: docker compose run --rm -v django_hans_local_node_modules:/app/node_modules vue ls -la dist/
 
       - name: Tear down containers
-        run: docker compose -f deploy/local/web.yml down
+        if: always()
+        run: docker compose down -v --remove-orphans
