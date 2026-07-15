@@ -22,7 +22,8 @@ License: MIT
 - **Vue** + **TypeScript** + **Vite**
 - **Pinia** — state management (composition API style)
 - **Vue Router**
-- **PrimeVue** + **TailwindCSS**
+- **shadcn-vue-style local components** + **TailwindCSS 4** — source-owned UI components in `web/src/components/ui/`
+- **Lucide Vue** — icons
 - **VueUse** — reactive utilities (`useStorage` for token management, etc.)
 - **Axios** — HTTP client with JWT interceptors and auto token refresh
 - **Vitest** — unit tests
@@ -109,10 +110,21 @@ All commands route through `./bin/run`:
 ```sh
 ./bin/run vue:test         # Vitest unit tests
 ./bin/run vue:lint         # ESLint with auto-fix
+./bin/run vue:type-check   # Vue/TypeScript type checking
 ./bin/run vue:format       # Prettier
 ./bin/run vue:install <pkg>
 ./bin/run vue:update       # Update npm packages
 ```
+
+For non-mutating CI-style checks:
+
+```sh
+./bin/run vue npm run format:check
+./bin/run vue npm run lint:check
+./bin/run vue:type-check
+```
+
+The GitHub Actions workflow runs backend checks, Docker Compose tests, frontend formatting, linting, type checking, unit tests, and a production frontend build.
 
 For E2E tests, install Playwright browsers once, then run:
 

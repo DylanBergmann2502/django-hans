@@ -15,7 +15,6 @@ All development commands route through `./bin/run` (or `./bin/run.bat` on Window
 ```bash
 ./bin/setup          # First-time setup: pulls images, runs migrations, starts services
 ./bin/run start      # Build and start all services (removes orphans)
-./bin/run start:lite # Start only Django, PostgreSQL, Vue (minimal stack)
 ./bin/run stop       # Stop containers
 ./bin/run down       # Stop and remove containers
 ./bin/run logs       # View container logs
@@ -51,6 +50,7 @@ All development commands route through `./bin/run` (or `./bin/run.bat` on Window
 ./bin/run vue:lint            # ESLint with auto-fix
 ./bin/run vue:format          # Format with Prettier
 ./bin/run vue:test            # Run Vitest unit tests
+./bin/run vue:type-check      # Run Vue/TypeScript type checking
 ./bin/run vue:install <pkg>   # Install npm package
 ./bin/run vue:uninstall <pkg> # Uninstall npm package
 ./bin/run vue:update          # Update npm packages
@@ -72,7 +72,7 @@ npx playwright install
 ### Stack
 
 - **Backend:** Django 6.x, Django REST Framework, SimpleJWT + dj-rest-auth (auth), Celery + Redis (async tasks), PostgreSQL 18
-- **Frontend:** Vue 3 + TypeScript, Pinia (state), Vue Router, PrimeVue + TailwindCSS 4, VueUse, Axios, Vitest, Playwright
+- **Frontend:** Vue 3 + TypeScript, Pinia (state), Vue Router, source-owned shadcn-vue-style components, TailwindCSS 4, Lucide Vue, VueUse, Axios, Vitest, Playwright
 - **Storage:** Garage (S3-compatible)
 - **Monitoring:** Sentry (production), Flower (Celery), django-health-check at `/health/`
 
@@ -80,7 +80,7 @@ npx playwright install
 
 - `config/` — Django project configuration (settings, URLs, Celery, ASGI/WSGI)
 - `django_hans/` — Django apps (`users/`, `core/`, `contrib/`)
-- `web/` — Vue.js SPA (`src/pages/`, `src/layouts/`, `src/stores/`, `src/services/`, `src/router/`, `src/types/`)
+- `web/` — Vue.js SPA (`src/pages/`, `src/layouts/`, `src/components/ui/`, `src/composables/`, `src/stores/`, `src/services/`, `src/router/`, `src/types/`)
 - `deploy/local/` — Local Docker Compose (`web.yml`, `setup.yml`, `.envs/`)
 - `deploy/production/` — Production Docker Compose with Nginx
 - `bin/` — Shell scripts for development workflow
@@ -173,12 +173,14 @@ Environment files live in `deploy/local/.envs/` (`.django`, `.postgres`, `.vue`)
 
 - Route meta field `authRequired` controls access: `true` = protected (redirects to `/login?redirect=...`), `false` = guests only (authenticated users are blocked), `undefined` = public
 
-### PrimeVue & Styling
+### UI Components & Styling
 
-- PrimeVue is configured with the **Aura** theme preset; dark mode is disabled (`darkModeSelector: 'none'`)
-- Components are auto-imported via `unplugin-vue-components` + `PrimeVueResolver` — no manual imports needed
-- `tailwindcss-primeui` bridges PrimeVue's design tokens with Tailwind classes
-- Use semantic color tokens (e.g., `surface-200`, `text-color`) rather than raw hex values
+- UI components follow shadcn-vue conventions and are source-owned under `web/src/components/ui/`; import them explicitly rather than relying on auto-imports.
+- Shared components include `Button`, `Card`, `Input`, `PasswordInput`, and `Toaster`.
+- Use `cn()` from `src/lib/utils.ts` with `clsx` and `tailwind-merge` when composing classes.
+- Use `class-variance-authority` for component variants and Lucide Vue for icons.
+- Design tokens are defined in `src/assets/styles.css`; use semantic tokens such as `bg-background`, `text-foreground`, `bg-muted`, and `text-primary` rather than raw colors.
+- Toast notifications are managed by `src/composables/useToast.ts`; use `variant: 'success'`, `'error'`, or `'warning'` for semantic feedback.
 
 ## Code Quality
 
@@ -188,6 +190,8 @@ Pre-commit hooks run automatically on commit: basic file checks, django-upgrade 
 - **mypy** uses Django and DRF stubs; excludes migrations.
 - **pytest** reuses the test database between runs (`--reuse-db`). Coverage is collected for `django_hans/*` excluding migrations and test files.
 - **ESLint** uses flat config (`web/eslint.config.ts`) with Vue, TypeScript, and Prettier integration.
+- Frontend CI uses Docker Compose and runs `npm ci`, Prettier `--check`, ESLint without auto-fix, Vue type checking, unit tests, and a production build.
+- `./bin/run vue:lint` and `./bin/run vue:format` are intentionally mutating developer commands; use `lint:check` and `format:check` for validation.
 
 ## Garage S3
 
