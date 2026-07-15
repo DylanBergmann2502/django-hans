@@ -1,25 +1,32 @@
 <!-- src/pages/auth/RegisterPage.vue -->
 <script setup lang="ts">
 import { ref } from 'vue'
+import { UserPlus } from '@lucide/vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { useToast } from 'primevue/usetoast'
+import { useToast } from '@/composables/useToast'
 import type { ApiError } from '@/types'
+import Button from '@/components/ui/Button.vue'
+import Card from '@/components/ui/Card.vue'
+import CardHeader from '@/components/ui/CardHeader.vue'
+import CardTitle from '@/components/ui/CardTitle.vue'
+import CardContent from '@/components/ui/CardContent.vue'
+import Input from '@/components/ui/Input.vue'
+import PasswordInput from '@/components/ui/PasswordInput.vue'
 
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
-const authStore = useAuthStore()
-const router = useRouter()
-const toast = useToast()
-const loading = ref(false)
+const email = ref(''),
+  password = ref(''),
+  confirmPassword = ref(''),
+  loading = ref(false)
+const authStore = useAuthStore(),
+  router = useRouter(),
+  { add } = useToast()
 
 const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Passwords do not match', life: 3000 })
+    add({ title: 'Error', description: 'Passwords do not match', variant: 'error' })
     return
   }
-
   loading.value = true
   try {
     await authStore.register({
@@ -27,34 +34,24 @@ const handleRegister = async () => {
       password1: password.value,
       password2: confirmPassword.value,
     })
-
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Registration successful! You can now log in.',
-      life: 5000,
+    add({
+      title: 'Success',
+      description: 'Registration successful! You can now log in.',
+      variant: 'success',
     })
-
     router.push('/login')
   } catch (err: unknown) {
-    const axiosError = err as { response?: { data?: ApiError } }
-    const errors = axiosError.response?.data ?? {}
-    const errorMessages: string[] = []
-
+    const errors = (err as { response?: { data?: ApiError } }).response?.data ?? {}
+    const messages: string[] = []
     Object.keys(errors).forEach((key) => {
-      const val = errors[key as keyof ApiError]
-      if (Array.isArray(val)) {
-        errorMessages.push(`${key}: ${val.join(', ')}`)
-      } else if (val) {
-        errorMessages.push(`${key}: ${val}`)
-      }
+      const value = errors[key as keyof ApiError]
+      if (Array.isArray(value)) messages.push(`${key}: ${value.join(', ')}`)
+      else if (value) messages.push(`${key}: ${value}`)
     })
-
-    toast.add({
-      severity: 'error',
-      summary: 'Registration Failed',
-      detail: errorMessages.join('\n') || 'Registration failed',
-      life: 5000,
+    add({
+      title: 'Registration Failed',
+      description: messages.join('\n') || 'Registration failed',
+      variant: 'error',
     })
   } finally {
     loading.value = false
@@ -63,66 +60,49 @@ const handleRegister = async () => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center p-4">
+  <div class="flex items-center justify-center p-4">
     <Card class="w-full max-w-md">
-      <template #title>
-        <h2 class="text-2xl font-bold text-center">Create Account</h2>
-      </template>
-      <template #content>
-        <form @submit.prevent="handleRegister" class="space-y-4">
-          <div class="field">
-            <label for="email" class="block mb-1">Email</label>
-            <InputText
+      <CardHeader><CardTitle class="text-center text-2xl">Create Account</CardTitle></CardHeader>
+      <CardContent
+        ><form class="space-y-4" @submit.prevent="handleRegister">
+          <div>
+            <label for="email" class="mb-1 block text-sm font-medium">Email</label
+            ><Input
               id="email"
               v-model="email"
               type="email"
-              class="w-full"
               placeholder="Enter your email"
               required
             />
           </div>
-          <div class="field">
-            <label for="password" class="block mb-1">Password</label>
-            <Password
+          <div>
+            <label for="password" class="mb-1 block text-sm font-medium">Password</label
+            ><PasswordInput
               id="password"
               v-model="password"
-              class="w-full"
-              toggleMask
-              inputClass="w-full"
               placeholder="Create a password"
               required
             />
           </div>
-          <div class="field">
-            <label for="confirmPassword" class="block mb-1">Confirm Password</label>
-            <Password
+          <div>
+            <label for="confirmPassword" class="mb-1 block text-sm font-medium"
+              >Confirm Password</label
+            ><PasswordInput
               id="confirmPassword"
               v-model="confirmPassword"
-              class="w-full"
-              toggleMask
-              inputClass="w-full"
               placeholder="Confirm your password"
               required
             />
           </div>
-          <div class="flex justify-between items-center">
-            <div>
-              <router-link to="/login" class="text-green-600 hover:text-green-800">
-                Already have an account?
-              </router-link>
-            </div>
-            <div>
-              <Button
-                type="submit"
-                label="Register"
-                icon="pi pi-user-plus"
-                class="p-button-success"
-                :loading="loading"
-              />
-            </div>
+          <div class="flex items-center justify-between gap-4">
+            <router-link to="/login" class="text-sm text-primary hover:underline"
+              >Already have an account?</router-link
+            ><Button type="submit" :disabled="loading"
+              ><UserPlus :size="16" />{{ loading ? 'Registering...' : 'Register' }}</Button
+            >
           </div>
-        </form>
-      </template>
+        </form></CardContent
+      >
     </Card>
   </div>
 </template>

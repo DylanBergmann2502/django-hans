@@ -62,10 +62,6 @@ vi.mock('vue-router', () => ({
   })),
 }))
 
-vi.mock('primevue/usetoast', () => ({
-  useToast: () => ({ add: vi.fn() }),
-}))
-
 describe('LoginPage', () => {
   let wrapper: ReturnType<typeof mount>
 
@@ -75,13 +71,7 @@ describe('LoginPage', () => {
     wrapper = mount(LoginPage, {
       global: {
         plugins: [createPinia()],
-        stubs: {
-          Card: true,
-          InputText: true,
-          Password: true,
-          Button: true,
-          'router-link': true,
-        },
+        stubs: { 'router-link': true },
       },
     })
   })

@@ -1,4 +1,4 @@
-// eslint.config.ts
+// web/eslint.config.ts
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
@@ -35,4 +35,12 @@ export default defineConfigWithVueTs(
   },
 
   skipFormatting,
+
+  {
+    name: 'shadcn/ui-components',
+    files: ['src/components/ui/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
 )

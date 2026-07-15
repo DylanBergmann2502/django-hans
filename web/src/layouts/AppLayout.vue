@@ -1,216 +1,101 @@
 <!-- src/layouts/AppLayout.vue -->
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useToast } from 'primevue/usetoast'
+import { computed, ref } from 'vue'
+import { ChartBar, Home, LogIn, LogOut, Settings, User, UserPlus } from '@lucide/vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import type Menu from 'primevue/menu'
-import type { MenuItem } from 'primevue/menuitem'
+import Button from '@/components/ui/Button.vue'
+import Toaster from '@/components/ui/Toaster.vue'
+import { useToast } from '@/composables/useToast'
 
-const toast = useToast()
 const authStore = useAuthStore()
 const router = useRouter()
-
+const { add } = useToast()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 const user = computed(() => authStore.user)
-
-const userMenu = ref<InstanceType<typeof Menu> | null>(null)
-
-type AppMenuItem = MenuItem & { isLogout?: boolean }
-
-const menuItems = ref<AppMenuItem[]>([
-  {
-    label: 'Home',
-    icon: 'pi pi-fw pi-home',
-    to: '/',
-  },
-  {
-    label: 'Dashboard',
-    icon: 'pi pi-fw pi-chart-bar',
-    to: '/dashboard',
-  },
-])
-
-const userMenuItems = ref<AppMenuItem[]>([
-  {
-    label: 'Profile',
-    icon: 'pi pi-fw pi-user',
-    to: '/profile',
-  },
-  {
-    label: 'Settings',
-    icon: 'pi pi-fw pi-cog',
-    to: '/settings',
-  },
-  {
-    separator: true,
-  },
-  {
-    label: 'Logout',
-    icon: 'pi pi-fw pi-sign-out',
-    isLogout: true,
-  },
-])
+const menuOpen = ref(false)
 
 const handleLogout = async () => {
   await authStore.logout()
-  toast.add({
-    severity: 'warn',
-    summary: 'Logged Out',
-    detail: 'You have been successfully logged out',
-    life: 3000,
+  menuOpen.value = false
+  add({
+    title: 'Logged Out',
+    description: 'You have been successfully logged out',
+    variant: 'warning',
   })
-
-  if (router.currentRoute.value.meta.authRequired === true) {
-    router.push('/')
-  }
+  if (router.currentRoute.value.meta.authRequired === true) router.push('/')
 }
 
-const navigateHome = () => {
-  router.push('/')
-}
+const navigateHome = () => router.push('/')
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Custom implementation of menubar with real links -->
-    <div
-      class="p-menubar mb-4 p-component flex justify-between items-center px-4 py-2 bg-white shadow-sm"
-    >
-      <div class="flex items-center">
-        <div class="cursor-pointer flex items-center" @click="navigateHome">
-          <h1 class="text-xl font-semibold ml-2 hover:text-green-600 transition-colors">
-            Django Hans
-          </h1>
-        </div>
-
-        <!-- Menu items with real links -->
-        <div class="ml-6 flex space-x-4">
-          <router-link
-            v-for="(item, index) in menuItems"
-            :key="index"
-            :to="item.to!"
-            class="p-menuitem-link flex items-center px-3 py-2 rounded-md hover:bg-gray-100"
+  <div class="min-h-screen bg-muted/40">
+    <header class="mb-4 border-b bg-background shadow-sm">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-6">
+          <button
+            class="flex items-center text-xl font-semibold hover:text-primary"
+            @click="navigateHome"
           >
-            <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
-            <span class="p-menuitem-text">{{ item.label }}</span>
-          </router-link>
+            Django Hans
+          </button>
+          <nav class="hidden items-center gap-1 sm:flex">
+            <router-link
+              to="/"
+              class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+              ><Home :size="16" /> Home</router-link
+            >
+            <router-link
+              to="/dashboard"
+              class="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+              ><ChartBar :size="16" /> Dashboard</router-link
+            >
+          </nav>
         </div>
-      </div>
 
-      <div>
-        <div v-if="isAuthenticated" class="flex items-center">
-          <span class="mr-2 text-sm">{{ user?.email }}</span>
-
-          <!-- Using custom template for Menu -->
-          <Menu :model="userMenuItems" :popup="true" ref="userMenu" class="user-menu">
-            <template #item="{ item }">
-              <!-- Regular menu items with router links -->
-              <router-link
-                v-if="item.to"
-                :to="item.to"
-                class="p-menuitem-link flex align-items-center p-3 text-color hover:surface-200 border-noround"
-              >
-                <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
-                <span>{{ item.label }}</span>
-              </router-link>
-
-              <!-- Special handling for logout - no href, just click handler -->
-              <div
-                v-else-if="item.isLogout"
-                @click="handleLogout"
-                class="p-menuitem-link flex align-items-center p-3 text-color hover:surface-200 border-noround cursor-pointer"
-              >
-                <i v-if="item.icon" :class="[item.icon, 'mr-2']"></i>
-                <span>{{ item.label }}</span>
-              </div>
-
-              <!-- Other menu item types -->
-              <hr v-else-if="item.separator" class="my-2 border-t border-gray-200" />
-            </template>
-          </Menu>
-
-          <Button
-            icon="pi pi-user"
-            rounded
-            text
-            aria-label="User Menu"
-            @click="(e) => userMenu?.toggle(e)"
-          />
+        <div v-if="isAuthenticated" class="relative flex items-center gap-2">
+          <span class="hidden text-sm text-muted-foreground sm:block">{{ user?.email }}</span>
+          <Button variant="ghost" size="icon" aria-label="User menu" @click="menuOpen = !menuOpen"
+            ><User :size="18"
+          /></Button>
+          <div
+            v-if="menuOpen"
+            class="absolute right-0 top-12 z-20 w-48 rounded-md border bg-background p-1 shadow-md"
+          >
+            <router-link
+              to="/profile"
+              class="flex items-center gap-2 rounded-sm px-3 py-2 text-sm hover:bg-muted"
+              @click="menuOpen = false"
+              ><User :size="16" /> Profile</router-link
+            >
+            <router-link
+              to="/settings"
+              class="flex items-center gap-2 rounded-sm px-3 py-2 text-sm hover:bg-muted"
+              @click="menuOpen = false"
+              ><Settings :size="16" /> Settings</router-link
+            >
+            <div class="my-1 border-t" />
+            <button
+              class="flex w-full cursor-pointer items-center gap-2 rounded-sm px-3 py-2 text-left text-sm hover:bg-muted"
+              @click="handleLogout"
+            >
+              <LogOut :size="16" /> Logout
+            </button>
+          </div>
         </div>
         <div v-else class="flex gap-2">
-          <router-link to="/login" custom v-slot="{ navigate, href }">
-            <a :href="href" @click="navigate" class="no-underline">
-              <Button label="Login" icon="pi pi-sign-in" class="p-button-success" />
-            </a>
-          </router-link>
-          <router-link to="/register" custom v-slot="{ navigate, href }">
-            <a :href="href" @click="navigate" class="no-underline">
-              <Button
-                label="Register"
-                icon="pi pi-user-plus"
-                class="p-button-outlined p-button-success"
-              />
-            </a>
-          </router-link>
+          <router-link to="/login"
+            ><Button variant="secondary"><LogIn :size="16" /> Login</Button></router-link
+          >
+          <router-link to="/register"
+            ><Button><UserPlus :size="16" /> Register</Button></router-link
+          >
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-      <router-view />
-    </div>
-
-    <Toast />
+    <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"><router-view /></main>
+    <Toaster />
   </div>
 </template>
-
-<style scoped>
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.p-menubar {
-  border: 1px solid #f0f0f0;
-}
-
-/* Remove default underline from links */
-a.no-underline {
-  text-decoration: none;
-}
-
-/* Style for menu items */
-:deep(.p-menu) {
-  border: 1px solid #e4e4e4;
-  border-radius: 6px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
-:deep(.p-menuitem-link) {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  color: #495057;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-  border-radius: 0;
-}
-
-:deep(.p-menuitem-link:hover) {
-  background-color: #f8f9fa;
-  text-decoration: none;
-  color: #495057;
-}
-
-:deep(.p-menu .p-menuitem) {
-  margin: 0;
-}
-
-:deep(.p-menu .p-submenu-header) {
-  background: #f8f9fa;
-  color: #6c757d;
-  padding: 0.75rem 1rem;
-  margin: 0;
-}
-</style>
