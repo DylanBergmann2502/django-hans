@@ -5,7 +5,6 @@ import { ChartBar, Home, LogIn, LogOut, Settings, User, UserPlus } from '@lucide
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import Button from '@/components/ui/Button.vue'
-import Toaster from '@/components/ui/Toaster.vue'
 import { useToast } from '@/composables/useToast'
 
 const authStore = useAuthStore()
@@ -96,6 +95,5 @@ const navigateHome = () => router.push('/')
     </header>
 
     <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"><router-view /></main>
-    <Toaster />
   </div>
 </template>

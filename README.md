@@ -12,8 +12,7 @@ License: MIT
 ### Backend
 
 - **Django** + **Django REST Framework**
-- **SimpleJWT** + **dj-rest-auth** — JWT auth with token refresh, server-side logout blacklisting
-- **Django Allauth** — required dependency of dj-rest-auth registration (`account` + `socialaccount` only)
+- **Django Allauth headless** — JWT auth with token refresh and stateful logout
 - **Celery** + **Redis** — async task queue with Beat scheduler
 - **PostgreSQL 18**
 
@@ -40,13 +39,13 @@ License: MIT
 
 | Service       | URL                             |
 | ------------- | ------------------------------- |
-| Vue frontend  | http://localhost:5173           |
-| Django API    | http://localhost:8000           |
-| Swagger UI    | http://localhost:8000/api/docs/ |
-| Django admin  | http://localhost:8000/admin/    |
-| Flower        | http://localhost:5555           |
-| Garage S3 API | http://localhost:3900           |
-| Garage Web UI | http://localhost:3909           |
+| Vue frontend  | <http://localhost:5173>           |
+| Django API    | <http://localhost:8000>           |
+| Swagger UI    | <http://localhost:8000/api/docs/> |
+| Django admin  | <http://localhost:8000/admin/>    |
+| Flower        | <http://localhost:5555>           |
+| Garage S3 API | <http://localhost:3900>           |
+| Garage Web UI | <http://localhost:3909>           |
 
 ## Setup
 

@@ -1,17 +1,17 @@
 # config/urls.py
-# ruff: noqa
+# ruff: noqa: E501
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
-from redis.asyncio import Redis as AsyncRedis
-from health_check.views import HealthCheckView
+from drf_spectacular.renderers import OpenApiJsonRenderer as JSONOpenAPIRenderer
 from drf_spectacular.views import (
     SpectacularAPIView,
-    SpectacularSwaggerView,
     SpectacularRedocView,
+    SpectacularSwaggerView,
 )
-from drf_spectacular.renderers import OpenApiJsonRenderer as JSONOpenAPIRenderer
+from health_check.views import HealthCheckView
+from redis.asyncio import Redis as AsyncRedis
 
 urlpatterns = [
     # Django Admin
@@ -37,9 +37,8 @@ urlpatterns = [
     # and can be refactored in the future
     path("api/v1/", include("config.api_router")),
 
-    # Authentication
-    path("api/v1/auth/", include("dj_rest_auth.urls")),
-    path("api/v1/auth/registration/", include("dj_rest_auth.registration.urls")),
+    # django-allauth headless API. The app client exposes JWT authentication.
+    path("api/v1/_allauth/", include("allauth.headless.urls")),
 
     # API Documentation
     path("api/schema/", SpectacularAPIView.as_view(renderer_classes=[JSONOpenAPIRenderer]), name="api-schema"),
@@ -59,7 +58,7 @@ urlpatterns = [
 if settings.DEBUG and "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
-    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls)), *urlpatterns]
 
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development

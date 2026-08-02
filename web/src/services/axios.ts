@@ -36,12 +36,16 @@ axiosInstance.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/${apiVersion}/auth/token/refresh/`,
-          { refresh: refreshToken.value },
+          `${import.meta.env.VITE_API_BASE_URL}/api/${apiVersion}/_allauth/app/v1/tokens/refresh`,
+          { refresh_token: refreshToken.value },
         )
-        const { access } = response.data as { access: string }
-        accessToken.value = access
-        originalRequest.headers.Authorization = `Bearer ${access}`
+        const { access_token, refresh_token } = response.data.data as {
+          access_token: string
+          refresh_token?: string
+        }
+        accessToken.value = access_token
+        if (refresh_token) refreshToken.value = refresh_token
+        originalRequest.headers.Authorization = `Bearer ${access_token}`
         return axiosInstance(originalRequest)
       } catch (refreshError) {
         clearTokens()

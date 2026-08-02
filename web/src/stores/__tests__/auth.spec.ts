@@ -8,6 +8,7 @@ vi.mock('@/services/axios', () => ({
   default: {
     post: vi.fn(),
     get: vi.fn(),
+    delete: vi.fn(),
   },
 }))
 
@@ -19,7 +20,7 @@ import axiosInstance from '@/services/axios'
 import { accessToken, refreshToken, clearTokens, useAuthStore } from '../auth'
 
 const mockedPost = axiosInstance.post as Mock
-const mockedGet = axiosInstance.get as Mock
+const mockedDelete = axiosInstance.delete as Mock
 
 describe('Auth Store', () => {
   beforeEach(() => {
@@ -46,18 +47,18 @@ describe('Auth Store', () => {
     expect(store.isAuthenticated).toBe(true)
   })
 
-  it('login sets tokens and fetches user profile', async () => {
+  it('login sets tokens and user profile', async () => {
     mockedPost.mockResolvedValueOnce({
-      data: { access: 'access-token', refresh: 'refresh-token' },
-    })
-    mockedGet.mockResolvedValueOnce({
-      data: { id: 1, email: 'test@example.com' } satisfies User,
+      data: {
+        data: { user: { id: 1, email: 'test@example.com' } satisfies User },
+        meta: { access_token: 'access-token', refresh_token: 'refresh-token' },
+      },
     })
 
     const store = useAuthStore()
     await store.login('test@example.com', 'password')
 
-    expect(mockedPost).toHaveBeenCalledWith('/auth/login/', {
+    expect(mockedPost).toHaveBeenCalledWith('/_allauth/app/v1/auth/login', {
       email: 'test@example.com',
       password: 'password',
     })
@@ -69,15 +70,15 @@ describe('Auth Store', () => {
     expect(store.error).toBe(null)
   })
 
-  it('logout calls /auth/logout/, clears tokens and resets state', async () => {
+  it('logout calls the headless session endpoint, clears tokens and resets state', async () => {
     accessToken.value = 'some-token'
-    mockedPost.mockResolvedValueOnce({})
+    mockedDelete.mockResolvedValueOnce({})
     const store = useAuthStore()
     store.user = { id: 1, email: 'test@example.com' }
 
     await store.logout()
 
-    expect(mockedPost).toHaveBeenCalledWith('/auth/logout/')
+    expect(mockedDelete).toHaveBeenCalledWith('/_allauth/app/v1/auth/session')
     expect(accessToken.value).toBe(null)
     expect(refreshToken.value).toBe(null)
     expect(store.isAuthenticated).toBe(false)
@@ -106,14 +107,23 @@ describe('Auth Store', () => {
     expect(store.loading).toBe(false)
   })
 
-  it('register calls POST /auth/registration/', async () => {
-    const userData = { email: 'new@example.com', password1: 'password', password2: 'password' }
-    mockedPost.mockResolvedValueOnce({ data: { id: 2, email: 'new@example.com' } })
+  it('register calls the headless signup endpoint', async () => {
+    const userData = { email: 'new@example.com', password: 'password' }
+    mockedPost.mockResolvedValueOnce({
+      data: {
+        data: { user: { id: 2, email: 'new@example.com' } },
+        meta: { access_token: 'access-token', refresh_token: 'refresh-token' },
+      },
+    })
 
     const store = useAuthStore()
     const response = await store.register(userData)
 
-    expect(mockedPost).toHaveBeenCalledWith('/auth/registration/', userData)
-    expect(response?.data).toEqual({ id: 2, email: 'new@example.com' })
+    expect(mockedPost).toHaveBeenCalledWith('/_allauth/app/v1/auth/signup', userData)
+    expect(mockedDelete).not.toHaveBeenCalled()
+    expect(accessToken.value).toBe(null)
+    expect(refreshToken.value).toBe(null)
+    expect(store.isAuthenticated).toBe(false)
+    expect(response?.data.data?.user).toEqual({ id: 2, email: 'new@example.com' })
   })
 })

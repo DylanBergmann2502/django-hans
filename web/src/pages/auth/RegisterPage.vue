@@ -31,8 +31,7 @@ const handleRegister = async () => {
   try {
     await authStore.register({
       email: email.value,
-      password1: password.value,
-      password2: confirmPassword.value,
+      password: password.value,
     })
     add({
       title: 'Success',
@@ -41,13 +40,9 @@ const handleRegister = async () => {
     })
     router.push('/login')
   } catch (err: unknown) {
-    const errors = (err as { response?: { data?: ApiError } }).response?.data ?? {}
-    const messages: string[] = []
-    Object.keys(errors).forEach((key) => {
-      const value = errors[key as keyof ApiError]
-      if (Array.isArray(value)) messages.push(`${key}: ${value.join(', ')}`)
-      else if (value) messages.push(`${key}: ${value}`)
-    })
+    const errors = (err as { response?: { data?: ApiError } }).response?.data
+    const messages = errors?.errors?.map((error) => error.message).filter(Boolean) ?? []
+    if (errors?.detail) messages.push(errors.detail)
     add({
       title: 'Registration Failed',
       description: messages.join('\n') || 'Registration failed',

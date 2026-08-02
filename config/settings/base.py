@@ -3,7 +3,6 @@
 """Base settings to build other settings files upon."""
 
 import ssl
-from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -84,16 +83,14 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
+    "allauth.headless",
     "allauth.socialaccount",
     "django_celery_beat",
     "rest_framework",
-    "rest_framework_simplejwt",
     "corsheaders",
     "drf_spectacular",
     "django_filters",
     "django_extensions",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
     "health_check",
 ]
 
@@ -369,7 +366,7 @@ CELERY_WORKER_HIJACK_ROOT_LOGGER = False
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "allauth.headless.contrib.rest_framework.authentication.JWTTokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -443,32 +440,7 @@ if env.bool("USE_S3_STORAGE", default=False):
     protocol = "https" if AWS_S3_USE_SSL else "http"
     MEDIA_URL = f"{protocol}://{aws_s3_domain}/media/"
 
-# SimpleJWT
-# ------------------------------------------------------------------------------
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": True,
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": env("JWT_SECRET_KEY"),
-    "VERIFYING_KEY": None,
-    "AUDIENCE": None,
-    "ISSUER": None,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "JTI_CLAIM": "jti",
-    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=60),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=7),
-}
-
-# django-allauth (required by dj-rest-auth registration)
+# django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
@@ -476,18 +448,12 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
-# dj-rest-auth
-# ------------------------------------------------------------------------------
-REST_AUTH = {
-    "USE_JWT": True,
-    "JWT_AUTH_COOKIE": None,
-    "JWT_AUTH_REFRESH_COOKIE": None,
-    "JWT_AUTH_HTTPONLY": False,
-    "SESSION_LOGIN": False,
-    "TOKEN_MODEL": None,
-    "LOGIN_SERIALIZER": "django_hans.users.serializers.LoginSerializer",
-    "REGISTER_SERIALIZER": "django_hans.users.serializers.RegisterSerializer",
-    "USER_DETAILS_SERIALIZER": "dj_rest_auth.serializers.UserDetailsSerializer",
-    "PASSWORD_RESET_USE_SITES_DOMAIN": False,
-    "OLD_PASSWORD_FIELD_ENABLED": True,
-}
+# allauth headless app-client JWT authentication
+HEADLESS_CLIENTS = ("app",)
+HEADLESS_TOKEN_STRATEGY = "allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"  # noqa: S105
+HEADLESS_JWT_ALGORITHM = "HS256"
+HEADLESS_JWT_PRIVATE_KEY = env("JWT_SECRET_KEY")
+HEADLESS_JWT_ACCESS_TOKEN_EXPIRES_IN = 60 * 60
+HEADLESS_JWT_REFRESH_TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60
+HEADLESS_JWT_STATEFUL_VALIDATION_ENABLED = True
+HEADLESS_JWT_ROTATE_REFRESH_TOKEN = True

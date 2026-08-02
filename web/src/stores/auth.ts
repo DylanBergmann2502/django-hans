@@ -3,12 +3,11 @@ import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import axiosInstance from '@/services/axios'
-import type { User, TokenResponse, ApiError } from '@/types'
+import type { AuthResponse, User, ApiError } from '@/types'
 
 export interface RegisterData {
   email: string
-  password1: string
-  password2: string
+  password: string
   [key: string]: string
 }
 
@@ -42,14 +41,19 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      const response = await axiosInstance.post<TokenResponse>('/auth/login/', {
+      const response = await axiosInstance.post<AuthResponse>('/_allauth/app/v1/auth/login', {
         email,
         password,
       })
-      accessToken.value = response.data.access
-      refreshToken.value = response.data.refresh
+      const meta = response.data.meta
+      if (!meta?.access_token || !meta.refresh_token) {
+        throw new Error('Authentication response did not contain JWT tokens')
+      }
+      accessToken.value = meta.access_token
+      refreshToken.value = meta.refresh_token
       isAuthenticated.value = true
-      await fetchUserProfile()
+      user.value = response.data.data?.user ?? null
+      if (!user.value) await fetchUserProfile()
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: ApiError } }
       error.value = axiosError.response?.data ?? { detail: 'Login failed' }
@@ -63,7 +67,17 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      return await axiosInstance.post<User>('/auth/registration/', userData)
+      const response = await axiosInstance.post<AuthResponse>(
+        '/_allauth/app/v1/auth/signup',
+        userData,
+      )
+      // allauth completes signup by logging the user in. The frontend owns
+      // the UX decision, so discard that response's JWT pair and let the
+      // explicit login flow create the session we actually use.
+      clearTokens()
+      user.value = null
+      isAuthenticated.value = false
+      return response
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: ApiError } }
       error.value = axiosError.response?.data ?? { detail: 'Registration failed' }
@@ -75,7 +89,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function logout() {
     try {
-      await axiosInstance.post('/auth/logout/')
+      await axiosInstance.delete('/_allauth/app/v1/auth/session')
     } catch {
       // best-effort — clear locally regardless
     }
@@ -89,8 +103,8 @@ export const useAuthStore = defineStore('auth', () => {
 
     loading.value = true
     try {
-      const response = await axiosInstance.get<User>('/auth/user/')
-      user.value = response.data
+      const response = await axiosInstance.get<AuthResponse>('/_allauth/app/v1/auth/session')
+      user.value = response.data.data?.user ?? null
     } catch (err: unknown) {
       const axiosError = err as { response?: { status?: number } }
       if (axiosError.response?.status === 401) {

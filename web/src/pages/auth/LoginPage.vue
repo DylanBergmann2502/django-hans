@@ -29,10 +29,13 @@ const handleLogin = async () => {
     add({ title: 'Success', description: 'Login successful', variant: 'success' })
     router.push(redirectPath)
   } catch (err: unknown) {
-    const axiosError = err as { response?: { data?: { detail?: string } } }
+    const axiosError = err as {
+      response?: { data?: { detail?: string; errors?: Array<{ message?: string }> } }
+    }
+    const errorMessage = axiosError.response?.data?.errors?.map((error) => error.message).join(', ')
     add({
       title: 'Error',
-      description: axiosError.response?.data?.detail || 'Login failed',
+      description: errorMessage || axiosError.response?.data?.detail || 'Login failed',
       variant: 'error',
     })
   } finally {

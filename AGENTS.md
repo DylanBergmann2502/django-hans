@@ -10,6 +10,10 @@ Django Hans is an opinionated Django boilerplate for REST API + SPA (Single Page
 
 All development commands route through `./bin/run` (or `./bin/run.bat` on Windows). Initial setup uses `./bin/setup`.
 
+### Execution Environment
+
+Never run Python or Node directly on the host machine. Always use the Docker-backed commands in `./bin/run` so dependencies and runtime versions come from the project containers. Use `./bin/run django ...` for Python/Django commands and `./bin/run vue ...` or the dedicated `./bin/run vue:*` commands for Node/Vue commands.
+
 ### Setup & Lifecycle
 
 ```bash
@@ -71,7 +75,7 @@ npx playwright install
 
 ### Stack
 
-- **Backend:** Django 6.x, Django REST Framework, SimpleJWT + dj-rest-auth (auth), Celery + Redis (async tasks), PostgreSQL 18
+- **Backend:** Django 6.x, Django REST Framework, django-allauth headless with JWT (auth), Celery + Redis (async tasks), PostgreSQL 18
 - **Frontend:** Vue 3 + TypeScript, Pinia (state), Vue Router, source-owned shadcn-vue-style components, TailwindCSS 4, Lucide Vue, VueUse, Axios, Vitest, Playwright
 - **Storage:** Garage (S3-compatible)
 - **Monitoring:** Sentry (production), Flower (Celery), django-health-check at `/health/`
@@ -98,11 +102,11 @@ Settings are split across `config/settings/`:
 ### Authentication
 
 - Custom `User` model in `django_hans/users/` uses **email** as `USERNAME_FIELD` (no username field)
-- JWT via SimpleJWT + dj-rest-auth at `/api/v1/auth/` and `/api/v1/auth/registration/`
+- JWT via django-allauth headless app-client endpoints under `/api/v1/_allauth/app/v1/`
 - Access token lifetime: 60 minutes; refresh token: 7 days
-- django-allauth (`account` + `socialaccount`) is installed as a required dependency of dj-rest-auth registration — not used directly by the app
+- django-allauth headless handles login, signup, session, logout, and token refresh; the frontend stores the JWT pair in local storage
 - Email verification is disabled by default (`ACCOUNT_EMAIL_VERIFICATION: "none"`) — set to `"mandatory"` to require it
-- Custom `RegisterSerializer` in `django_hans/users/serializers.py` drops the username field, accepting only `email`, `password1`, `password2`
+- Headless signup accepts only `email` and `password`; password confirmation remains a frontend validation concern
 
 ### API
 
