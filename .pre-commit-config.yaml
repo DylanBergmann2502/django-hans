@@ -1,7 +1,7 @@
 # .pre-commit-config.yaml
 exclude: '^docs/|/migrations/|devcontainer.json|^web/'
 default_stages: [pre-commit]
-minimum_pre_commit_version: "4.6.0"
+minimum_pre_commit_version: "4.6.1"
 
 default_language_version:
   python: python3.14
@@ -23,13 +23,13 @@ repos:
       - id: detect-private-key
 
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: '1.30.0'
+    rev: '1.31.1'
     hooks:
       - id: django-upgrade
         args: ['--target-version', '6.0']
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "v2.26.0"
+    rev: "v2.27.0"
     hooks:
       - id: pyproject-fmt
 
