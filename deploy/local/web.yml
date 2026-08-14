@@ -87,7 +87,7 @@ services:
       - "3909:3909"
 
   redis:
-    image: docker.io/redis:8
+    image: redis:alpine
     container_name: redis
     volumes:
       - redis_data:/data

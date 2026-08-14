@@ -67,7 +67,7 @@ services:
 
   # Worker
   redis:
-    image: docker.io/redis:8
+    image: redis:alpine
     container_name: redis
     restart: always
     volumes:
