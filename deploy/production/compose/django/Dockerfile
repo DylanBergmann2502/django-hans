@@ -78,9 +78,6 @@ RUN chmod +x /start-flower
 # Copy the application from the builder
 COPY --from=python-build-stage --chown=django:django ${APP_HOME} ${APP_HOME}
 
-# make django owner of the WORKDIR directory as well.
-RUN chown django:django ${APP_HOME}
-
 # Make staticfiles directory with proper permissions
 USER root
 RUN mkdir -p /app/staticfiles && \
