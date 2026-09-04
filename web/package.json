@@ -47,7 +47,7 @@
     "jsdom": "^30.0.1",
     "prettier": "^3.9.6",
     "sass": "^1.102.0",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
     "vite": "^8.2.1",
     "vite-plugin-vue-devtools": "^8.2.1",
     "vitest": "^4.1.10",
