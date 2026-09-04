@@ -26,5 +26,5 @@ export interface AuthResponse {
 export interface ApiError {
   detail?: string
   errors?: Array<{ param?: string; message?: string }>
-  [key: string]: string | string[] | undefined
+  [key: string]: string | string[] | Array<{ param?: string; message?: string }> | undefined
 }
