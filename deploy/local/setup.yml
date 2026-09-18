@@ -35,14 +35,14 @@ services:
     command: /migrate
 
   garage:
-    image: dxflrs/garage:v2.3.0
+    image: dxflrs/garage:v2.4.1
     container_name: garage
     volumes:
       - ../../deploy/local/compose/garage/garage.toml:/etc/garage.toml:ro
       - garage_meta:/var/lib/garage/meta
       - garage_data:/var/lib/garage/data
     healthcheck:
-      test: ["CMD", "/garage", "status"]
+      test: ["CMD", "/garage", "health", "--quiet"]
       interval: 5s
       timeout: 5s
       retries: 10
