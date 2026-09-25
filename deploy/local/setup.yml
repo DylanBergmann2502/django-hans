@@ -42,7 +42,7 @@ services:
       - garage_meta:/var/lib/garage/meta
       - garage_data:/var/lib/garage/data
     healthcheck:
-      test: ["CMD", "/garage", "health", "--quiet"]
+      test: ["CMD", "/garage", "status"]
       interval: 5s
       timeout: 5s
       retries: 10
