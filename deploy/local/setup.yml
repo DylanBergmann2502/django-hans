@@ -35,7 +35,7 @@ services:
     command: /migrate
 
   garage:
-    image: dxflrs/garage:v2.4.1
+    image: dxflrs/garage:v2.5.0
     container_name: garage
     volumes:
       - ../../deploy/local/compose/garage/garage.toml:/etc/garage.toml:ro
